@@ -1,0 +1,6 @@
+<section class="page audit">
+  <div class="page-head"><div class="page-title"><h1>Storico modifiche</h1><p>Visualizza tutte le modifiche apportate ai piani e alle assegnazioni</p></div></div>
+  <section class="timeline card"><h2>Audit log <span class="pill">12 eventi</span></h2>
+    @for (log of audits$ | async; track log.id) { <article><div class="node">{{icon(log.action)}}</div><div><h3>{{log.message}}</h3><p><span>▣ {{log.createdAt | date:'dd/MM/yyyy · HH:mm'}}</span><span>♙ {{log.createdBy}}</span><b>{{log.action}}</b></p></div><em>⌄</em></article> }
+  </section>
+</section>

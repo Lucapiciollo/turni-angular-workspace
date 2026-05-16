@@ -1,0 +1,23 @@
+<div class="wf-shell">
+  <aside class="wf-sidebar">
+    <div class="wf-brand"><div class="wf-brand__logo">👥</div><strong>WorkForce</strong></div>
+    <nav class="wf-menu">
+      @for (item of menu; track item.label) {
+        <a class="wf-menu__item" [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }">
+          <span class="wf-menu__icon">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+          @if (item.badge) { <b>{{ item.badge }}</b> }
+        </a>
+      }
+    </nav>
+    <div class="wf-admin"><span>AM</span><div><strong>Admin</strong><small>Amministratore</small></div></div>
+  </aside>
+  <main class="wf-main">
+    <header class="wf-topbar">
+      <div></div>
+      <button class="wf-icon-btn">🔔<span>3</span></button>
+      <button class="wf-icon-btn">?</button>
+    </header>
+    <router-outlet />
+  </main>
+</div>

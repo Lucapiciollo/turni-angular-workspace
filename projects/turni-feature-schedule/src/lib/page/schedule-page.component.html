@@ -1,0 +1,31 @@
+<section class="page schedule">
+  <div class="page-head"><div class="page-title"><h1>Turni Maggio 2026 <span>★</span></h1><p>Vista settimanale</p></div><div class="actions"><button class="btn">▣ Vista mese</button><button class="btn primary">▣ Vista settimana</button><button class="btn">▽ Filtri</button><button class="btn" (click)="facade.optimize()">⌁ Ottimizza</button><button class="btn success" (click)="facade.save()">▣ Salva</button></div></div>
+  @if ({days: days$ | async, workerMap: workerMap$ | async, workers: workers$ | async}; as vm) {
+    <div class="table-card card">
+      <table>
+        <thead><tr><th>Data</th>@for (s of shifts; track s.type) { <th>{{s.label}}<small>{{s.time}}</small></th> }<th>Warning</th></tr></thead>
+        <tbody>
+        @for (day of vm.days ?? []; track day.date) {
+          <tr>
+            <td class="date"><small>{{day.weekday}}</small><b>{{day.dayNumber}}</b><span>{{day.monthLabel}}</span>@for (b of day.badges; track b){<em>{{b}}</em>}</td>
+            @for (s of shifts; track s.type) {
+              <td><div class="shift-cell">
+                @for (a of day.assignments; track a.id) { @if (a.shift === s.type && vm.workerMap) {
+                  @if (worker(vm.workerMap, a.workerId); as w) {
+                    <div class="assignment" [class.manual]="a.source === 'MANUAL'" [class.forced]="a.source === 'FORCED'">
+                      <span class="drag">⋮⋮</span><span class="avatar" [class]="w.color">{{w.initials}}</span><strong>{{w.name.split(' ')[0]}}</strong><b>{{a.source}}</b>
+                      <button (click)="a.locked ? facade.unlock(a.id) : facade.lock(a.id)">{{a.locked ? '🔒' : '🔓'}}</button><button class="danger" (click)="facade.removeWorker(day.date, s.type, a.workerId)">♢</button>
+                    </div>
+                  }
+                }}
+                <div class="add"><select [(ngModel)]="selected[day.date + '_' + s.type]"><option value="">Assegna operatore</option>@for(w of vm.workers ?? []; track w.id){<option [value]="w.id">{{w.name}}</option>}</select><button (click)="assign(day.date, s.type)">＋</button></div>
+              </div></td>
+            }
+            <td class="warn-cell">@for (issue of day.warnings; track issue.id) { <div class="warn">⚠ {{issue.title}}</div> } @if (!day.warnings.length) { <div class="ok">✓ OK<br><small>Nessun problema</small></div> }</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

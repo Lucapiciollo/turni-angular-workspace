@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use './tokens' as *;
+
+@mixin card($radius: 18px) {
+  background: map.get($wf-colors, panel);
+  border: 1px solid map.get($wf-colors, border);
+  border-radius: $radius;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, .055);
+}
+
+@mixin pill($bg, $color) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: $bg;
+  color: $color;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@mixin turni-theme() {
+  :root {
+    --wf-bg: #{map.get($wf-colors, bg)};
+    --wf-panel: #{map.get($wf-colors, panel)};
+    --wf-text: #{map.get($wf-colors, text)};
+    --wf-muted: #{map.get($wf-colors, muted)};
+    --wf-border: #{map.get($wf-colors, border)};
+    --wf-primary: #{map.get($wf-colors, primary)};
+    --wf-primary-soft: #{map.get($wf-colors, primary-soft)};
+    --wf-success: #{map.get($wf-colors, success)};
+    --wf-success-soft: #{map.get($wf-colors, success-soft)};
+    --wf-danger: #{map.get($wf-colors, danger)};
+    --wf-danger-soft: #{map.get($wf-colors, danger-soft)};
+    --wf-warning: #{map.get($wf-colors, warning)};
+    --wf-warning-soft: #{map.get($wf-colors, warning-soft)};
+    --wf-info: #{map.get($wf-colors, info)};
+    --wf-info-soft: #{map.get($wf-colors, info-soft)};
+    --wf-shadow-sm: 0 10px 24px rgba(15,23,42,.07);
+    --wf-radius: 18px;
+  }
+}

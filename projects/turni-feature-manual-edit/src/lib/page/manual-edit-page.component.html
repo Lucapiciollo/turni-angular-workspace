@@ -1,0 +1,12 @@
+<section class="page manual">
+  <div class="page-head"><div class="page-title"><h1>Modifica manuale turno <span class="pill">● DRAFT</span></h1><p>Modifica le assegnazioni del turno selezionato</p></div></div>
+  @if (vm$ | async; as vm) {
+    <div class="layout">
+      <section class="editor card"><a routerLink="/piano-turni">← Torna alla pianificazione</a><div class="shift-head"><div class="icon">▣</div><div><h2>{{vm.date}} · {{vm.shift}} · 22:00–06:00</h2><p>Piano: Turni Maggio 2026 · Linea 1</p></div><span class="pill">DRAFT</span></div>
+        <h3>Operatori assegnati <small>{{vm.assignments.length}} assegnati</small></h3>
+        @for (a of vm.assignments; track a.id) { @if(vm.workerMap.get(a.workerId); as w) { <article class="assigned"><span class="avatar" [class]="w.color">{{w.initials}}</span><div><strong>{{w.name}}</strong><small>Operatore</small></div><b [class.forced]="a.source==='FORCED'">{{a.source}}</b><button (click)="a.locked ? facade.unlock(a.id) : facade.lock(a.id)">🔒</button><button class="danger" (click)="facade.removeWorker(vm.date, vm.shift, a.workerId)">♢</button></article> } }
+        <div class="add"><h3>Aggiungi operatore</h3><select [(ngModel)]="selected"><option value="">Seleziona operatore...</option>@for(w of vm.workers; track w.id){<option [value]="w.id">{{w.name}}</option>}</select><div><button class="btn success" (click)="add(vm.date, vm.shift)">＋ Aggiungi</button><button class="btn primary" (click)="add(vm.date, vm.shift, true)">⚡ Forza</button><button class="btn" (click)="facade.clearShift(vm.date, vm.shift)">♢ Pulisci turno</button></div></div><div class="note">ⓘ Le modifiche manuali saranno evidenziate e tracciate nel sistema di validazione.</div></section>
+      <aside class="help card"><h2>Azioni disponibili</h2><p>Scopri il significato delle azioni che puoi intraprendere</p>@for (a of ['Cambio operatore','Lucchetto','Forza','Pulisci']; track a){<article><span>↔</span><div><h3>{{a}}</h3><p>{{ a === 'Forza' ? 'Forza l’assegnazione anche se non rispetta le regole.' : a === 'Pulisci' ? 'Rimuove tutti gli operatori assegnati al turno.' : a === 'Lucchetto' ? 'Blocca il turno per le ottimizzazioni automatiche.' : 'Sostituisci l’operatore selezionando un nuovo nominativo.' }}</p></div></article>}</aside>
+    </div>
+  }
+</section>

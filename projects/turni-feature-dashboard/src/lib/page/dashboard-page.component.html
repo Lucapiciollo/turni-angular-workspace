@@ -1,0 +1,23 @@
+<section class="page dashboard">
+  <div class="page-head"><div class="page-title"><h1>Gestione turni <span class="pill">● DRAFT</span></h1><p>Pianificazione turni, validazione e pubblicazione</p></div></div>
+  <div class="toolbar card">
+    <label>Nome piano<input value="Turni Maggio 2026"></label><label>Dal<input value="2026-05-01"></label><label>Al<input value="2026-05-31"></label>
+    <button class="btn primary" (click)="generate()">✦ Genera</button><button class="btn" (click)="facade.optimize()">↻ Ricalcola automatici</button><button class="btn" (click)="facade.optimize()">⌁ Ottimizza</button><button class="btn" (click)="facade.save()">▣ Salva</button><button class="btn success" (click)="facade.publish()">➤ Pubblica</button><button class="btn">⇩ Export CSV</button>
+  </div>
+  <div class="stats-grid">
+    @for (s of stats$ | async; track s.workerId) {
+      <article class="stat card"><div class="avatar" [class]="s.color">{{s.initials}}</div><div><h3>{{s.name}}</h3><small>Operatore</small></div><button>⋮</button>
+        <div class="numbers"><span>Turni<b>{{s.turni}}</b></span><span>Ore<b>{{s.ore}}h</b></span><span>Notti<b>{{s.notti}}</b></span><span>Weekend<b>{{s.weekend}}</b></span><span>Manuali<b>{{s.manuali}}</b></span></div>
+        <div class="progress"><span>Completamento</span><b>{{s.completamento}}%</b><i [style.width.%]="s.completamento"></i></div></article>
+    }
+  </div>
+  <div class="main-grid">
+    <section class="card issues"><h2>△ Problemi rilevati <span>2 Errori</span><span class="warn">5 Warning</span><span class="info">3 Info</span></h2>
+      @for (issue of issues$ | async; track issue.id) { <article class="issue" [class]="issue.severity.toLowerCase()"><b>{{issue.severity}}</b><div><strong>{{issue.title}}</strong><small>{{issue.message}}</small></div><em>›</em></article> }
+      <a routerLink="/validazioni">Vedi tutti i problemi ›</a>
+    </section>
+    <section class="card plans"><h2>▣ Piani salvati <button class="btn">＋ Nuovo piano</button></h2>
+      @for (p of ['Turni Maggio 2026','Turni Aprile 2026','Turni Marzo 2026','Turni Febbraio 2026','Turni Gennaio 2026']; track p) { <div class="plan-row"><strong>{{p}}</strong><span>01/05/2026 - 31/05/2026</span><b [class.pub]="p !== 'Turni Maggio 2026'">{{p === 'Turni Maggio 2026' ? 'DRAFT' : 'PUBLISHED'}}</b><em>⋯</em></div> }
+    </section>
+  </div>
+</section>

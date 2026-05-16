@@ -1,0 +1,11 @@
+@use '../../../../turni-shared-ui/src/lib/styles/index' as *;
+.page { display: grid; gap: 22px; }
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.page-title { h1 { margin: 0; font-size: 36px; letter-spacing: -.04em; } p { margin: 8px 0 0; color: var(--wf-muted); font-size: 17px; } }
+.pill { @include pill(var(--wf-primary-soft), var(--wf-primary)); }
+.card { @include card(); }
+.btn { height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--wf-border); background: #fff; font-weight: 800; cursor: pointer; }
+.btn.primary { background: var(--wf-primary); color: white; border-color: var(--wf-primary); }
+.btn.success { background: var(--wf-success); color: white; border-color: var(--wf-success); }
+
+.timeline{padding:28px}h2{margin:0 0 20px;display:flex;gap:12px;align-items:center}.timeline article{position:relative;display:grid;grid-template-columns:72px 1fr 30px;gap:16px;min-height:88px;border-top:1px solid var(--wf-border);padding:18px 0}.timeline article:before{content:'';position:absolute;left:35px;top:0;bottom:0;width:2px;background:#e2e8f0}.node{position:relative;z-index:1;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--wf-success-soft);color:var(--wf-success);font-size:22px}.timeline h3{margin:2px 0 10px}.timeline p{display:flex;gap:12px;flex-wrap:wrap;margin:0}.timeline span,.timeline b{@include pill(#fff,var(--wf-muted));border:1px solid var(--wf-border)}.timeline b{color:var(--wf-primary);background:var(--wf-primary-soft);border:0}em{font-style:normal;color:var(--wf-muted)}
