@@ -1,103 +1,133 @@
-# Turni Step 4 - Pagine modulari lazy + stato condiviso
+# Turni Step 17 - Angular 19 + ux-directives nello shared
 
-Questo pacchetto corregge lo Step 4 rendendo le pagine davvero modulari e lazy.
+Questo pacchetto aggiorna il workspace ad Angular 19 mantenendo architettura modulare NgModule, non standalone.
 
-## Architettura
+## Upgrade
 
-La web app principale resta shell:
-
-```txt
-src/app
-```
-
-La feature principale resta lazy:
+Aggiornati:
 
 ```txt
-/piano-turni -> TurniFeatureScheduleModule
+@angular/*              ^19.2.0
+@angular/material       ^19.2.0
+@angular/cdk            ^19.2.0
+@angular/cli            ^19.2.0
+@angular/compiler-cli   ^19.2.0
+ng-packagr              ^19.2.0
+typescript              ~5.8.3
+zone.js                 ~0.15.1
+rxjs                    ~7.8.1
 ```
 
-Dentro la feature, anche le pagine sono lazy:
+## NgModule non standalone
+
+Configurati gli schematics in `angular.json`:
 
 ```txt
-/piano-turni              -> PianoTurniPageModule
-/piano-turni/statistiche  -> ScheduleStatsPageModule
-/piano-turni/warning      -> ScheduleWarningsPageModule
+component standalone false
+directive standalone false
+pipe standalone false
 ```
 
-## Routing interno lazy
+## ux-directives
+
+Reinstallato:
+
+```txt
+ux-directives
+```
+
+e inizializzato nello shared:
+
+```txt
+projects/turni-shared/src/lib/ux/ux-directives-shared.module.ts
+```
+
+`TurniSharedModule` importa/esporta `UxDirectivesSharedModule`, quindi tutte le feature lo ereditano importando lo shared.
+
+## Documentazione
+
+Vedi anche:
+
+```txt
+ANGULAR_19_MIGRATION.md
+```
+
+# Turni Step 16 - Moment in italiano
+
+Questo pacchetto parte dallo Step 15 e configura Moment.js in italiano.
+
+## Cosa è stato aggiunto
+
+Nuovo servizio:
+
+```txt
+projects/turni-data-access/src/lib/services/moment-locale.service.ts
+```
+
+Contiene:
 
 ```ts
-const routes: Routes = [
-    {
-        path: '',
-        loadChildren: () => {
-            return import('./pages/piano-turni-page/piano-turni-page.module')
-                .then((module) => module.PianoTurniPageModule);
-        },
-    },
-    {
-        path: 'statistiche',
-        loadChildren: () => {
-            return import('./pages/schedule-stats-page/schedule-stats-page.module')
-                .then((module) => module.ScheduleStatsPageModule);
-        },
-    },
-    {
-        path: 'warning',
-        loadChildren: () => {
-            return import('./pages/schedule-warnings-page/schedule-warnings-page.module')
-                .then((module) => module.ScheduleWarningsPageModule);
-        },
-    },
-];
+import moment from 'moment';
+import 'moment/locale/it';
+
+moment.locale('it');
 ```
 
-## Moduli pagina
+## Inizializzazione
+
+`ScheduleStateService` inizializza il locale italiano tramite:
+
+```ts
+MomentLocaleService
+```
+
+Così il locale viene impostato quando parte la gestione del piano turni.
+
+## DateRangeService
+
+Aggiornato per usare:
+
+```ts
+import 'moment/locale/it';
+moment.locale('it');
+```
+
+e aggiunti helper:
+
+```ts
+formatItalianDate(date: string): string
+formatItalianMonth(date: string): string
+```
+
+## Angular locale
+
+Configurato anche `LOCALE_ID` italiano in:
 
 ```txt
-pages/piano-turni-page/
- ├── piano-turni-page.component.*
- ├── piano-turni-page-routing.module.ts
- └── piano-turni-page.module.ts
-
-pages/schedule-stats-page/
- ├── schedule-stats-page.component.*
- ├── schedule-stats-page-routing.module.ts
- └── schedule-stats-page.module.ts
-
-pages/schedule-warnings-page/
- ├── schedule-warnings-page.component.*
- ├── schedule-warnings-page-routing.module.ts
- └── schedule-warnings-page.module.ts
+src/app/app.module.ts
 ```
 
-## Componenti condivisi
+con:
 
-Creato:
+```ts
+registerLocaleData(localeIt);
+
+{
+    provide: LOCALE_ID,
+    useValue: 'it-IT',
+}
+```
+
+## Risultato
+
+Le label basate su Moment possono essere mostrate in italiano:
 
 ```txt
-projects/turni-feature-schedule/src/lib/components/turni-schedule-shared.module.ts
+lunedì
+martedì
+maggio 2026
+domenica 17 maggio 2026
 ```
-
-Esporta:
-
-```txt
-OperatorStatsCardComponent
-ScheduleRangeToolbarComponent
-ScheduleTableComponent
-WarningListComponent
-WorkerPillComponent
-```
-
-## Stato condiviso
-
-Resta attivo:
-
-```txt
-projects/turni-data-access/src/lib/services/schedule-state.service.ts
-```
-
-Quindi piano, statistiche e warning leggono lo stesso piano generato.
 
 ## Avvio
 

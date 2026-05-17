@@ -3,104 +3,203 @@
         <div>
             <h1>Piano turni</h1>
             <p>
-                Step 4: piano, statistiche e warning separati con stato condiviso.
+                Pianificazione periodo con accesso rapido a turni, avvisi e statistiche.
             </p>
         </div>
 
         <div class="status-area">
-            <span
+            <mat-chip
                 class="status-badge"
                 [class.cache]="scheduleState.lastSource() === 'CACHE'"
                 [class.regenerated]="scheduleState.lastSource() === 'REGENERATED'"
             >
                 {{ scheduleState.lastSource() }}
-            </span>
+            </mat-chip>
 
-            <span
+            <mat-chip
                 class="warning-badge"
-                *ngIf="scheduleState.warningCount() > 0"
+                *ngIf="scheduleState.periodWarningCount() > 0"
             >
-                {{ scheduleState.warningCount() }} warning
-            </span>
+                {{ scheduleState.periodWarningCount() }} warning
+            </mat-chip>
         </div>
     </section>
 
     <section class="quick-actions-card">
         <button
+            mat-stroked-button
             type="button"
             routerLink="/piano-turni/statistiche"
         >
+            <mat-icon>query_stats</mat-icon>
             Statistiche operatori
         </button>
 
         <button
+            mat-stroked-button
             type="button"
             routerLink="/piano-turni/warning"
         >
+            <mat-icon>warning</mat-icon>
             Warning e anomalie
+        </button>
+
+        <button
+            mat-stroked-button
+            type="button"
+            (click)="scrollToSection('section-avvisi')"
+        >
+            <mat-icon>south</mat-icon>
+            Vai agli avvisi
+        </button>
+
+        <button
+            mat-stroked-button
+            type="button"
+            (click)="scrollToSection('section-statistiche')"
+        >
+            <mat-icon>bar_chart</mat-icon>
+            Vai alle statistiche
         </button>
     </section>
 
     <turni-schedule-range-toolbar
         [mode]="scheduleState.mode()"
         [range]="scheduleState.range()"
+        [generatedAtLabel]="scheduleState.generatedAtLabel()"
+        [generationSeed]="scheduleState.generationSeed()"
+        [source]="scheduleState.lastSource()"
+        [cacheKey]="scheduleState.currentRangeCacheKey()"
         (modeChange)="scheduleState.setMode($event)"
         (previousRange)="scheduleState.previous()"
         (nextRange)="scheduleState.next()"
         (refreshRange)="scheduleState.refresh()"
+        (refreshStrongRange)="scheduleState.refreshStrong()"
+        (clearCacheRange)="scheduleState.clearCurrentPeriodCache()"
     ></turni-schedule-range-toolbar>
 
     <section
-        class="warnings-card"
-        *ngIf="scheduleState.warnings().length > 0"
+        id="section-turni"
+        class="schedule-section"
     >
-        <div class="section-header">
-            <h2>Avvisi principali</h2>
-
-            <button
-                type="button"
-                routerLink="/piano-turni/warning"
-            >
-                Vedi tutti
-            </button>
-        </div>
-
-        <turni-warning-list
-            [warnings]="scheduleState.warnings().slice(0, 5)"
-        ></turni-warning-list>
+        <turni-schedule-table
+            [days]="scheduleState.days()"
+            [shifts]="scheduleState.shifts()"
+            [workers]="scheduleState.workers()"
+            [getAssignmentsByShiftFn]="scheduleState.getAssignmentsByShift.bind(scheduleState)"
+            [getFigurativeAbsencesByDayFn]="scheduleState.getFigurativeAbsencesByDay.bind(scheduleState)"
+            [getWorkerFn]="scheduleState.getWorker.bind(scheduleState)"
+        ></turni-schedule-table>
     </section>
 
-    <section class="stats-card">
-        <div class="section-header">
-            <div>
-                <h2>Statistiche operatori</h2>
-                <p>
-                    Prime statistiche del range corrente.
-                </p>
-            </div>
-
-            <button
-                type="button"
-                routerLink="/piano-turni/statistiche"
+    <section
+        id="section-dettagli"
+        class="details-accordion-card"
+    >
+        <mat-accordion
+            class="details-accordion"
+            multi
+        >
+            <mat-expansion-panel
+                id="section-avvisi"
+                [expanded]="scheduleState.periodWarnings().length > 0"
             >
-                Vedi tutte
-            </button>
-        </div>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-icon>warning</mat-icon>
+                        Avvisi principali
+                    </mat-panel-title>
 
-        <div class="stats-preview">
-            <turni-operator-stats-card
-                *ngFor="let stat of scheduleState.stats().slice(0, 6)"
-                [stat]="stat"
-                [worker]="scheduleState.getWorker(stat.workerId)"
-            ></turni-operator-stats-card>
-        </div>
+                    <mat-panel-description>
+                        {{ scheduleState.periodWarnings().length }} elementi
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="panel-actions">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        type="button"
+                        routerLink="/piano-turni/warning"
+                    >
+                        Vedi tutti i warning
+                    </button>
+                </div>
+
+                <turni-warning-list
+                    [warnings]="scheduleState.periodWarnings().slice(0, 8)"
+                ></turni-warning-list>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel
+                id="section-statistiche"
+                [expanded]="false"
+            >
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-icon>query_stats</mat-icon>
+                        Statistiche operatori
+                    </mat-panel-title>
+
+                    <mat-panel-description>
+                        {{ scheduleState.periodStats().length }} operatori in turno
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="panel-actions">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        type="button"
+                        routerLink="/piano-turni/statistiche"
+                    >
+                        Vedi tutte le statistiche
+                    </button>
+                </div>
+
+                <div class="stats-preview">
+                    <turni-operator-stats-card
+                        *ngFor="let stat of scheduleState.periodStats().slice(0, 6)"
+                        [stat]="stat"
+                        [worker]="scheduleState.getWorker(stat.workerId)"
+                    ></turni-operator-stats-card>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
     </section>
 
-    <turni-schedule-table
-        [days]="scheduleState.days()"
-        [shifts]="scheduleState.shifts()"
-        [workers]="scheduleState.workers()"
-        [getAssignmentsByShiftFn]="scheduleState.getAssignmentsByShift.bind(scheduleState)"
-        [getWorkerFn]="scheduleState.getWorker.bind(scheduleState)"
-    ></turni-schedule-table>
+    <nav
+        class="floating-anchors"
+        aria-label="Scorciatoie pagina piano turni"
+    >
+        <button
+            mat-mini-fab
+            type="button"
+            matTooltip="Vai ai turni"
+            matTooltipPosition="left"
+            (click)="scrollToSection('section-turni')"
+        >
+            <mat-icon>calendar_month</mat-icon>
+        </button>
+
+        <button
+            mat-mini-fab
+            type="button"
+            matTooltip="Vai agli avvisi"
+            matTooltipPosition="left"
+            (click)="scrollToSection('section-avvisi')"
+        >
+            <mat-icon>warning</mat-icon>
+        </button>
+
+        <button
+            mat-mini-fab
+            type="button"
+            matTooltip="Vai alle statistiche"
+            matTooltipPosition="left"
+            (click)="scrollToSection('section-statistiche')"
+        >
+            <mat-icon>query_stats</mat-icon>
+        </button>
+    </nav>
 </div>

@@ -2,8 +2,7 @@
     class="person-pill"
     [class.forced]="isForced"
     [class.manual]="isManual"
-    [matTooltip]="tooltip"
-    matTooltipPosition="above"
+    (mouseleave)="hideTooltips()"
 >
     <span
         class="avatar"
@@ -22,10 +21,43 @@
         </small>
     </span>
 
-    <span
+    <mat-chip
         class="source-badge"
         *ngIf="assignment.source !== 'AUTO'"
+        #sourceTooltip="matTooltip"
+        [matTooltip]="tooltip"
+        matTooltipPosition="above"
     >
         {{ assignment.source === 'FORCED' ? 'FORZATO' : 'MANUALE' }}
+    </mat-chip>
+
+    <span
+        class="pill-actions"
+        *ngIf="showActions"
+    >
+        <button
+            mat-icon-button
+            type="button"
+            #statsTooltip="matTooltip"
+            (click)="openStats($event)"
+            matTooltip="Apri statistiche operatore"
+            matTooltipPosition="above"
+            aria-label="Apri statistiche operatore"
+        >
+            <mat-icon>query_stats</mat-icon>
+        </button>
+
+        <button
+            mat-icon-button
+            type="button"
+            class="warning"
+            #warningTooltip="matTooltip"
+            (click)="openWarnings($event)"
+            matTooltip="Apri warning operatore"
+            matTooltipPosition="above"
+            aria-label="Apri warning operatore"
+        >
+            <mat-icon>priority_high</mat-icon>
+        </button>
     </span>
 </div>

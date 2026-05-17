@@ -5,7 +5,8 @@ export type ShiftType = 'MATTINA' | 'POMERIGGIO' | 'NOTTE';
 export type AssignmentSource =
     | 'AUTO'
     | 'FORCED'
-    | 'MANUAL';
+    | 'MANUAL'
+    | 'ABSENCE';
 
 export type AbsenceType =
     | 'MALATTIA'
@@ -27,6 +28,21 @@ export type AssignmentRuleCode =
     | 'MAX_CONSECUTIVE_SHIFT'
     | 'REST_AFTER_NIGHT';
 
+
+export type StatsFilterType =
+    | 'ALL'
+    | 'FORCED'
+    | 'EXTRA'
+    | 'UNDER_HOURS'
+    | 'NO_FREE_WEEKEND';
+
+export type WarningFilterType =
+    | 'ALL'
+    | 'ERROR'
+    | 'WARNING'
+    | 'INFO'
+    | 'FORCED';
+
 export type SchedulePlanSource =
     | 'GENERATED'
     | 'CACHE'
@@ -37,12 +53,27 @@ export type ScheduleWarningSeverity =
     | 'WARNING'
     | 'INFO';
 
+export type DayHealthStatus =
+    | 'OK'
+    | 'WARNING'
+    | 'ERROR';
+
 export interface RuleCheckResult {
     allowed: boolean;
     hardBlocked: boolean;
     score: number;
     violatedRules: AssignmentRuleCode[];
     messages: string[];
+}
+
+
+export interface ScheduleNavigationExtras {
+    workerId?: string;
+    statsFilter?: StatsFilterType;
+    warningFilter?: WarningFilterType;
+    filter?: StatsFilterType | WarningFilterType;
+    origin?: string;
+    periodDate?: string;
 }
 
 export interface WorkerAbsence {
@@ -116,6 +147,10 @@ export interface AssignedShift {
     forcedReason?: string;
     violatedRules: AssignmentRuleCode[];
     extraHours: number;
+
+    isFigurative?: boolean;
+    absenceType?: AbsenceType;
+    absenceNote?: string;
 }
 
 export interface DaySchedule {
@@ -124,6 +159,18 @@ export interface DaySchedule {
     isWeekend: boolean;
     assignments: AssignedShift[];
     warnings: ScheduleWarning[];
+    indicators: DayScheduleIndicators;
+}
+
+export interface DayScheduleIndicators {
+    status: DayHealthStatus;
+    totalWarnings: number;
+    errorWarnings: number;
+    uncoveredShifts: number;
+    forcedAssignments: number;
+    absentWorkers: number;
+    sickWorkers: number;
+    figurativeAssignments: number;
 }
 
 export interface DateRange {

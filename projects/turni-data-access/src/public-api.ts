@@ -11,3 +11,4 @@ export * from './lib/services/worker-stats.service';
 export * from './lib/data/absences.mock';
 export * from './lib/services/worker-absence.service';
 export * from './lib/services/schedule-state.service';
+export * from './lib/services/moment-locale.service';

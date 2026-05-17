@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DateRange, RangeMode } from '@turni/data-access';
 
 @Component({
+    standalone: false,
     selector: 'turni-schedule-range-toolbar',
     templateUrl: './schedule-range-toolbar.component.html',
     styleUrls: ['./schedule-range-toolbar.component.scss'],
@@ -9,13 +10,15 @@ import { DateRange, RangeMode } from '@turni/data-access';
 export class ScheduleRangeToolbarComponent {
     @Input() mode: RangeMode = 'MONTH';
     @Input() range: DateRange | null = null;
+    @Input() generatedAtLabel = '-';
+    @Input() generationSeed = 0;
+    @Input() source = 'GENERATED';
+    @Input() cacheKey = '-';
 
     @Output() modeChange = new EventEmitter<RangeMode>();
     @Output() previousRange = new EventEmitter<void>();
     @Output() nextRange = new EventEmitter<void>();
     @Output() refreshRange = new EventEmitter<void>();
-
-    isCurrentMode(mode: RangeMode): boolean {
-        return this.mode === mode;
-    }
+    @Output() refreshStrongRange = new EventEmitter<void>();
+    @Output() clearCacheRange = new EventEmitter<void>();
 }

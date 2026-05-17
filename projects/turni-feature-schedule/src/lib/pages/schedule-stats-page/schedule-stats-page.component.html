@@ -1,25 +1,124 @@
 <div class="page">
     <section class="header-card">
         <div>
-            <h1>Statistiche operatori</h1>
+            <h1>
+                @if (scheduleState.selectedWorker()) {
+                    Dettaglio operatore
+                } @else {
+                    Statistiche operatori
+                }
+            </h1>
+
             <p>
-                Indicatori per ore, turni, notti, weekend, forzature ed extra.
+                @if (scheduleState.selectedWorker()) {
+                    Scheda di {{ scheduleState.selectedWorker()?.name }} nel periodo corrente.
+                } @else {
+                    Vista completa di tutti gli operatori.
+                }
             </p>
         </div>
 
         <button
+            mat-flat-button
+            color="primary"
             type="button"
             routerLink="/piano-turni"
         >
+            <mat-icon>arrow_back</mat-icon>
             Torna al piano
         </button>
     </section>
 
-    <section class="stats-grid">
-        <turni-operator-stats-card
-            *ngFor="let stat of scheduleState.stats()"
-            [stat]="stat"
-            [worker]="scheduleState.getWorker(stat.workerId)"
-        ></turni-operator-stats-card>
-    </section>
+    @if (scheduleState.selectedWorker()) {
+        <section
+            class="detail-card"
+            *ngIf="scheduleState.selectedWorkerStats() as selectedStat"
+        >
+            <turni-operator-stats-card
+                [stat]="selectedStat"
+                [worker]="scheduleState.selectedWorker() || undefined"
+            ></turni-operator-stats-card>
+        </section>
+
+        <section class="filters-card">
+            <div>
+                <strong>Warning operatore</strong>
+                <span>Il filtro riguarda solo i warning, non la scheda dettaglio.</span>
+            </div>
+
+            <mat-button-toggle-group
+                class="filter-group"
+                [value]="scheduleState.selectedWarningFilter()"
+                aria-label="Filtri warning operatore"
+            >
+                <mat-button-toggle
+                    *ngFor="let filter of warningFilters"
+                    [value]="filter.value"
+                    (click)="setWarningFilter(filter.value)"
+                >
+                    <span class="filter-label">{{ filter.label }}</span>
+
+                    <span class="filter-count">
+                        {{ scheduleState.getWarningFilterCount(filter.value) }}
+                    </span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <button
+                mat-stroked-button
+                color="warn"
+                type="button"
+                (click)="clearWorkerFilter()"
+            >
+                <mat-icon>close</mat-icon>
+                Rimuovi filtro operatore
+            </button>
+        </section>
+
+        <section class="content-card">
+            <turni-warning-list
+                [warnings]="scheduleState.filteredWarnings()"
+            ></turni-warning-list>
+        </section>
+    } @else {
+        <section class="filters-card">
+            <div>
+                <strong>Filtri statistiche</strong>
+                <span>Il conteggio indica quanti operatori rientrano nel filtro.</span>
+            </div>
+
+            <mat-button-toggle-group
+                class="filter-group"
+                [value]="scheduleState.selectedStatsFilter()"
+                aria-label="Filtri statistiche"
+            >
+                <mat-button-toggle
+                    *ngFor="let filter of statsFilters"
+                    [value]="filter.value"
+                    (click)="setStatsFilter(filter.value)"
+                >
+                    <span class="filter-label">{{ filter.label }}</span>
+
+                    <span class="filter-count">
+                        {{ scheduleState.getStatsFilterCount(filter.value) }}
+                    </span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </section>
+
+        <section class="stats-grid">
+            <turni-operator-stats-card
+                *ngFor="let stat of scheduleState.filteredStats()"
+                [stat]="stat"
+                [worker]="scheduleState.getWorker(stat.workerId)"
+            ></turni-operator-stats-card>
+        </section>
+
+        <section
+            class="empty-card"
+            *ngIf="scheduleState.filteredStats().length === 0"
+        >
+            Nessuna statistica trovata con i filtri correnti.
+        </section>
+    }
 </div>

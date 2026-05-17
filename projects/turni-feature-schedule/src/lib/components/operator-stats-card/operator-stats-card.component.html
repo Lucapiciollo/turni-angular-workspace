@@ -10,7 +10,7 @@
             </span>
         </div>
 
-        <span
+        <mat-chip
             class="hours-badge"
             [class.ok]="isHoursOk()"
             [class.warning]="isUnderMinHours()"
@@ -19,7 +19,7 @@
             matTooltipPosition="above"
         >
             {{ stat.totalHours }}/{{ stat.contractMonthlyHours }} ore
-        </span>
+        </mat-chip>
     </div>
 
     <div class="stat-grid">

@@ -1,74 +1,173 @@
-<section class="table-card">
-    <div class="table-wrapper">
-        <table class="schedule-table">
-            <thead>
-                <tr>
-                    <th>Giorno</th>
+<section class="schedule-shell">
+    <div class="schedule-header">
+        <div>
+            <h2>Pianificazione periodo</h2>
+            <p>
+                Ogni data mostra un indicatore rapido per problemi, assenze, malattie e copertura turni.
+            </p>
+        </div>
 
-                    <th *ngFor="let shift of shifts; trackBy: trackByShift">
-                        <div class="shift-head">
-                            <strong>
-                                {{ shift.label }}
-                            </strong>
+        <mat-chip class="period-count">
+            {{ days.length }} giorni
+        </mat-chip>
+    </div>
 
-                            <span>
-                                {{ shift.start }} - {{ shift.end }}
-                            </span>
-
-                            <small>
-                                Richiesti: {{ shift.requiredWorkers }}
-                            </small>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr
-                    *ngFor="let day of days; trackBy: trackByDay"
-                    [class.weekend-row]="day.isWeekend"
+    <div class="schedule-grid">
+        <mat-card
+            class="day-row"
+            *ngFor="let day of days; trackBy: trackByDay"
+            [class.weekend]="day.isWeekend"
+            [class.day-ok]="day.indicators.status === 'OK'"
+            [class.day-warning]="day.indicators.status === 'WARNING'"
+            [class.day-error]="day.indicators.status === 'ERROR'"
+        >
+            <mat-card-header class="day-header">
+                <div
+                    mat-card-avatar
+                    class="day-avatar"
+                    [class.weekend]="day.isWeekend"
                 >
-                    <td class="day-cell">
-                        <strong>
-                            {{ day.label }}
-                        </strong>
+                    <mat-icon>
+                        {{ day.isWeekend ? 'weekend' : 'calendar_today' }}
+                    </mat-icon>
+                </div>
 
-                        <span>
-                            {{ day.date }}
-                        </span>
+                <mat-card-title>
+                    {{ day.label }}
+                </mat-card-title>
 
-                        <em *ngIf="day.isWeekend">
-                            Weekend
-                        </em>
-                    </td>
+                <mat-card-subtitle>
+                    {{ day.date }}
+                    <span *ngIf="day.isWeekend"> · Weekend</span>
+                </mat-card-subtitle>
 
-                    <td *ngFor="let shift of shifts; trackBy: trackByShift">
-                        <div class="shift-cell">
-                            <div class="cell-summary">
-                                <span>
-                                    {{ getAssignmentsByShift(day, shift.type).length }}
-                                    persone
-                                </span>
+                <div class="day-indicators">
+                    <mat-chip
+                        class="day-status-chip"
+                        [class.ok]="day.indicators.status === 'OK'"
+                        [class.warning]="day.indicators.status === 'WARNING'"
+                        [class.error]="day.indicators.status === 'ERROR'"
+                        [matTooltip]="getDayIndicatorTooltip(day)"
+                        matTooltipPosition="above"
+                    >
+                        <mat-icon>{{ getDayIndicatorIcon(day) }}</mat-icon>
+                        {{ day.indicators.status }}
+                    </mat-chip>
 
-                                <small>
-                                    richieste: {{ shift.requiredWorkers }}
-                                </small>
-                            </div>
+                    <mat-chip
+                        class="day-mini-chip error"
+                        *ngIf="day.indicators.uncoveredShifts > 0"
+                    >
+                        <mat-icon>priority_high</mat-icon>
+                        scoperti {{ day.indicators.uncoveredShifts }}
+                    </mat-chip>
 
-                            <div class="people-list">
-                                <turni-worker-pill
-                                    *ngFor="
-                                        let assignment of getAssignmentsByShift(day, shift.type);
-                                        trackBy: trackByAssignment
-                                    "
-                                    [assignment]="assignment"
-                                    [worker]="getWorker(assignment.workerId)"
-                                ></turni-worker-pill>
+                    <mat-chip
+                        class="day-mini-chip warning"
+                        *ngIf="day.indicators.forcedAssignments > 0"
+                    >
+                        <mat-icon>flash_on</mat-icon>
+                        forzati {{ day.indicators.forcedAssignments }}
+                    </mat-chip>
+
+                    <mat-chip
+                        class="day-mini-chip sick"
+                        *ngIf="day.indicators.sickWorkers > 0"
+                    >
+                        <mat-icon>local_pharmacy</mat-icon>
+                        malattia {{ day.indicators.sickWorkers }}
+                    </mat-chip>
+
+                    <mat-chip
+                        class="day-mini-chip absent"
+                        *ngIf="day.indicators.absentWorkers > day.indicators.sickWorkers"
+                    >
+                        <mat-icon>event_busy</mat-icon>
+                        assenti {{ day.indicators.absentWorkers - day.indicators.sickWorkers }}
+                    </mat-chip>
+                </div>
+            </mat-card-header>
+
+            <mat-divider></mat-divider>
+
+            <div
+                class="figurative-absences"
+                *ngIf="getFigurativeAbsencesByDay(day).length > 0"
+            >
+                <div class="figurative-title">
+                    <mat-icon>local_pharmacy</mat-icon>
+                    <strong>Assenze figurative</strong>
+                    <span>Non conteggiate nella copertura turno</span>
+                </div>
+
+                <div class="figurative-list">
+                    <mat-chip
+                        class="figurative-chip"
+                        *ngFor="let absence of getFigurativeAbsencesByDay(day); trackBy: trackByAssignment"
+                        [class.sick]="absence.absenceType === 'MALATTIA'"
+                        [matTooltip]="absence.absenceNote || absence.forcedReason || 'Assenza'"
+                        matTooltipPosition="above"
+                    >
+                        <mat-icon>
+                            {{ absence.absenceType === 'MALATTIA' ? 'local_pharmacy' : 'event_busy' }}
+                        </mat-icon>
+
+                        {{ absence.workerName }} · {{ absence.absenceType }}
+                    </mat-chip>
+                </div>
+            </div>
+
+            <mat-card-content class="shift-list">
+                <mat-card
+                    class="shift-cell"
+                    *ngFor="let shift of shifts; trackBy: trackByShift"
+                    [class.uncovered]="!isShiftCovered(getAssignmentsByShift(day, shift.type), shift)"
+                    [class.forced]="hasForcedAssignments(getAssignmentsByShift(day, shift.type))"
+                >
+                    <div class="shift-cell-header">
+                        <div class="shift-title">
+                            <mat-icon>
+                                {{ getShiftIcon(shift.type) }}
+                            </mat-icon>
+
+                            <div>
+                                <strong>{{ shift.label }}</strong>
+                                <span>{{ shift.start }} - {{ shift.end }}</span>
                             </div>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+                        <mat-chip
+                            class="coverage-chip"
+                            [class.ok]="isShiftCovered(getAssignmentsByShift(day, shift.type), shift)"
+                            [class.error]="!isShiftCovered(getAssignmentsByShift(day, shift.type), shift)"
+                            [matTooltip]="getCoverageTooltip(getAssignmentsByShift(day, shift.type), shift)"
+                            matTooltipPosition="above"
+                        >
+                            {{ getAssignmentsByShift(day, shift.type).length }}/{{ shift.requiredWorkers }}
+                        </mat-chip>
+                    </div>
+
+                    <mat-divider></mat-divider>
+
+                    <div
+                        class="assigned-workers"
+                        *ngIf="getAssignmentsByShift(day, shift.type).length > 0; else emptyShift"
+                    >
+                        <turni-worker-pill
+                            *ngFor="let assignment of getAssignmentsByShift(day, shift.type); trackBy: trackByAssignment"
+                            [assignment]="assignment"
+                            [worker]="getWorker(assignment.workerId)"
+                        ></turni-worker-pill>
+                    </div>
+
+                    <ng-template #emptyShift>
+                        <div class="empty-shift">
+                            <mat-icon>person_off</mat-icon>
+                            <span>Nessun operatore assegnato</span>
+                        </div>
+                    </ng-template>
+                </mat-card>
+            </mat-card-content>
+        </mat-card>
     </div>
 </section>

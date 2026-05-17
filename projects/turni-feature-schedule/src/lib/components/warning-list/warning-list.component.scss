@@ -25,29 +25,38 @@
         background: #fef2f2;
         color: #991b1b;
         border-color: #fecaca;
+
+        .warning-severity {
+            --mdc-chip-elevated-container-color: #fee2e2;
+            --mdc-chip-label-text-color: #991b1b;
+        }
     }
 
     &.warning {
         background: #fffbeb;
         color: #92400e;
         border-color: #fde68a;
+
+        .warning-severity {
+            --mdc-chip-elevated-container-color: #fef3c7;
+            --mdc-chip-label-text-color: #92400e;
+        }
     }
 
     &.info {
         background: #eff6ff;
         color: #1d4ed8;
         border-color: #bfdbfe;
+
+        .warning-severity {
+            --mdc-chip-elevated-container-color: #dbeafe;
+            --mdc-chip-label-text-color: #1d4ed8;
+        }
     }
 }
 
 .warning-severity {
     min-width: 82px;
-    height: 26px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.65);
     font-size: 11px;
     font-weight: 900;
 }

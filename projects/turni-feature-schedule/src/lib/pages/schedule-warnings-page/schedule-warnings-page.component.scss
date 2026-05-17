@@ -9,6 +9,7 @@
 }
 
 .header-card,
+.filters-card,
 .content-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -33,15 +34,65 @@
         margin: 6px 0 0;
         color: #6b7280;
     }
+}
 
-    button {
-        height: 42px;
-        padding: 0 16px;
-        border: 1px solid #111827;
-        border-radius: 14px;
-        background: #111827;
-        color: #ffffff;
-        font-weight: 900;
-        cursor: pointer;
+.filters-card {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    > div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        strong {
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        span {
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 700;
+        }
     }
+}
+
+.filter-group {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+
+:host ::ng-deep .filter-group .mat-button-toggle-label-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.filter-label {
+    font-weight: 900;
+}
+
+.filter-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    color: #111827;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+:host ::ng-deep .mat-button-toggle-checked .filter-count {
+    background: #ffffff;
+    color: #111827;
 }

@@ -5,15 +5,18 @@ import {
     AssignedShift,
     DateRange,
     DaySchedule,
+    DayScheduleIndicators,
     RuleCheckResult,
     SchedulePlan,
     ScheduleWarning,
     ShiftDefinition,
     Worker,
+    WorkerAbsence,
 } from '../models/turni.models';
 import { DateRangeService } from './date-range.service';
 import { ScheduleWarningService } from './schedule-warning.service';
 import { ShiftRulesService } from './shift-rules.service';
+import { WorkerAbsenceService } from './worker-absence.service';
 import { WorkerStatsService } from './worker-stats.service';
 
 @Injectable({
@@ -24,7 +27,8 @@ export class TurniGeneratorService {
         private dateRangeService: DateRangeService,
         private shiftRulesService: ShiftRulesService,
         private workerStatsService: WorkerStatsService,
-        private warningService: ScheduleWarningService
+        private warningService: ScheduleWarningService,
+        private workerAbsenceService: WorkerAbsenceService
     ) {}
 
     generatePlan(
@@ -91,6 +95,12 @@ export class TurniGeneratorService {
         const assignments: AssignedShift[] = [];
         const warnings: ScheduleWarning[] = [];
 
+        const figurativeAbsenceAssignments = this.createFigurativeAbsenceAssignments({
+            date: params.date,
+            workers: params.workers,
+            absences: ABSENCES,
+        });
+
         for (const shift of params.shifts) {
             const shiftAssignments = this.generateShiftAssignments({
                 ...params,
@@ -121,12 +131,18 @@ export class TurniGeneratorService {
             }
         }
 
+        assignments.push(...figurativeAbsenceAssignments);
+
         return {
             date: params.date,
             label: this.dateRangeService.getDayLabel(params.date),
             isWeekend: this.dateRangeService.isWeekend(params.date),
             assignments,
             warnings,
+            indicators: this.createDayIndicators({
+                warnings,
+                assignments,
+            }),
         };
     }
 
@@ -324,6 +340,99 @@ export class TurniGeneratorService {
                 : params.source === 'FORCED' && maxHours === 0
                     ? params.shift.hours
                     : 0,
+            isFigurative: false,
+        };
+    }
+
+    private createFigurativeAbsenceAssignments(params: {
+        date: string;
+        workers: Worker[];
+        absences: WorkerAbsence[];
+    }): AssignedShift[] {
+        const absencesForDate = this.workerAbsenceService.getAbsencesForDate({
+            date: params.date,
+            absences: params.absences,
+        });
+
+        const assignments: AssignedShift[] = [];
+
+        for (const absence of absencesForDate) {
+            const worker = params.workers.find((item) => {
+                return item.id === absence.workerId;
+            });
+
+            if (!worker) {
+                continue;
+            }
+
+            const assignment: AssignedShift = {
+                id: `${params.date}_ABSENCE_${worker.id}_${absence.id}`,
+                date: params.date,
+                shift: 'MATTINA',
+                workerId: worker.id,
+                workerName: worker.name,
+                hours: 0,
+                source: 'ABSENCE',
+                forcedReason: `${worker.name} assente per ${this.workerAbsenceService.getAbsenceLabel(absence.type)}.`,
+                violatedRules: absence.type === 'MALATTIA'
+                    ? ['WORKER_IN_SICK_LEAVE']
+                    : ['WORKER_ABSENT'],
+                extraHours: 0,
+                isFigurative: true,
+                absenceType: absence.type,
+                absenceNote: absence.note,
+            };
+
+            assignments.push(assignment);
+        }
+
+        return assignments;
+    }
+
+    private createDayIndicators(params: {
+        warnings: ScheduleWarning[];
+        assignments: AssignedShift[];
+    }): DayScheduleIndicators {
+        const errorWarnings = params.warnings.filter((warning) => {
+            return warning.severity === 'ERROR';
+        }).length;
+
+        const forcedAssignments = params.assignments.filter((assignment) => {
+            return assignment.source === 'FORCED';
+        }).length;
+
+        const figurativeAssignments = params.assignments.filter((assignment) => {
+            return assignment.isFigurative === true;
+        }).length;
+
+        const sickWorkers = params.assignments.filter((assignment) => {
+            return assignment.isFigurative === true
+                && assignment.absenceType === 'MALATTIA';
+        }).length;
+
+        const absentWorkers = params.assignments.filter((assignment) => {
+            return assignment.isFigurative === true;
+        }).length;
+
+        const uncoveredShifts = params.warnings.filter((warning) => {
+            return warning.id.startsWith('UNCOVERED_');
+        }).length;
+
+        const status = errorWarnings > 0 || uncoveredShifts > 0
+            ? 'ERROR'
+            : forcedAssignments > 0 || absentWorkers > 0 || params.warnings.length > 0
+                ? 'WARNING'
+                : 'OK';
+
+        return {
+            status,
+            totalWarnings: params.warnings.length,
+            errorWarnings,
+            uncoveredShifts,
+            forcedAssignments,
+            absentWorkers,
+            sickWorkers,
+            figurativeAssignments,
         };
     }
 
@@ -343,9 +452,20 @@ export class TurniGeneratorService {
             'NOTTE'
         );
 
+        const workerNumericSeed = this.createWorkerSeed(worker.id);
+        const rotationNoise = (workerNumericSeed + seed * 13) % 37;
+
         return hours * 10
             + nights * 15
-            + (seed % 7);
+            + rotationNoise;
+    }
+
+    private createWorkerSeed(workerId: string): number {
+        return workerId
+            .split('')
+            .reduce((total, char) => {
+                return total + char.charCodeAt(0);
+            }, 0);
     }
 
     private createDateSeed(date: string): number {

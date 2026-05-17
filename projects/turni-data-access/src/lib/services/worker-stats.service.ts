@@ -194,7 +194,8 @@ export class WorkerStatsService {
     ): AssignedShift[] {
         return days.flatMap((day) => {
             return day.assignments.filter((assignment) => {
-                return assignment.workerId === workerId;
+                return assignment.workerId === workerId
+                    && assignment.isFigurative !== true;
             });
         });
     }

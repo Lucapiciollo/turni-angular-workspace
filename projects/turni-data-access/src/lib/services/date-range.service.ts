@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import moment from 'moment';
+import 'moment/locale/it';
 
 import { DateRange, RangeMode } from '../models/turni.models';
 
@@ -9,6 +10,10 @@ moment.locale('it');
     providedIn: 'root',
 })
 export class DateRangeService {
+    constructor() {
+        moment.locale('it');
+    }
+
     createCurrentRange(mode: RangeMode): DateRange {
         const today = moment();
 
@@ -92,7 +97,9 @@ export class DateRangeService {
     }
 
     getDayLabel(date: string): string {
-        return moment(date, 'YYYY-MM-DD').format('ddd DD/MM');
+        return moment(date, 'YYYY-MM-DD')
+            .locale('it')
+            .format('ddd DD/MM');
     }
 
 
@@ -105,6 +112,19 @@ export class DateRangeService {
 
         return first.isoWeekYear() === second.isoWeekYear()
             && first.isoWeek() === second.isoWeek();
+    }
+
+
+    formatItalianDate(date: string): string {
+        return moment(date, 'YYYY-MM-DD')
+            .locale('it')
+            .format('dddd D MMMM YYYY');
+    }
+
+    formatItalianMonth(date: string): string {
+        return moment(date, 'YYYY-MM-DD')
+            .locale('it')
+            .format('MMMM YYYY');
     }
 
     getWeekendKey(date: string): string {

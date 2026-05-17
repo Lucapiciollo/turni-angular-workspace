@@ -28,6 +28,21 @@ export class WorkerAbsenceService {
         return absence?.type === 'MALATTIA';
     }
 
+    getAbsencesForDate(params: {
+        date: string;
+        absences: WorkerAbsence[];
+    }): WorkerAbsence[] {
+        const targetDate = moment(params.date, 'YYYY-MM-DD');
+
+        return params.absences.filter((item) => {
+            const startDate = moment(item.startDate, 'YYYY-MM-DD');
+            const endDate = moment(item.endDate, 'YYYY-MM-DD');
+
+            return targetDate.isSameOrAfter(startDate, 'day')
+                && targetDate.isSameOrBefore(endDate, 'day');
+        });
+    }
+
     getAbsenceForDate(params: {
         workerId: string;
         date: string;

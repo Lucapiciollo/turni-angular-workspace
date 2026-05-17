@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Worker, WorkerStats } from '@turni/data-access';
 
 @Component({
+    standalone: false,
     selector: 'turni-operator-stats-card',
     templateUrl: './operator-stats-card.component.html',
     styleUrls: ['./operator-stats-card.component.scss'],

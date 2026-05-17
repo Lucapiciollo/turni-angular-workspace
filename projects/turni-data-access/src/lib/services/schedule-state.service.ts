@@ -10,11 +10,14 @@ import {
     SchedulePlanSource,
     ShiftDefinition,
     ShiftType,
+    StatsFilterType,
+    WarningFilterType,
     Worker,
 } from '../models/turni.models';
 import { DateRangeService } from './date-range.service';
 import { ScheduleCacheService } from './schedule-cache.service';
 import { TurniGeneratorService } from './turni-generator.service';
+import { MomentLocaleService } from './moment-locale.service';
 
 @Injectable({
     providedIn: 'root',
@@ -29,6 +32,10 @@ export class ScheduleStateService {
     readonly generationSeed = signal(0);
     readonly lastSource = signal<SchedulePlanSource>('GENERATED');
 
+    readonly selectedWorkerId = signal<string | null>(null);
+    readonly selectedStatsFilter = signal<StatsFilterType>('ALL');
+    readonly selectedWarningFilter = signal<WarningFilterType>('ALL');
+
     readonly days = computed(() => {
         return this.plan()?.days ?? [];
     });
@@ -41,15 +48,121 @@ export class ScheduleStateService {
         return this.plan()?.stats ?? [];
     });
 
+
+    readonly activePeriodWorkerIds = computed(() => {
+        const workerIds = new Set<string>();
+
+        this.days().forEach((day) => {
+            day.assignments
+                .filter((assignment) => {
+                    return assignment.isFigurative !== true;
+                })
+                .forEach((assignment) => {
+                    workerIds.add(assignment.workerId);
+                });
+        });
+
+        return workerIds;
+    });
+
+    readonly periodStats = computed(() => {
+        const workerIds = this.activePeriodWorkerIds();
+
+        return this.stats().filter((stat) => {
+            return workerIds.has(stat.workerId);
+        });
+    });
+
+    readonly periodWarnings = computed(() => {
+        const range = this.range();
+
+        if (!range) {
+            return this.warnings();
+        }
+
+        return this.warnings().filter((warning) => {
+            if (!warning.date) {
+                return true;
+            }
+
+            return warning.date >= range.startDate
+                && warning.date <= range.endDate;
+        });
+    });
+
+    readonly periodWarningCount = computed(() => {
+        return this.periodWarnings().length;
+    });
+
+    readonly filteredStats = computed(() => {
+        return this.applyStatsFilter(
+            this.getStatsBaseForCurrentWorker(),
+            this.selectedStatsFilter()
+        );
+    });
+
+    readonly filteredWarnings = computed(() => {
+        return this.applyWarningFilter(
+            this.getWarningsBaseForCurrentWorker(),
+            this.selectedWarningFilter()
+        );
+    });
+
+    readonly generatedAtLabel = computed(() => {
+        const generatedAt = this.plan()?.generatedAt;
+
+        if (!generatedAt) {
+            return '-';
+        }
+
+        return new Date(generatedAt).toLocaleString('it-IT');
+    });
+
+    readonly currentRangeCacheKey = computed(() => {
+        const currentRange = this.range();
+
+        if (!currentRange) {
+            return '-';
+        }
+
+        return `${currentRange.mode}_${currentRange.startDate}_${currentRange.endDate}`;
+    });
+
     readonly warningCount = computed(() => {
         return this.warnings().length;
+    });
+
+
+    readonly selectedWorkerStats = computed(() => {
+        const workerId = this.selectedWorkerId();
+
+        if (!workerId) {
+            return null;
+        }
+
+        return this.stats().find((stat) => {
+            return stat.workerId === workerId;
+        }) ?? null;
+    });
+
+    readonly selectedWorker = computed(() => {
+        const workerId = this.selectedWorkerId();
+
+        if (!workerId) {
+            return null;
+        }
+
+        return this.getWorker(workerId) ?? null;
     });
 
     constructor(
         private dateRangeService: DateRangeService,
         private turniGeneratorService: TurniGeneratorService,
-        private scheduleCacheService: ScheduleCacheService
-    ) {}
+        private scheduleCacheService: ScheduleCacheService,
+        private momentLocaleService: MomentLocaleService
+    ) {
+        this.momentLocaleService.init();
+    }
 
     init(): void {
         if (this.plan()) {
@@ -117,12 +230,190 @@ export class ScheduleStateService {
         this.applyPlan(plan);
     }
 
+    selectWorker(workerId: string | null): void {
+        this.selectedWorkerId.set(workerId);
+    }
+
+    clearSelectedWorker(): void {
+        this.selectedWorkerId.set(null);
+    }
+
+    setStatsFilter(filter: StatsFilterType): void {
+        this.selectedStatsFilter.set(filter);
+    }
+
+    setWarningFilter(filter: WarningFilterType): void {
+        this.selectedWarningFilter.set(filter);
+    }
+
+    resetStatsFilters(): void {
+        this.selectedWorkerId.set(null);
+        this.selectedStatsFilter.set('ALL');
+    }
+
+    resetWarningFilters(): void {
+        this.selectedWorkerId.set(null);
+        this.selectedWarningFilter.set('ALL');
+    }
+
+
+    getStatsFilterCount(filter: StatsFilterType): number {
+        return this.applyStatsFilter(
+            this.getStatsBaseForCurrentWorker(),
+            filter
+        ).length;
+    }
+
+    getWarningFilterCount(filter: WarningFilterType): number {
+        return this.applyWarningFilter(
+            this.getWarningsBaseForCurrentWorker(),
+            filter
+        ).length;
+    }
+
+    private getStatsBaseForCurrentWorker() {
+        const workerId = this.selectedWorkerId();
+        let stats = this.stats();
+
+        if (workerId) {
+            stats = stats.filter((stat) => {
+                return stat.workerId === workerId;
+            });
+        }
+
+        return stats;
+    }
+
+    private getWarningsBaseForCurrentWorker() {
+        const workerId = this.selectedWorkerId();
+        let warnings = this.warnings();
+
+        if (workerId) {
+            warnings = warnings.filter((warning) => {
+                return warning.workerId === workerId;
+            });
+        }
+
+        return warnings;
+    }
+
+    private applyStatsFilter(
+        stats: ReturnType<typeof this.stats>,
+        filter: StatsFilterType
+    ) {
+        if (filter === 'FORCED') {
+            return stats.filter((stat) => {
+                return stat.forcedAssignmentsCount > 0;
+            });
+        }
+
+        if (filter === 'EXTRA') {
+            return stats.filter((stat) => {
+                return stat.extraHours > 0;
+            });
+        }
+
+        if (filter === 'UNDER_HOURS') {
+            return stats.filter((stat) => {
+                return stat.minMonthlyHours !== undefined
+                    && stat.totalHours < stat.minMonthlyHours;
+            });
+        }
+
+        if (filter === 'NO_FREE_WEEKEND') {
+            return stats.filter((stat) => {
+                return stat.freeWeekendCount < 1;
+            });
+        }
+
+        return stats;
+    }
+
+    private applyWarningFilter(
+        warnings: ReturnType<typeof this.warnings>,
+        filter: WarningFilterType
+    ) {
+        if (filter === 'ERROR') {
+            return warnings.filter((warning) => {
+                return warning.severity === 'ERROR';
+            });
+        }
+
+        if (filter === 'WARNING') {
+            return warnings.filter((warning) => {
+                return warning.severity === 'WARNING';
+            });
+        }
+
+        if (filter === 'INFO') {
+            return warnings.filter((warning) => {
+                return warning.severity === 'INFO';
+            });
+        }
+
+        if (filter === 'FORCED') {
+            return warnings.filter((warning) => {
+                return warning.id.startsWith('FORCED_');
+            });
+        }
+
+        return warnings;
+    }
+
+
+    refreshStrong(): void {
+        const currentRange = this.range();
+
+        if (!currentRange) {
+            return;
+        }
+
+        this.generationSeed.update((value) => {
+            return value + 17;
+        });
+
+        this.scheduleCacheService.delete(currentRange);
+
+        const plan = this.generatePlan(
+            currentRange,
+            'REGENERATED'
+        );
+
+        this.scheduleCacheService.set(plan);
+        this.applyPlan(plan);
+    }
+
+    clearCurrentPeriodCache(): void {
+        const currentRange = this.range();
+
+        if (!currentRange) {
+            return;
+        }
+
+        this.scheduleCacheService.delete(currentRange);
+
+        const plan = this.generatePlan(
+            currentRange,
+            'REGENERATED'
+        );
+
+        this.scheduleCacheService.set(plan);
+        this.applyPlan(plan);
+    }
+
     getAssignmentsByShift(
         day: DaySchedule,
         shift: ShiftType
     ): AssignedShift[] {
         return day.assignments.filter((assignment) => {
-            return assignment.shift === shift;
+            return assignment.shift === shift
+                && assignment.isFigurative !== true;
+        });
+    }
+
+    getFigurativeAbsencesByDay(day: DaySchedule): AssignedShift[] {
+        return day.assignments.filter((assignment) => {
+            return assignment.isFigurative === true;
         });
     }
 

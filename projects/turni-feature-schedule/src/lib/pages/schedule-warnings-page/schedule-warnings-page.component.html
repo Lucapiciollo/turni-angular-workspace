@@ -3,21 +3,64 @@
         <div>
             <h1>Warning piano turni</h1>
             <p>
-                Elenco anomalie, forzature e regole non rispettate.
+                @if (scheduleState.selectedWorker()) {
+                    Warning filtrati per {{ scheduleState.selectedWorker()?.name }}.
+                } @else {
+                    Elenco completo di anomalie, forzature e regole non rispettate.
+                }
             </p>
         </div>
 
         <button
+            mat-flat-button
+            color="primary"
             type="button"
             routerLink="/piano-turni"
         >
+            <mat-icon>arrow_back</mat-icon>
             Torna al piano
+        </button>
+    </section>
+
+    <section class="filters-card">
+        <div>
+            <strong>Filtri warning</strong>
+            <span>Il conteggio indica quanti warning rientrano nel filtro corrente.</span>
+        </div>
+
+        <mat-button-toggle-group
+            class="filter-group"
+            [value]="scheduleState.selectedWarningFilter()"
+            aria-label="Filtri warning"
+        >
+            <mat-button-toggle
+                *ngFor="let filter of filters"
+                [value]="filter.value"
+                (click)="setFilter(filter.value)"
+            >
+                <span class="filter-label">{{ filter.label }}</span>
+
+                <span class="filter-count">
+                    {{ scheduleState.getWarningFilterCount(filter.value) }}
+                </span>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            *ngIf="scheduleState.selectedWorker()"
+            (click)="clearWorkerFilter()"
+        >
+            <mat-icon>close</mat-icon>
+            Rimuovi filtro operatore
         </button>
     </section>
 
     <section class="content-card">
         <turni-warning-list
-            [warnings]="scheduleState.warnings()"
+            [warnings]="scheduleState.filteredWarnings()"
         ></turni-warning-list>
     </section>
 </div>

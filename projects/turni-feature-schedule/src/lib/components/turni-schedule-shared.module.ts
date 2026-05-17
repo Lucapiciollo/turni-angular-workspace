@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { TurniSharedModule } from '@turni/shared';
 
+import { CloseTooltipsOnScrollDirective } from '../directives/close-tooltips-on-scroll.directive';
 import { OperatorStatsCardComponent } from './operator-stats-card/operator-stats-card.component';
 import { ScheduleRangeToolbarComponent } from './schedule-range-toolbar/schedule-range-toolbar.component';
 import { ScheduleTableComponent } from './schedule-table/schedule-table.component';
@@ -16,21 +16,21 @@ import { WorkerPillComponent } from './worker-pill/worker-pill.component';
         ScheduleTableComponent,
         WarningListComponent,
         WorkerPillComponent,
+        CloseTooltipsOnScrollDirective,
     ],
     imports: [
-        CommonModule,
         RouterModule,
-        MatTooltipModule,
+        TurniSharedModule,
     ],
     exports: [
-        CommonModule,
         RouterModule,
-        MatTooltipModule,
+        TurniSharedModule,
         OperatorStatsCardComponent,
         ScheduleRangeToolbarComponent,
         ScheduleTableComponent,
         WarningListComponent,
         WorkerPillComponent,
+        CloseTooltipsOnScrollDirective,
     ],
 })
 export class TurniScheduleSharedModule {}

@@ -36,6 +36,18 @@ export class ScheduleCacheService {
         );
     }
 
+    delete(range: DateRange): void {
+        const key = this.getKey(range);
+
+        this.cache.delete(key);
+    }
+
+    has(range: DateRange): boolean {
+        const key = this.getKey(range);
+
+        return this.cache.has(key);
+    }
+
     clear(): void {
         this.cache.clear();
     }
@@ -67,6 +79,9 @@ export class ScheduleCacheService {
                             ...warning,
                         };
                     }),
+                    indicators: {
+                        ...day.indicators,
+                    },
                 };
             }),
             warnings: plan.warnings.map((warning) => {

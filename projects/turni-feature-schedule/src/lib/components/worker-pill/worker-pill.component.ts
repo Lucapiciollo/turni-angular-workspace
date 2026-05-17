@@ -1,7 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatTooltip } from '@angular/material/tooltip';
 import { AssignedShift, Worker } from '@turni/data-access';
 
 @Component({
+    standalone: false,
     selector: 'turni-worker-pill',
     templateUrl: './worker-pill.component.html',
     styleUrls: ['./worker-pill.component.scss'],
@@ -9,6 +12,15 @@ import { AssignedShift, Worker } from '@turni/data-access';
 export class WorkerPillComponent {
     @Input() assignment!: AssignedShift;
     @Input() worker?: Worker;
+    @Input() showActions = true;
+
+    @ViewChild('sourceTooltip') sourceTooltip?: MatTooltip;
+    @ViewChild('statsTooltip') statsTooltip?: MatTooltip;
+    @ViewChild('warningTooltip') warningTooltip?: MatTooltip;
+
+    constructor(
+        private router: Router
+    ) {}
 
     get color(): string {
         return this.worker?.color ?? '#64748b';
@@ -43,5 +55,47 @@ export class WorkerPillComponent {
         }
 
         return 'Turno assegnato automaticamente rispettando le regole.';
+    }
+
+    hideTooltips(): void {
+        this.sourceTooltip?.hide(0);
+        this.statsTooltip?.hide(0);
+        this.warningTooltip?.hide(0);
+    }
+
+    openStats(event: MouseEvent): void {
+        event.stopPropagation();
+        this.hideTooltips();
+
+        this.router.navigate(
+            ['/piano-turni/statistiche'],
+            {
+                state: {
+                    workerId: this.assignment.workerId,
+                    filter: 'ALL',
+                    statsFilter: 'ALL',
+                    origin: 'PERIOD_PLAN',
+                    periodDate: this.assignment.date,
+                },
+            }
+        );
+    }
+
+    openWarnings(event: MouseEvent): void {
+        event.stopPropagation();
+        this.hideTooltips();
+
+        this.router.navigate(
+            ['/piano-turni/warning'],
+            {
+                state: {
+                    workerId: this.assignment.workerId,
+                    filter: 'ALL',
+                    warningFilter: 'ALL',
+                    origin: 'PERIOD_PLAN',
+                    periodDate: this.assignment.date,
+                },
+            }
+        );
     }
 }

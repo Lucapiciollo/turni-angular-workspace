@@ -7,16 +7,15 @@
     border-radius: 13px;
     border: 1px solid #e5e7eb;
     background: #f9fafb;
-    cursor: help;
+
 
     &.forced {
         background: #fef2f2;
         border-color: #fecaca;
 
         .source-badge {
-            background: #fee2e2;
-            color: #991b1b;
-            border-color: #fecaca;
+            --mdc-chip-elevated-container-color: #fee2e2;
+            --mdc-chip-label-text-color: #991b1b;
         }
     }
 
@@ -25,9 +24,8 @@
         border-color: #fde68a;
 
         .source-badge {
-            background: #fef3c7;
-            color: #92400e;
-            border-color: #fde68a;
+            --mdc-chip-elevated-container-color: #fef3c7;
+            --mdc-chip-label-text-color: #92400e;
         }
     }
 }
@@ -68,13 +66,29 @@
 }
 
 .source-badge {
-    display: inline-flex;
-    align-items: center;
-    min-height: 20px;
-    padding: 0 6px;
-    border-radius: 999px;
-    border: 1px solid transparent;
+    min-height: 22px;
     font-size: 9px;
     font-weight: 900;
-    white-space: nowrap;
+}
+
+.pill-actions {
+    display: inline-flex;
+    gap: 2px;
+    margin-left: auto;
+
+    button {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+
+        mat-icon {
+            font-size: 17px;
+            width: 17px;
+            height: 17px;
+        }
+
+        &.warning {
+            color: #991b1b;
+        }
+    }
 }

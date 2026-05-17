@@ -23,6 +23,9 @@
             ],
             "@turni/feature-schedule": [
                 "projects/turni-feature-schedule/src/public-api.ts"
+            ],
+            "@turni/shared": [
+                "projects/turni-shared/src/public-api.ts"
             ]
         },
         "lib": [
