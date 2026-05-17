@@ -24,4 +24,6 @@ export class ScheduleRangeToolbarComponent {
     @Output() clearCacheRange = new EventEmitter<void>();
 
     @Output() clearCurrentPeriodCache = new EventEmitter<void>();
+
+    @Output() exportPdf = new EventEmitter<void>();
 }

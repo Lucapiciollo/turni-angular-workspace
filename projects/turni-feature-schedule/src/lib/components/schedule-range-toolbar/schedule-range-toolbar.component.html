@@ -1,51 +1,41 @@
 <mat-card class="range-toolbar">
-    <div class="range-left">
-        <div class="range-nav">
-            <button
-                mat-icon-button
-                type="button"
-                class="nav-button"
-                (click)="previousRange.emit()"
-                aria-label="Periodo precedente"
-            >
-                <mat-icon>chevron_left</mat-icon>
-            </button>
+    <div class="toolbar-line">
+        <div class="period-area">
+            <div class="range-nav">
+                <button
+                    mat-icon-button
+                    type="button"
+                    class="nav-button"
+                    (click)="previousRange.emit()"
+                    aria-label="Periodo precedente"
+                >
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
 
-            <button
-                mat-icon-button
-                type="button"
-                class="nav-button"
-                (click)="nextRange.emit()"
-                aria-label="Periodo successivo"
-            >
-                <mat-icon>chevron_right</mat-icon>
-            </button>
-        </div>
+                <button
+                    mat-icon-button
+                    type="button"
+                    class="nav-button"
+                    (click)="nextRange.emit()"
+                    aria-label="Periodo successivo"
+                >
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            </div>
 
-        <div class="range-title">
-            <span class="range-icon">
-                <mat-icon>date_range</mat-icon>
-            </span>
+            <div class="range-title">
+                <span class="range-icon">
+                    <mat-icon>date_range</mat-icon>
+                </span>
 
-            <div class="range-heading">
-                <strong>{{ range?.label || 'Periodo' }}</strong>
-                <span>{{ generatedAtLabel }}</span>
+                <div class="range-heading">
+                    <strong>{{ range?.label || 'Periodo' }}</strong>
+                    <span>{{ generatedAtLabel }}</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="range-right">
-        <mat-button-toggle-group
-            class="mode-toggle"
-            [value]="mode"
-            (change)="modeChange.emit($event.value)"
-            aria-label="Modalità periodo"
-        >
-            <mat-button-toggle value="MONTH">Mese</mat-button-toggle>
-            <mat-button-toggle value="WEEK">Settimana</mat-button-toggle>
-        </mat-button-toggle-group>
-
-        <div class="range-actions">
+        <div class="action-area">
             <button
                 mat-flat-button
                 color="primary"
@@ -77,7 +67,26 @@
                 <mat-icon>cleaning_services</mat-icon>
                 Pulisci cache
             </button>
+
+            <button
+                mat-stroked-button
+                type="button"
+                (click)="exportPdf.emit()"
+            >
+                <mat-icon>picture_as_pdf</mat-icon>
+                Esporta PDF
+            </button>
         </div>
+
+        <mat-button-toggle-group
+            class="mode-toggle"
+            [value]="mode"
+            (change)="modeChange.emit($event.value)"
+            aria-label="Modalità periodo"
+        >
+            <mat-button-toggle value="MONTH">Mese</mat-button-toggle>
+            <mat-button-toggle value="WEEK">Settimana</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
 
     <div

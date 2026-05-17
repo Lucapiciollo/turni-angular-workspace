@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 
 import { ABSENCES } from '../data/absences.mock';
+import { TURNI_FULL_MOCK } from '../data/turni-full-mock';
 import { SHIFTS, WORKERS } from '../data/mock-turni.data';
 import { DateRangeService } from '../services/date-range.service';
 import { LongShiftService } from '../services/long-shift.service';
@@ -29,9 +30,9 @@ export class TurniEffects {
         switchMap(([, currentWorkers, currentShifts, currentAbsences]) => {
             const hasStoreData = currentWorkers.length > 0 && currentShifts.length > 0;
             return of(TurniActions.loadInitialDataSuccess({
-                workers: hasStoreData ? currentWorkers : [...WORKERS],
-                shifts: hasStoreData ? currentShifts : [...SHIFTS],
-                absences: hasStoreData ? currentAbsences : [...ABSENCES],
+                workers: hasStoreData ? currentWorkers : [...TURNI_FULL_MOCK.workers],
+                shifts: hasStoreData ? currentShifts : [...TURNI_FULL_MOCK.shifts],
+                absences: hasStoreData ? currentAbsences : [...TURNI_FULL_MOCK.absences],
             }));
         })
     ));

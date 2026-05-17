@@ -82,7 +82,9 @@ export interface WorkerAbsence {
     type: AbsenceType;
     startDate: string;
     endDate: string;
-    note?: string;
+        startTime?: string;
+    endTime?: string;
+note?: string;
 }
 
 export interface WorkerContract {

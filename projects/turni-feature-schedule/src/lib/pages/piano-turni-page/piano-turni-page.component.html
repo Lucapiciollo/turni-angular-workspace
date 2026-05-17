@@ -70,6 +70,7 @@
         [generationSeed]="turniFacade.generationSeed()"
         [source]="turniFacade.lastSource()"
         (clearCurrentPeriodCache)="turniFacade.clearCurrentPeriodCache()"
+        (exportPdf)="turniFacade.exportCurrentPlanPdf()"
         [isPastRange]="turniFacade.isPastRange()"
         [cacheKey]="turniFacade.currentRangeCacheKey()"
         (modeChange)="turniFacade.setMode($event)"

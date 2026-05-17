@@ -1,6 +1,11 @@
 <div class="page">
-    <section class="header-card">
-        <div>
+    <section class="hero-card">
+        <div class="hero-copy">
+            <span class="eyebrow">
+                <mat-icon>analytics</mat-icon>
+                Controllo periodo
+            </span>
+
             <h1>
                 @if (turniFacade.selectedWorker()) {
                     Dettaglio operatore
@@ -11,39 +16,63 @@
 
             <p>
                 @if (turniFacade.selectedWorker()) {
-                    Scheda di {{ turniFacade.selectedWorker()?.workerName }} nel periodo corrente.
+                    Lettura rapida di indicatori, ore e warning di {{ turniFacade.selectedWorker()?.workerName }}.
                 } @else {
-                    Vista completa di tutti gli operatori.
+                    Vista pulita degli indicatori del mese/settimana corrente, con filtri e criticità evidenziate.
                 }
             </p>
         </div>
 
-        <button
-            mat-flat-button
-            color="primary"
-            type="button"
-            routerLink="/piano-turni"
-        >
-            <mat-icon>arrow_back</mat-icon>
-            Torna al piano
-        </button>
+        <div class="hero-actions">
+            <div class="summary-pill">
+                <mat-icon>groups</mat-icon>
+                <span>{{ turniFacade.filteredStats().length }} operatori</span>
+            </div>
+
+            <button
+                mat-flat-button
+                color="primary"
+                type="button"
+                routerLink="/piano-turni"
+            >
+                <mat-icon>arrow_back</mat-icon>
+                Torna al piano
+            </button>
+        </div>
     </section>
 
     @if (turniFacade.selectedWorker()) {
         <section
-            class="detail-card"
+            class="detail-section"
             *ngIf="turniFacade.selectedWorkerStats() as selectedStat"
         >
+            <div class="section-heading">
+                <div>
+                    <h2>Scheda operatore</h2>
+                    <p>La scheda resta sempre visibile; i filtri sotto agiscono solo sui warning.</p>
+                </div>
+
+                <button
+                    mat-stroked-button
+                    color="warn"
+                    type="button"
+                    (click)="clearWorkerFilter()"
+                >
+                    <mat-icon>close</mat-icon>
+                    Rimuovi filtro
+                </button>
+            </div>
+
             <turni-operator-stats-card
                 [stat]="selectedStat"
                 [worker]="turniFacade.getWorker(selectedStat.workerId)"
             ></turni-operator-stats-card>
         </section>
 
-        <section class="filters-card">
-            <div>
+        <section class="toolbar-card">
+            <div class="toolbar-copy">
                 <strong>Warning operatore</strong>
-                <span>Il filtro riguarda solo i warning, non la scheda dettaglio.</span>
+                <span>Filtra gli avvisi senza nascondere la scheda dettaglio.</span>
             </div>
 
             <mat-button-toggle-group
@@ -57,22 +86,9 @@
                     (click)="setWarningFilter(filter.value)"
                 >
                     <span class="filter-label">{{ filter.label }}</span>
-
-                    <span class="filter-count">
-                        {{ turniFacade.getWarningFilterCount(filter.value) }}
-                    </span>
+                    <span class="filter-count">{{ turniFacade.getWarningFilterCount(filter.value) }}</span>
                 </mat-button-toggle>
             </mat-button-toggle-group>
-
-            <button
-                mat-stroked-button
-                color="warn"
-                type="button"
-                (click)="clearWorkerFilter()"
-            >
-                <mat-icon>close</mat-icon>
-                Rimuovi filtro operatore
-            </button>
         </section>
 
         <section class="content-card">
@@ -81,10 +97,10 @@
             ></turni-warning-list>
         </section>
     } @else {
-        <section class="filters-card">
-            <div>
+        <section class="toolbar-card">
+            <div class="toolbar-copy">
                 <strong>Filtri statistiche</strong>
-                <span>Il conteggio indica quanti operatori rientrano nel filtro.</span>
+                <span>Il badge indica quanti operatori rientrano nel filtro.</span>
             </div>
 
             <mat-button-toggle-group
@@ -98,15 +114,12 @@
                     (click)="setStatsFilter(filter.value)"
                 >
                     <span class="filter-label">{{ filter.label }}</span>
-
-                    <span class="filter-count">
-                        {{ turniFacade.getStatsFilterCount(filter.value) }}
-                    </span>
+                    <span class="filter-count">{{ turniFacade.getStatsFilterCount(filter.value) }}</span>
                 </mat-button-toggle>
             </mat-button-toggle-group>
         </section>
 
-        <section class="stats-grid">
+        <section class="stats-list">
             <turni-operator-stats-card
                 *ngFor="let stat of turniFacade.filteredStats()"
                 [stat]="stat"
@@ -118,7 +131,11 @@
             class="empty-card"
             *ngIf="turniFacade.filteredStats().length === 0"
         >
-            Nessuna statistica trovata con i filtri correnti.
+            <mat-icon>search_off</mat-icon>
+            <div>
+                <strong>Nessuna statistica trovata</strong>
+                <span>Prova a cambiare filtro o a rigenerare il piano turni.</span>
+            </div>
         </section>
     }
 </div>

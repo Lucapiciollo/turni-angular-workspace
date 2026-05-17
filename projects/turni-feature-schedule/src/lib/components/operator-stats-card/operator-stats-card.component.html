@@ -1,108 +1,132 @@
-<article class="operator-card">
-    <div class="operator-header">
-        <div class="operator-title">
-            <strong>
-                {{ stat.workerName }}
-            </strong>
+<article
+    class="operator-card"
+    [class.has-error]="isOverMaxHours() || !isMorningConsecutiveOk() || !isAfternoonConsecutiveOk() || !isNightOk() || stat.freeWeekendCount < 1 || stat.forcedAssignmentsCount > 0 || stat.extraHours > 0"
+>
+    <header class="operator-header">
+        <div class="identity">
+            <div
+                class="avatar"
+                [style.background]="worker?.color || '#64748b'"
+            >
+                {{ stat.workerName | turniInitials }}
+            </div>
 
-            <span>
-                {{ worker?.role || 'Operatore' }}
-            </span>
+            <div class="operator-title">
+                <strong>{{ stat.workerName }}</strong>
+                <span>{{ worker?.role || 'Operatore' }}</span>
+            </div>
         </div>
 
-        <mat-chip
-            class="hours-badge"
-            [class.ok]="isHoursOk()"
-            [class.warning]="isUnderMinHours()"
-            [class.error]="isOverMaxHours()"
-            [matTooltip]="getHoursTooltip()"
-            matTooltipPosition="above"
-        >
-            {{ stat.totalHours }}/{{ stat.contractMonthlyHours }} ore
-        </mat-chip>
-    </div>
+        <div class="status-area">
+            <mat-chip
+                class="hours-badge"
+                [class.ok]="isHoursOk()"
+                [class.warning]="isUnderMinHours()"
+                [class.error]="isOverMaxHours()"
+                [matTooltip]="getHoursTooltip()"
+                matTooltipPosition="above"
+            >
+                <mat-icon>schedule</mat-icon>
+                {{ stat.totalHours }}/{{ stat.contractMonthlyHours }}h
+            </mat-chip>
+        </div>
+    </header>
 
-    <div class="stat-grid">
-        <div class="stat-box neutral">
-            <small>Turni</small>
-            <b>{{ stat.totalAssignments }}</b>
+    <section class="main-metrics">
+        <div class="metric primary">
+            <small>Turni totali</small>
+            <strong>{{ stat.totalAssignments }}</strong>
         </div>
 
+        <div class="metric">
+            <small>Mattine</small>
+            <strong>{{ stat.morningCount }}</strong>
+            <span>max cons. {{ stat.maxConsecutiveMorningShiftsReached }}</span>
+        </div>
+
+        <div class="metric">
+            <small>Pomeriggi</small>
+            <strong>{{ stat.afternoonCount }}</strong>
+            <span>max cons. {{ stat.maxConsecutiveAfternoonShiftsReached }}</span>
+        </div>
+
+        <div class="metric">
+            <small>Notti</small>
+            <strong>{{ stat.nightCount }}</strong>
+            <span>sett. max {{ stat.maxNightShiftsInWeek }}</span>
+        </div>
+    </section>
+
+    <section class="quality-strip">
         <div
-            class="stat-box"
+            class="quality-item"
             [class.ok]="isMorningConsecutiveOk()"
             [class.error]="!isMorningConsecutiveOk()"
             [matTooltip]="getMorningTooltip()"
             matTooltipPosition="above"
         >
-            <small>Mattine</small>
-            <b>{{ stat.morningCount }}</b>
-            <em>cons. {{ stat.maxConsecutiveMorningShiftsReached }}</em>
+            <mat-icon>{{ isMorningConsecutiveOk() ? 'check_circle' : 'error' }}</mat-icon>
+            <span>Mattine</span>
         </div>
 
         <div
-            class="stat-box"
+            class="quality-item"
             [class.ok]="isAfternoonConsecutiveOk()"
             [class.error]="!isAfternoonConsecutiveOk()"
             [matTooltip]="getAfternoonTooltip()"
             matTooltipPosition="above"
         >
-            <small>Pomeriggi</small>
-            <b>{{ stat.afternoonCount }}</b>
-            <em>cons. {{ stat.maxConsecutiveAfternoonShiftsReached }}</em>
+            <mat-icon>{{ isAfternoonConsecutiveOk() ? 'check_circle' : 'error' }}</mat-icon>
+            <span>Pomeriggi</span>
         </div>
 
         <div
-            class="stat-box"
+            class="quality-item"
             [class.ok]="isNightOk()"
             [class.error]="!isNightOk()"
             [matTooltip]="getNightTooltip()"
             matTooltipPosition="above"
         >
-            <small>Notti</small>
-            <b>{{ stat.nightCount }}</b>
-            <em>
-                cons. {{ stat.maxConsecutiveNightShiftsReached }}
-                · sett. {{ stat.maxNightShiftsInWeek }}
-            </em>
-        </div>
-
-        <div class="stat-box neutral">
-            <small>WE lav.</small>
-            <b>{{ stat.weekendWorkedCount }}</b>
+            <mat-icon>{{ isNightOk() ? 'check_circle' : 'error' }}</mat-icon>
+            <span>Notti</span>
         </div>
 
         <div
-            class="stat-box"
+            class="quality-item"
             [class.ok]="stat.freeWeekendCount >= 1"
             [class.error]="stat.freeWeekendCount < 1"
             [matTooltip]="getFreeWeekendTooltip()"
             matTooltipPosition="above"
         >
-            <small>WE liberi</small>
-            <b>{{ stat.freeWeekendCount }}</b>
+            <mat-icon>{{ stat.freeWeekendCount >= 1 ? 'weekend' : 'report' }}</mat-icon>
+            <span>WE liberi {{ stat.freeWeekendCount }}</span>
+        </div>
+    </section>
+
+    <footer class="footer-metrics">
+        <div class="footer-item">
+            <span>WE lavorati</span>
+            <strong>{{ stat.weekendWorkedCount }}</strong>
         </div>
 
         <div
-            class="stat-box"
-            [class.ok]="stat.forcedAssignmentsCount === 0"
-            [class.error]="stat.forcedAssignmentsCount > 0"
+            class="footer-item"
+            [class.alert]="stat.forcedAssignmentsCount > 0"
             [matTooltip]="getForcedTooltip()"
             matTooltipPosition="above"
         >
-            <small>Forzati</small>
-            <b>{{ stat.forcedAssignmentsCount }}</b>
+            <span>Forzati</span>
+            <strong>{{ stat.forcedAssignmentsCount }}</strong>
         </div>
 
         <div
-            class="stat-box"
-            [class.ok]="stat.extraHours === 0"
-            [class.error]="stat.extraHours > 0"
+            class="footer-item"
+            [class.alert]="stat.extraHours > 0"
             [matTooltip]="getExtraTooltip()"
             matTooltipPosition="above"
         >
-            <small>Extra</small>
-            <b>{{ stat.extraHours }}</b>
+            <span>Extra</span>
+            <strong>{{ stat.extraHours }}h</strong>
         </div>
-    </div>
+    </footer>
 </article>

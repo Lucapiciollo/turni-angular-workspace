@@ -10,6 +10,7 @@ import {
     WarningFilterType,
     Worker,
 } from '../models/turni.models';
+import { SchedulePdfExportService } from '../services/schedule-pdf-export.service';
 import { TurniActions } from './turni.actions';
 import {
     selectCurrentRangeCacheKey,
@@ -48,6 +49,7 @@ import {
 })
 export class TurniFacade {
     private store: Store = inject(Store);
+    private readonly pdfExportService: SchedulePdfExportService = inject(SchedulePdfExportService);
 
     readonly mode = this.store.selectSignal(selectMode);
     readonly range = this.store.selectSignal(selectRange);
@@ -129,6 +131,20 @@ export class TurniFacade {
 
     refreshStrong(): void {
         this.store.dispatch(TurniActions.refreshRangeStrong());
+    }
+
+
+    exportCurrentPlanPdf(): void {
+        const plan = this.plan();
+
+        if (!plan) {
+            return;
+        }
+
+        this.pdfExportService.exportPlan({
+            plan,
+            workers: this.workers(),
+        });
     }
 
     clearCurrentPeriodCache(): void {
