@@ -156,6 +156,18 @@ export interface AssignedShift {
     replacesWorkerName?: string;
     replacedByWorkerId?: string;
     replacedByWorkerName?: string;
+
+    hasEarlyLeave?: boolean;
+    leaveTime?: string;
+    leaveReason?: 'PERMESSO' | 'USCITA_ANTICIPATA';
+    leaveNote?: string;
+
+    isLongShift?: boolean;
+    longForWorkerId?: string;
+    longForWorkerName?: string;
+    longFromTime?: string;
+    longReason?: 'PERMESSO' | 'USCITA_ANTICIPATA';
+    longNote?: string;
 }
 
 export interface DaySchedule {

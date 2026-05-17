@@ -16,6 +16,8 @@ export class WorkerPillComponent {
 
     @Output() markSick = new EventEmitter<AssignedShift>();
 
+    @Output() requestLongShift = new EventEmitter<AssignedShift>();
+
     @ViewChild('sourceTooltip') sourceTooltip?: MatTooltip;
     @ViewChild('statsTooltip') statsTooltip?: MatTooltip;
     @ViewChild('warningTooltip') warningTooltip?: MatTooltip;
@@ -63,6 +65,12 @@ export class WorkerPillComponent {
         this.sourceTooltip?.hide(0);
         this.statsTooltip?.hide(0);
         this.warningTooltip?.hide(0);
+    }
+
+    emitRequestLongShift(event: MouseEvent): void {
+        event.stopPropagation();
+        this.hideTooltips();
+        this.requestLongShift.emit(this.assignment);
     }
 
     emitMarkSick(event: MouseEvent): void {

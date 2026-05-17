@@ -1,78 +1,40 @@
-<div
-    class="person-pill"
+<div class="person-pill"
     [class.forced]="assignment.source === 'FORCED'"
     [class.manual]="assignment.source === 'MANUAL'"
     [class.sick]="assignment.isFigurative === true && assignment.absenceType === 'MALATTIA'"
     [matTooltip]="tooltip"
-    matTooltipPosition="above"
->
-    <div
-        class="avatar"
-        [style.background]="worker?.color || '#64748b'"
-    >
+    matTooltipPosition="above">
+    <div class="avatar" [style.background]="worker?.color || '#64748b'">
         {{ assignment.workerName | turniInitials }}
     </div>
-
     <div class="person-text">
         <strong>{{ assignment.workerName }}</strong>
-
         <small>{{ assignment.source }}</small>
-
-        <small
-            class="replacement-label"
-            *ngIf="assignment.replacesWorkerName"
-        >
+        <small class="replacement-label" *ngIf="assignment.replacesWorkerName">
             Sostituisce {{ assignment.replacesWorkerName }}
         </small>
+        <small class="long-label" *ngIf="assignment.isLongShift && assignment.longForWorkerName">
+            In lunga per {{ assignment.longForWorkerName }}
+            <span *ngIf="assignment.longFromTime"> dalle {{ assignment.longFromTime }}</span>
+        </small>
+        <small class="leave-label" *ngIf="assignment.hasEarlyLeave">
+            Permesso dalle {{ assignment.leaveTime }}
+        </small>
     </div>
-
-    <mat-chip
-        class="source-badge"
-        *ngIf="assignment.source !== 'AUTO'"
-    >
+    <mat-chip class="source-badge" *ngIf="assignment.source !== 'AUTO'">
         {{ assignment.source }}
     </mat-chip>
-
-    <div
-        class="pill-actions"
-        *ngIf="showActions"
-    >
-        <button
-            mat-icon-button
-            type="button"
-            class="sick-action"
-            (click)="emitMarkSick($event)"
-            matTooltip="Metti in malattia e cerca sostituto"
-            matTooltipPosition="above"
-            aria-label="Metti in malattia e cerca sostituto"
-            *ngIf="assignment.isFigurative !== true"
-        >
+    <div class="pill-actions" *ngIf="showActions">
+        <button mat-icon-button type="button" class="long-action" (click)="emitRequestLongShift($event)" matTooltip="Permesso / uscita anticipata" matTooltipPosition="above" aria-label="Permesso / uscita anticipata" *ngIf="assignment.isFigurative !== true">
+            <mat-icon>more_time</mat-icon>
+        </button>
+        <button mat-icon-button type="button" class="sick-action" (click)="emitMarkSick($event)" matTooltip="Metti in malattia e cerca sostituto" matTooltipPosition="above" aria-label="Metti in malattia e cerca sostituto" *ngIf="assignment.isFigurative !== true">
             <mat-icon>local_pharmacy</mat-icon>
         </button>
-
-        <button
-            mat-icon-button
-            type="button"
-            #statsTooltip="matTooltip"
-            (click)="openStats($event)"
-            matTooltip="Apri statistiche operatore"
-            matTooltipPosition="above"
-            aria-label="Apri statistiche operatore"
-        >
+        <button mat-icon-button type="button" #statsTooltip="matTooltip" (click)="openStats($event)" matTooltip="Apri statistiche operatore" matTooltipPosition="above" aria-label="Apri statistiche operatore">
             <mat-icon>query_stats</mat-icon>
         </button>
-
-        <button
-            mat-icon-button
-            type="button"
-            class="warning"
-            #warningTooltip="matTooltip"
-            (click)="openWarnings($event)"
-            [matTooltip]="tooltip"
-            matTooltipPosition="above"
-            aria-label="Apri dettaglio warning"
-            *ngIf="assignment.violatedRules.length > 0"
-        >
+        <button mat-icon-button type="button" class="warning" #warningTooltip="matTooltip" (click)="openWarnings($event)" [matTooltip]="tooltip" matTooltipPosition="above" aria-label="Apri dettaglio warning" *ngIf="assignment.violatedRules.length > 0">
             <mat-icon>report_problem</mat-icon>
         </button>
     </div>

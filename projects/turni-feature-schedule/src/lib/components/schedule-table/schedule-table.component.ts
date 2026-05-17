@@ -17,6 +17,7 @@ export class ScheduleTableComponent {
     @Input() days: DaySchedule[] = [];
     @Input() shifts: ShiftDefinition[] = [];
     @Input() workers: Worker[] = [];
+    @Input() isPastRange = false;
 
     @Input() getAssignmentsByShiftFn!: (
         day: DaySchedule,
@@ -32,6 +33,7 @@ export class ScheduleTableComponent {
     ) => AssignedShift[];
 
     @Output() markWorkerSick = new EventEmitter<AssignedShift>();
+    @Output() requestLongShift = new EventEmitter<{ day: DaySchedule; assignment: AssignedShift }>();
 
     getAssignmentsByShift(
         day: DaySchedule,

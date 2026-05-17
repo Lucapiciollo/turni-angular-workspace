@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { TurniSharedModule } from '@turni/shared';
 
 import { CloseTooltipsOnScrollDirective } from '../directives/close-tooltips-on-scroll.directive';
+import { LongShiftDialogComponent } from './long-shift-dialog/long-shift-dialog.component';
 import { OperatorStatsCardComponent } from './operator-stats-card/operator-stats-card.component';
 import { ScheduleRangeToolbarComponent } from './schedule-range-toolbar/schedule-range-toolbar.component';
 import { ScheduleTableComponent } from './schedule-table/schedule-table.component';
@@ -17,6 +18,7 @@ import { WorkerPillComponent } from './worker-pill/worker-pill.component';
         WarningListComponent,
         WorkerPillComponent,
         CloseTooltipsOnScrollDirective,
+        LongShiftDialogComponent,
     ],
     imports: [
         RouterModule,
@@ -31,6 +33,7 @@ import { WorkerPillComponent } from './worker-pill/worker-pill.component';
         WarningListComponent,
         WorkerPillComponent,
         CloseTooltipsOnScrollDirective,
+        LongShiftDialogComponent,
     ],
 })
 export class TurniScheduleSharedModule {}

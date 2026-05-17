@@ -158,13 +158,16 @@
                             [assignment]="assignment"
                             [worker]="getWorker(assignment.workerId)"
                             (markSick)="markWorkerSick.emit($event)"
+                            (requestLongShift)="requestLongShift.emit({ day: day, assignment: $event })"
                         ></turni-worker-pill>
                     </div>
 
                     <ng-template #emptyShift>
                         <div class="empty-shift">
                             <mat-icon>person_off</mat-icon>
-                            <span>Nessun operatore assegnato</span>
+                            <span>
+                                {{ isPastRange ? 'Nessun turno generato per periodo passato' : 'Nessun operatore assegnato' }}
+                            </span>
                         </div>
                     </ng-template>
                 </mat-card>

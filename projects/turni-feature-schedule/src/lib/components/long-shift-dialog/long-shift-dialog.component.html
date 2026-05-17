@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Permesso / uscita anticipata</h2>
+<mat-dialog-content class="dialog-content">
+    <div class="summary">
+        <strong>{{ data.leavingAssignment.workerName }}</strong>
+        <span>{{ data.date }} · {{ data.shift }}</span>
+    </div>
+    <mat-form-field appearance="outline">
+        <mat-label>Motivo</mat-label>
+        <mat-select [(ngModel)]="result.reason">
+            <mat-option value="PERMESSO">Permesso</mat-option>
+            <mat-option value="USCITA_ANTICIPATA">Uscita anticipata</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Ora uscita</mat-label>
+        <input matInput type="time" [(ngModel)]="result.leaveTime" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Chi fa la lunga</mat-label>
+        <mat-select [(ngModel)]="result.longWorkerId">
+            <mat-option *ngFor="let candidate of data.candidates" [value]="candidate.workerId">
+                {{ candidate.workerName }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Nota</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="result.note"></textarea>
+    </mat-form-field>
+    <div class="empty" *ngIf="data.candidates.length === 0">
+        Nessun altro operatore presente nello stesso turno.
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Annulla</button>
+    <button mat-flat-button color="primary" type="button" [disabled]="data.candidates.length === 0 || !result.longWorkerId || !result.leaveTime" (click)="confirm()">Conferma lunga</button>
+</mat-dialog-actions>

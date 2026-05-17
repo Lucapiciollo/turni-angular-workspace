@@ -69,6 +69,8 @@
         [generatedAtLabel]="turniFacade.generatedAtLabel()"
         [generationSeed]="turniFacade.generationSeed()"
         [source]="turniFacade.lastSource()"
+        (clearCurrentPeriodCache)="turniFacade.clearCurrentPeriodCache()"
+        [isPastRange]="turniFacade.isPastRange()"
         [cacheKey]="turniFacade.currentRangeCacheKey()"
         (modeChange)="turniFacade.setMode($event)"
         (previousRange)="turniFacade.previous()"
@@ -86,10 +88,12 @@
             [days]="turniFacade.days()"
             [shifts]="turniFacade.shifts()"
             [workers]="turniFacade.workers()"
+            [isPastRange]="turniFacade.isPastRange()"
             [getAssignmentsByShiftFn]="turniFacade.getAssignmentsByShiftFn"
             [getFigurativeAbsencesByDayFn]="turniFacade.getFigurativeAbsencesByDayFn"
             [getWorkerFn]="turniFacade.getWorkerFn"
             (markWorkerSick)="turniFacade.markWorkerSickOnShift($event)"
+            (requestLongShift)="openLongShiftDialog($event)"
         ></turni-schedule-table>
     </section>
 

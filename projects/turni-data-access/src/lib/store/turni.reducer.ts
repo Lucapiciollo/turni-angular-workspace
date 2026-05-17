@@ -152,6 +152,19 @@ export const turniReducer = createReducer(
         };
     }),
 
+
+    on(TurniActions.applyLongShift, (state) => {
+        return { ...state, loading: true, error: null };
+    }),
+
+    on(TurniActions.applyLongShiftSuccess, (state, { plan }) => {
+        return { ...state, plan, lastSource: plan.source, loading: false, error: null };
+    }),
+
+    on(TurniActions.applyLongShiftFailure, (state, { error }) => {
+        return { ...state, loading: false, error };
+    }),
+
     on(TurniActions.generatePlanSuccess, (state, { plan }) => {
         return {
             ...state,

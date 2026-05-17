@@ -1,42 +1,42 @@
 .page {
     min-height: 100%;
-    padding: 20px;
-    padding-bottom: 100px;
-    background: #f5f7fb;
+    padding: 22px;
+    padding-bottom: 104px;
+    background: var(--turni-bg, #f6f8fb);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    color: #1f2937;
+    gap: 18px;
+    color: var(--turni-text, #1f2937);
     scroll-behavior: smooth;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
 }
 
 .header-card,
 .quick-actions-card,
 .details-accordion-card {
-    background: #ffffff;
-    border: 1px solid #e6eaf0;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.045);
-    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid var(--turni-border, #edf1f6);
+    border-radius: var(--turni-radius-lg, 22px);
+    box-shadow: var(--turni-shadow-subtle, 0 4px 14px rgba(15, 23, 42, 0.035));
+    padding: 20px 22px;
 }
 
 .header-card {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 18px;
     align-items: center;
 
     h1 {
         margin: 0;
         font-size: 26px;
-        font-weight: 600;
+        font-weight: 500;
         letter-spacing: -0.02em;
     }
 
     p {
-        margin: 5px 0 0;
-        color: #6b7280;
+        margin: 6px 0 0;
+        color: var(--turni-muted, #6b7280);
         font-size: 13px;
         font-weight: 400;
     }
@@ -49,30 +49,30 @@
 }
 
 .status-badge {
-    --mdc-chip-elevated-container-color: #eef5ff;
-    --mdc-chip-label-text-color: #1d4ed8;
-    font-weight: 600;
+    --mdc-chip-elevated-container-color: var(--turni-primary-soft, #eef4ff);
+    --mdc-chip-label-text-color: #315fcc;
+    font-weight: 500;
 
     &.cache {
-        --mdc-chip-elevated-container-color: #edfdf5;
+        --mdc-chip-elevated-container-color: var(--turni-success-soft, #edf9f2);
         --mdc-chip-label-text-color: #047857;
     }
 
     &.regenerated {
-        --mdc-chip-elevated-container-color: #fff7df;
-        --mdc-chip-label-text-color: #92400e;
+        --mdc-chip-elevated-container-color: var(--turni-warning-soft, #fff7ed);
+        --mdc-chip-label-text-color: #9a3412;
     }
 }
 
 .warning-badge {
-    --mdc-chip-elevated-container-color: #fff1f2;
-    --mdc-chip-label-text-color: #be123c;
-    font-weight: 600;
+    --mdc-chip-elevated-container-color: var(--turni-danger-soft, #fff1f2);
+    --mdc-chip-label-text-color: #b42342;
+    font-weight: 500;
 }
 
 .quick-actions-card {
     display: flex;
-    gap: 9px;
+    gap: 10px;
     flex-wrap: wrap;
     align-items: center;
 }
@@ -85,30 +85,31 @@
 .details-accordion {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 
     mat-expansion-panel {
-        border-radius: 15px !important;
+        border-radius: 18px !important;
         box-shadow: none;
-        border: 1px solid #e6eaf0;
+        border: 1px solid var(--turni-border, #edf1f6);
         overflow: hidden;
+        background: #ffffff;
     }
 
     mat-panel-title {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        font-weight: 600;
+        font-weight: 500;
 
         mat-icon {
-            color: #64748b;
+            color: var(--turni-muted, #6b7280);
         }
     }
 
     mat-panel-description {
         justify-content: flex-end;
         font-weight: 400;
-        color: #6b7280;
+        color: var(--turni-muted, #6b7280);
     }
 }
 
@@ -121,7 +122,7 @@
 .stats-preview {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-    gap: 12px;
+    gap: 14px;
 }
 
 .floating-anchors {
@@ -132,8 +133,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    opacity: 0.48;
-    transition: opacity 180ms ease, transform 180ms ease;
+    opacity: 0.52;
+    transition: opacity var(--turni-transition, 180ms ease), transform var(--turni-transition, 180ms ease);
 
     &:hover,
     &:focus-within {
@@ -143,14 +144,14 @@
 
     button {
         backdrop-filter: blur(8px);
-        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+        box-shadow: var(--turni-shadow-soft, 0 10px 30px rgba(15, 23, 42, 0.045));
     }
 }
 
 @media (max-width: 780px) {
     .page {
-        padding: 14px;
-        padding-bottom: 100px;
+        padding: 15px;
+        padding-bottom: 104px;
     }
 
     .header-card {

@@ -1,3 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+:root {
+    --turni-bg: #f6f8fb;
+    --turni-surface: #ffffff;
+    --turni-surface-soft: #f9fafb;
+    --turni-border: #edf1f6;
+    --turni-border-strong: #e3e8ef;
+    --turni-text: #1f2937;
+    --turni-muted: #6b7280;
+    --turni-muted-light: #94a3b8;
+    --turni-primary: #4f7cff;
+    --turni-primary-soft: #eef4ff;
+    --turni-success: #2f9e6d;
+    --turni-success-soft: #edf9f2;
+    --turni-warning: #d9892b;
+    --turni-warning-soft: #fff7ed;
+    --turni-danger: #d95f5f;
+    --turni-danger-soft: #fff1f2;
+    --turni-radius-sm: 12px;
+    --turni-radius-md: 16px;
+    --turni-radius-lg: 22px;
+    --turni-shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.045);
+    --turni-shadow-subtle: 0 4px 14px rgba(15, 23, 42, 0.035);
+    --turni-transition: 180ms ease;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    color: var(--turni-text);
+    background: var(--turni-bg);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+mat-icon,
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'liga';
+}
+
+.mat-mdc-card {
+    border-radius: var(--turni-radius-lg) !important;
+}
+
+.mat-mdc-button-base {
+    border-radius: 999px !important;
+}
+
+.mat-mdc-form-field {
+    font-family: inherit;
+}
+
 html,
 body {
     margin: 0;

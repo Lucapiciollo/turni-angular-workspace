@@ -1,110 +1,90 @@
-<section class="toolbar-card">
-    <div class="toolbar-left">
-        <mat-button-toggle-group
-            class="mode-switch"
-            [value]="mode"
-            aria-label="Selezione vista periodo"
-        >
-            <mat-button-toggle
-                value="MONTH"
-                (click)="modeChange.emit('MONTH')"
+<mat-card class="range-toolbar">
+    <div class="range-left">
+        <div class="range-nav">
+            <button
+                mat-icon-button
+                type="button"
+                class="nav-button"
+                (click)="previousRange.emit()"
+                aria-label="Periodo precedente"
             >
-                Mese
-            </mat-button-toggle>
+                <mat-icon>chevron_left</mat-icon>
+            </button>
 
-            <mat-button-toggle
-                value="WEEK"
-                (click)="modeChange.emit('WEEK')"
+            <button
+                mat-icon-button
+                type="button"
+                class="nav-button"
+                (click)="nextRange.emit()"
+                aria-label="Periodo successivo"
             >
-                Settimana
-            </mat-button-toggle>
-        </mat-button-toggle-group>
-
-        <div class="generation-meta">
-            <mat-chip>
-                Seed {{ generationSeed }}
-            </mat-chip>
-
-            <mat-chip>
-                {{ source }}
-            </mat-chip>
-
-            <mat-chip
-                matTooltip="Identificativo del periodo in cache"
-                matTooltipPosition="above"
-            >
-                {{ cacheKey }}
-            </mat-chip>
+                <mat-icon>chevron_right</mat-icon>
+            </button>
         </div>
-    </div>
 
-    <div class="range-navigation">
-        <button
-            mat-icon-button
-            type="button"
-            aria-label="Periodo precedente"
-            (click)="previousRange.emit()"
-        >
-            <mat-icon>chevron_left</mat-icon>
-        </button>
-
-        <div class="range-info">
-            <strong>
-                {{ range?.label }}
-            </strong>
-
-            <span>
-                {{ range?.startDate }} → {{ range?.endDate }}
+        <div class="range-title">
+            <span class="range-icon">
+                <mat-icon>date_range</mat-icon>
             </span>
 
-            <small>
-                Generato: {{ generatedAtLabel }}
-            </small>
+            <div class="range-heading">
+                <strong>{{ range?.label || 'Periodo' }}</strong>
+                <span>{{ generatedAtLabel }}</span>
+            </div>
         </div>
-
-        <button
-            mat-icon-button
-            type="button"
-            aria-label="Periodo successivo"
-            (click)="nextRange.emit()"
-        >
-            <mat-icon>chevron_right</mat-icon>
-        </button>
-
-        <button
-            mat-flat-button
-            color="primary"
-            type="button"
-            (click)="refreshRange.emit()"
-            matTooltip="Rigenera il periodo corrente sovrascrivendo la cache"
-            matTooltipPosition="above"
-        >
-            <mat-icon>refresh</mat-icon>
-            Rigenera
-        </button>
-
-        <button
-            mat-stroked-button
-            color="primary"
-            type="button"
-            (click)="refreshStrongRange.emit()"
-            matTooltip="Aumenta molto il seed per ottenere una rotazione più diversa"
-            matTooltipPosition="above"
-        >
-            <mat-icon>shuffle</mat-icon>
-            Rigenera forte
-        </button>
-
-        <button
-            mat-stroked-button
-            color="warn"
-            type="button"
-            (click)="clearCacheRange.emit()"
-            matTooltip="Elimina la cache del periodo e rigenera"
-            matTooltipPosition="above"
-        >
-            <mat-icon>delete_sweep</mat-icon>
-            Pulisci cache
-        </button>
     </div>
-</section>
+
+    <div class="range-right">
+        <mat-button-toggle-group
+            class="mode-toggle"
+            [value]="mode"
+            (change)="modeChange.emit($event.value)"
+            aria-label="Modalità periodo"
+        >
+            <mat-button-toggle value="MONTH">Mese</mat-button-toggle>
+            <mat-button-toggle value="WEEK">Settimana</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <div class="range-actions">
+            <button
+                mat-flat-button
+                color="primary"
+                type="button"
+                [disabled]="isPastRange"
+                (click)="refreshRange.emit()"
+            >
+                <mat-icon>autorenew</mat-icon>
+                Genera
+            </button>
+
+            <button
+                mat-stroked-button
+                color="warn"
+                type="button"
+                [disabled]="isPastRange"
+                (click)="refreshStrongRange.emit()"
+            >
+                <mat-icon>refresh</mat-icon>
+                Rigenera
+            </button>
+
+            <button
+                mat-stroked-button
+                type="button"
+                [disabled]="isPastRange"
+                (click)="clearCurrentPeriodCache.emit()"
+            >
+                <mat-icon>cleaning_services</mat-icon>
+                Pulisci cache
+            </button>
+        </div>
+    </div>
+
+    <div
+        class="past-message"
+        *ngIf="isPastRange"
+    >
+        <mat-icon>lock_clock</mat-icon>
+        Periodo passato: generazione disabilitata. Se non esiste un piano salvato, vengono mostrate liste vuote.
+    </div>
+</mat-card>

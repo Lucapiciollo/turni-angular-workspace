@@ -20,3 +20,4 @@ export * from './lib/store/turni.selectors';
 export * from './lib/store/turni.effects';
 export * from './lib/store/turni.facade';
 export * from './lib/services/shift-replacement.service';
+export * from './lib/services/long-shift.service';

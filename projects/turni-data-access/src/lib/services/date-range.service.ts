@@ -135,6 +135,17 @@ export class DateRangeService {
         return `${saturday.format('YYYY-MM-DD')}_${sunday.format('YYYY-MM-DD')}`;
     }
 
+    isPastRange(range: DateRange): boolean {
+        const today = moment().startOf('day');
+        const endDate = moment(range.endDate, 'YYYY-MM-DD').endOf('day');
+
+        return endDate.isBefore(today, 'day');
+    }
+
+    isCurrentOrFutureRange(range: DateRange): boolean {
+        return !this.isPastRange(range);
+    }
+
     nowIso(): string {
         return moment().toISOString();
     }

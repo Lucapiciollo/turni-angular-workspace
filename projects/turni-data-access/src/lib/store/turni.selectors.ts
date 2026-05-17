@@ -71,6 +71,23 @@ export const selectPlan = createSelector(
     (state) => state.plan
 );
 
+export const selectIsPastRange = createSelector(
+    selectRange,
+    (range) => {
+        if (!range) {
+            return false;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const endDate = new Date(`${range.endDate}T00:00:00`);
+        endDate.setHours(0, 0, 0, 0);
+
+        return endDate.getTime() < today.getTime();
+    }
+);
+
 export const selectDays = createSelector(
     selectPlan,
     (plan) => plan?.days ?? []

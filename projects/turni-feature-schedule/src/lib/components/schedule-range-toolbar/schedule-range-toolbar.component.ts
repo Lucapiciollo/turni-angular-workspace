@@ -12,6 +12,7 @@ export class ScheduleRangeToolbarComponent {
     @Input() range: DateRange | null = null;
     @Input() generatedAtLabel = '-';
     @Input() generationSeed = 0;
+    @Input() isPastRange = false;
     @Input() source = 'GENERATED';
     @Input() cacheKey = '-';
 
@@ -21,4 +22,6 @@ export class ScheduleRangeToolbarComponent {
     @Output() refreshRange = new EventEmitter<void>();
     @Output() refreshStrongRange = new EventEmitter<void>();
     @Output() clearCacheRange = new EventEmitter<void>();
+
+    @Output() clearCurrentPeriodCache = new EventEmitter<void>();
 }

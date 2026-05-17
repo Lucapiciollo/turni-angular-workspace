@@ -19,6 +19,7 @@ import {
     selectFilteredWarnings,
     selectGeneratedAtLabel,
     selectGenerationSeed,
+    selectIsPastRange,
     selectLastSource,
     selectAbsences,
     selectLoading,
@@ -61,6 +62,7 @@ export class TurniFacade {
     readonly warningCount = this.store.selectSignal(selectWarningCount);
     readonly periodWarningCount = this.store.selectSignal(selectPeriodWarningCount);
     readonly generationSeed = this.store.selectSignal(selectGenerationSeed);
+    readonly isPastRange = this.store.selectSignal(selectIsPastRange);
     readonly lastSource = this.store.selectSignal(selectLastSource);
     readonly generatedAtLabel = this.store.selectSignal(selectGeneratedAtLabel);
     readonly currentRangeCacheKey = this.store.selectSignal(selectCurrentRangeCacheKey);
@@ -143,6 +145,18 @@ export class TurniFacade {
         );
     }
 
+    applyLongShift(params: {
+        date: string;
+        shift: ShiftType;
+        leavingWorkerId: string;
+        longWorkerId: string;
+        leaveTime: string;
+        reason: 'PERMESSO' | 'USCITA_ANTICIPATA';
+        note?: string;
+    }): void {
+        this.store.dispatch(TurniActions.applyLongShift(params));
+    }
+
     selectWorker(workerId: string | null): void {
         this.store.dispatch(
             TurniActions.selectWorker({
@@ -196,6 +210,14 @@ export class TurniFacade {
     getFigurativeAbsencesByDay(day: DaySchedule): AssignedShift[] {
         return day.assignments.filter((assignment) => {
             return assignment.isFigurative === true;
+        });
+    }
+
+    getLongShiftCandidates(day: DaySchedule, assignment: AssignedShift): AssignedShift[] {
+        return day.assignments.filter((item) => {
+            return item.shift === assignment.shift
+                && item.workerId !== assignment.workerId
+                && item.isFigurative !== true;
         });
     }
 
