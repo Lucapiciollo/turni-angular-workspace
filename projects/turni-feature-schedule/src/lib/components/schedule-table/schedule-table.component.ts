@@ -34,6 +34,8 @@ export class ScheduleTableComponent {
 
     @Output() markWorkerSick = new EventEmitter<AssignedShift>();
     @Output() requestLongShift = new EventEmitter<{ day: DaySchedule; assignment: AssignedShift }>();
+    @Output() openStatsDetail = new EventEmitter<AssignedShift>();
+    @Output() openWarningsDetail = new EventEmitter<AssignedShift>();
 
     getAssignmentsByShift(
         day: DaySchedule,

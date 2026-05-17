@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { AssignedShift, Worker } from '@turni/data-access';
 
@@ -15,16 +14,13 @@ export class WorkerPillComponent {
     @Input() showActions = true;
 
     @Output() markSick = new EventEmitter<AssignedShift>();
-
     @Output() requestLongShift = new EventEmitter<AssignedShift>();
+    @Output() openStatsDetail = new EventEmitter<AssignedShift>();
+    @Output() openWarningsDetail = new EventEmitter<AssignedShift>();
 
     @ViewChild('sourceTooltip') sourceTooltip?: MatTooltip;
     @ViewChild('statsTooltip') statsTooltip?: MatTooltip;
     @ViewChild('warningTooltip') warningTooltip?: MatTooltip;
-
-    constructor(
-        private router: Router
-    ) {}
 
     get color(): string {
         return this.worker?.color ?? '#64748b';
@@ -82,36 +78,12 @@ export class WorkerPillComponent {
     openStats(event: MouseEvent): void {
         event.stopPropagation();
         this.hideTooltips();
-
-        this.router.navigate(
-            ['/piano-turni/statistiche'],
-            {
-                state: {
-                    workerId: this.assignment.workerId,
-                    filter: 'ALL',
-                    statsFilter: 'ALL',
-                    origin: 'PERIOD_PLAN',
-                    periodDate: this.assignment.date,
-                },
-            }
-        );
+        this.openStatsDetail.emit(this.assignment);
     }
 
     openWarnings(event: MouseEvent): void {
         event.stopPropagation();
         this.hideTooltips();
-
-        this.router.navigate(
-            ['/piano-turni/warning'],
-            {
-                state: {
-                    workerId: this.assignment.workerId,
-                    filter: 'ALL',
-                    warningFilter: 'ALL',
-                    origin: 'PERIOD_PLAN',
-                    periodDate: this.assignment.date,
-                },
-            }
-        );
+        this.openWarningsDetail.emit(this.assignment);
     }
 }

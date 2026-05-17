@@ -3,7 +3,7 @@
         <div>
             <h1>Piano turni</h1>
             <p>
-                Pianificazione periodo con accesso rapido a turni, avvisi e statistiche.
+                Pianificazione periodo con turni, avvisi e statistiche nello stesso contesto.
             </p>
         </div>
 
@@ -29,19 +29,10 @@
         <button
             mat-stroked-button
             type="button"
-            routerLink="/piano-turni/statistiche"
+            (click)="scrollToSection('section-turni')"
         >
-            <mat-icon>query_stats</mat-icon>
-            Statistiche operatori
-        </button>
-
-        <button
-            mat-stroked-button
-            type="button"
-            routerLink="/piano-turni/warning"
-        >
-            <mat-icon>warning</mat-icon>
-            Warning e anomalie
+            <mat-icon>calendar_month</mat-icon>
+            Vai ai turni
         </button>
 
         <button
@@ -49,7 +40,7 @@
             type="button"
             (click)="scrollToSection('section-avvisi')"
         >
-            <mat-icon>south</mat-icon>
+            <mat-icon>warning</mat-icon>
             Vai agli avvisi
         </button>
 
@@ -60,6 +51,17 @@
         >
             <mat-icon>bar_chart</mat-icon>
             Vai alle statistiche
+        </button>
+
+        <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            *ngIf="turniFacade.selectedWorker()"
+            (click)="clearInlineWorkerDetail()"
+        >
+            <mat-icon>close</mat-icon>
+            Rimuovi dettaglio operatore
         </button>
     </section>
 
@@ -95,6 +97,8 @@
             [getWorkerFn]="turniFacade.getWorkerFn"
             (markWorkerSick)="turniFacade.markWorkerSickOnShift($event)"
             (requestLongShift)="openLongShiftDialog($event)"
+            (openStatsDetail)="openWorkerStatsDetail($event)"
+            (openWarningsDetail)="openWorkerWarningsDetail($event)"
         ></turni-schedule-table>
     </section>
 
@@ -108,43 +112,55 @@
         >
             <mat-expansion-panel
                 id="section-avvisi"
-                [expanded]="turniFacade.periodWarnings().length > 0"
+                [expanded]="turniFacade.periodWarnings().length > 0 || !!turniFacade.selectedWorker()"
             >
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon>warning</mat-icon>
-                        Avvisi principali
+                        Avvisi del periodo
                     </mat-panel-title>
 
                     <mat-panel-description>
-                        {{ turniFacade.periodWarnings().length }} elementi
+                        @if (turniFacade.selectedWorker()) {
+                            filtrati per {{ turniFacade.selectedWorker()?.workerName }}
+                        } @else {
+                            {{ turniFacade.periodWarnings().length }} elementi
+                        }
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <div class="panel-actions">
+                <div
+                    class="inline-detail-banner"
+                    *ngIf="turniFacade.selectedWorker()"
+                >
+                    <mat-icon>person_search</mat-icon>
+                    <span>
+                        Dettaglio attivo su {{ turniFacade.selectedWorker()?.workerName }}.
+                    </span>
+
                     <button
-                        mat-flat-button
-                        color="primary"
+                        mat-button
+                        color="warn"
                         type="button"
-                        routerLink="/piano-turni/warning"
+                        (click)="clearInlineWorkerDetail()"
                     >
-                        Vedi tutti i warning
+                        Rimuovi
                     </button>
                 </div>
 
                 <turni-warning-list
-                    [warnings]="turniFacade.periodWarnings().slice(0, 8)"
+                    [warnings]="turniFacade.selectedWorker() ? turniFacade.filteredWarnings() : turniFacade.periodWarnings()"
                 ></turni-warning-list>
             </mat-expansion-panel>
 
             <mat-expansion-panel
                 id="section-statistiche"
-                [expanded]="false"
+                [expanded]="true"
             >
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon>query_stats</mat-icon>
-                        Statistiche operatori
+                        Statistiche operatori del periodo
                     </mat-panel-title>
 
                     <mat-panel-description>
@@ -152,24 +168,27 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <div class="panel-actions">
-                    <button
-                        mat-flat-button
-                        color="primary"
-                        type="button"
-                        routerLink="/piano-turni/statistiche"
+                <div class="stats-preview">
+                    <div
+                        class="stat-card-shell"
+                        *ngFor="let stat of turniFacade.periodStats()"
+                        [id]="turniFacade.selectedWorker()?.workerId === stat.workerId ? 'selected-worker-stat-card' : null"
+                        [class.selected]="turniFacade.selectedWorker()?.workerId === stat.workerId"
                     >
-                        Vedi tutte le statistiche
-                    </button>
+                        <turni-operator-stats-card
+                            [stat]="stat"
+                            [worker]="turniFacade.getWorker(stat.workerId)"
+                        ></turni-operator-stats-card>
+                    </div>
                 </div>
 
-                <div class="stats-preview">
-                    <turni-operator-stats-card
-                        *ngFor="let stat of turniFacade.periodStats().slice(0, 6)"
-                        [stat]="stat"
-                        [worker]="turniFacade.getWorker(stat.workerId)"
-                    ></turni-operator-stats-card>
-                </div>
+                <section
+                    class="empty-inline-card"
+                    *ngIf="turniFacade.periodStats().length === 0"
+                >
+                    <mat-icon>search_off</mat-icon>
+                    Nessuna statistica disponibile per il periodo corrente.
+                </section>
             </mat-expansion-panel>
         </mat-accordion>
     </section>

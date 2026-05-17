@@ -18,22 +18,10 @@ export class AppShellComponent {
     readonly menuItems: MenuItem[] = [
         {
             label: 'Piano turni',
-            description: 'Lista periodo e generazione turni',
+            description: 'Turni, avvisi e statistiche del periodo',
             icon: 'calendar_month',
             route: '/piano-turni',
             exact: true,
-        },
-        {
-            label: 'Statistiche',
-            description: 'Indicatori operatori e ore',
-            icon: 'query_stats',
-            route: '/piano-turni/statistiche',
-        },
-        {
-            label: 'Warning',
-            description: 'Anomalie, forzature e scoperti',
-            icon: 'warning',
-            route: '/piano-turni/warning',
         },
     ];
 }

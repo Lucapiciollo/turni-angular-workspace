@@ -51,6 +51,32 @@ export class PianoTurniPageComponent implements OnInit {
         });
     }
 
+    openWorkerStatsDetail(assignment: AssignedShift): void {
+        this.turniFacade.selectWorker(assignment.workerId);
+        this.turniFacade.setStatsFilter('ALL');
+        this.turniFacade.setWarningFilter('ALL');
+
+        setTimeout(() => {
+            this.scrollToSection('selected-worker-stat-card');
+        });
+    }
+
+    openWorkerWarningsDetail(assignment: AssignedShift): void {
+        this.turniFacade.selectWorker(assignment.workerId);
+        this.turniFacade.setWarningFilter('ALL');
+        this.turniFacade.setStatsFilter('ALL');
+
+        setTimeout(() => {
+            this.scrollToSection('section-avvisi');
+        });
+    }
+
+    clearInlineWorkerDetail(): void {
+        this.turniFacade.selectWorker(null);
+        this.turniFacade.setStatsFilter('ALL');
+        this.turniFacade.setWarningFilter('ALL');
+    }
+
     scrollToSection(sectionId: string): void {
         const element = document.getElementById(sectionId);
 
