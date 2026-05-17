@@ -20,6 +20,7 @@ import {
     selectGeneratedAtLabel,
     selectGenerationSeed,
     selectLastSource,
+    selectAbsences,
     selectLoading,
     selectMode,
     selectPeriodStats,
@@ -37,8 +38,9 @@ import {
     selectWarningCount,
     selectWarningFilterCounts,
     selectWarnings,
+    selectWorkers,
+    selectShifts,
 } from './turni.selectors';
-import { SHIFTS, WORKERS } from '../data/mock-turni.data';
 
 @Injectable({
     providedIn: 'root',
@@ -76,13 +78,9 @@ export class TurniFacade {
     readonly loading = this.store.selectSignal(selectLoading);
     readonly error = this.store.selectSignal(selectError);
 
-    readonly workers = () => {
-        return [...WORKERS];
-    };
-
-    readonly shifts = () => {
-        return [...SHIFTS];
-    };
+    readonly workers = this.store.selectSignal(selectWorkers);
+    readonly shifts = this.store.selectSignal(selectShifts);
+    readonly absences = this.store.selectSignal(selectAbsences);
 
     readonly getAssignmentsByShiftFn = (
         day: DaySchedule,

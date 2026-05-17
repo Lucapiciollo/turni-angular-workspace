@@ -36,7 +36,8 @@ export class TurniGeneratorService {
         workers: Worker[],
         shifts: ShiftDefinition[],
         generationSeed = 0,
-        source: SchedulePlan['source'] = 'GENERATED'
+        source: SchedulePlan['source'] = 'GENERATED',
+        absences: WorkerAbsence[] = ABSENCES
     ): SchedulePlan {
         const dates = this.dateRangeService.getDatesBetween(
             range.startDate,
@@ -54,6 +55,7 @@ export class TurniGeneratorService {
                 shifts,
                 previousDays: days,
                 generationSeed,
+                absences,
             });
 
             warnings.push(...day.warnings);
@@ -91,6 +93,7 @@ export class TurniGeneratorService {
         shifts: ShiftDefinition[];
         previousDays: DaySchedule[];
         generationSeed: number;
+        absences: WorkerAbsence[];
     }): DaySchedule {
         const assignments: AssignedShift[] = [];
         const warnings: ScheduleWarning[] = [];
@@ -98,7 +101,7 @@ export class TurniGeneratorService {
         const figurativeAbsenceAssignments = this.createFigurativeAbsenceAssignments({
             date: params.date,
             workers: params.workers,
-            absences: ABSENCES,
+            absences: params.absences,
         });
 
         for (const shift of params.shifts) {
@@ -154,6 +157,7 @@ export class TurniGeneratorService {
         previousDays: DaySchedule[];
         currentDayAssignments: AssignedShift[];
         generationSeed: number;
+        absences: WorkerAbsence[];
         shift: ShiftDefinition;
     }): AssignedShift[] {
         const assignments: AssignedShift[] = [];
@@ -223,6 +227,7 @@ export class TurniGeneratorService {
         previousDays: DaySchedule[];
         currentDayAssignments: AssignedShift[];
         generationSeed: number;
+        absences: WorkerAbsence[];
         shift: ShiftDefinition;
         slotIndex: number;
     }): Worker | null {
@@ -233,7 +238,7 @@ export class TurniGeneratorService {
                 shift: params.shift,
                 previousDays: params.previousDays,
                 currentDayAssignments: params.currentDayAssignments,
-                absences: ABSENCES,
+                absences: params.absences,
             }).allowed;
         });
 
@@ -269,6 +274,7 @@ export class TurniGeneratorService {
         previousDays: DaySchedule[];
         currentDayAssignments: AssignedShift[];
         generationSeed: number;
+        absences: WorkerAbsence[];
         shift: ShiftDefinition;
         slotIndex: number;
     }): {
@@ -283,7 +289,7 @@ export class TurniGeneratorService {
                     shift: params.shift,
                     previousDays: params.previousDays,
                     currentDayAssignments: params.currentDayAssignments,
-                    absences: ABSENCES,
+                    absences: params.absences,
                 });
 
                 return {

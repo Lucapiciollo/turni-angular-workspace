@@ -73,6 +73,55 @@ export const turniReducer = createReducer(
         };
     }),
 
+
+    on(TurniActions.loadInitialData, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.loadInitialDataSuccess, (state, { workers, shifts, absences }) => {
+        return {
+            ...state,
+            workers,
+            shifts,
+            absences,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.loadInitialDataFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
+    on(TurniActions.setWorkers, (state, { workers }) => {
+        return {
+            ...state,
+            workers,
+        };
+    }),
+
+    on(TurniActions.setShifts, (state, { shifts }) => {
+        return {
+            ...state,
+            shifts,
+        };
+    }),
+
+    on(TurniActions.setAbsences, (state, { absences }) => {
+        return {
+            ...state,
+            absences,
+        };
+    }),
+
     on(TurniActions.generatePlanSuccess, (state, { plan }) => {
         return {
             ...state,

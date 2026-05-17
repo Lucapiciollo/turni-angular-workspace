@@ -4,6 +4,7 @@ import {
     ScheduleWarning,
     StatsFilterType,
     WarningFilterType,
+    Worker,
     WorkerStats,
 } from '../models/turni.models';
 import {
@@ -13,6 +14,47 @@ import {
 
 export const selectTurniState =
     createFeatureSelector<TurniState>(TURNI_FEATURE_KEY);
+
+
+export const selectWorkers = createSelector(
+    selectTurniState,
+    (state) => state.workers
+);
+
+export const selectShifts = createSelector(
+    selectTurniState,
+    (state) => state.shifts
+);
+
+export const selectAbsences = createSelector(
+    selectTurniState,
+    (state) => state.absences
+);
+
+export const selectActiveWorkers = createSelector(
+    selectWorkers,
+    (workers) => {
+        return workers.filter((worker) => {
+            return worker.enabled !== false;
+        });
+    }
+);
+
+export const selectWorkerEntities = createSelector(
+    selectWorkers,
+    (workers) => {
+        return workers.reduce<Record<string, Worker>>((entities, worker) => {
+            entities[worker.id] = worker;
+
+            return entities;
+        }, {});
+    }
+);
+
+export const selectWorkerById = (workerId: string) => createSelector(
+    selectWorkerEntities,
+    (entities) => entities[workerId]
+);
 
 export const selectMode = createSelector(
     selectTurniState,

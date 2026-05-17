@@ -3,8 +3,11 @@ import {
     RangeMode,
     SchedulePlan,
     SchedulePlanSource,
+    ShiftDefinition,
     StatsFilterType,
     WarningFilterType,
+    Worker,
+    WorkerAbsence,
 } from '../models/turni.models';
 
 export const TURNI_FEATURE_KEY = 'turni';
@@ -13,6 +16,11 @@ export interface TurniState {
     mode: RangeMode;
     range: DateRange | null;
     plan: SchedulePlan | null;
+
+    workers: Worker[];
+    shifts: ShiftDefinition[];
+    absences: WorkerAbsence[];
+
     generationSeed: number;
     lastSource: SchedulePlanSource;
     loading: boolean;
@@ -27,6 +35,11 @@ export const initialTurniState: TurniState = {
     mode: 'MONTH',
     range: null,
     plan: null,
+
+    workers: [],
+    shifts: [],
+    absences: [],
+
     generationSeed: 0,
     lastSource: 'GENERATED',
     loading: false,

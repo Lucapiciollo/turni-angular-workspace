@@ -4,14 +4,41 @@ import {
     DateRange,
     RangeMode,
     SchedulePlan,
+    ShiftDefinition,
     StatsFilterType,
     WarningFilterType,
+    Worker,
+    WorkerAbsence,
 } from '../models/turni.models';
 
 export const TurniActions = createActionGroup({
     source: 'Turni',
     events: {
         'Init': emptyProps(),
+
+        'Load Initial Data': emptyProps(),
+
+        'Load Initial Data Success': props<{
+            workers: Worker[];
+            shifts: ShiftDefinition[];
+            absences: WorkerAbsence[];
+        }>(),
+
+        'Load Initial Data Failure': props<{
+            error: string;
+        }>(),
+
+        'Set Workers': props<{
+            workers: Worker[];
+        }>(),
+
+        'Set Shifts': props<{
+            shifts: ShiftDefinition[];
+        }>(),
+
+        'Set Absences': props<{
+            absences: WorkerAbsence[];
+        }>(), 
 
         'Open Range': props<{
             range: DateRange;
