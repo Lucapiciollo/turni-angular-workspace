@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ScheduleStateService } from '@turni/data-access';
+import { TurniFacade } from '@turni/data-access';
 
 @Component({
     standalone: false,
@@ -9,11 +9,11 @@ import { ScheduleStateService } from '@turni/data-access';
 })
 export class PianoTurniPageComponent implements OnInit {
     constructor(
-        public scheduleState: ScheduleStateService
+        public turniFacade: TurniFacade
     ) {}
 
     ngOnInit(): void {
-        this.scheduleState.init();
+        this.turniFacade.init();
     }
 
     scrollToSection(sectionId: string): void {

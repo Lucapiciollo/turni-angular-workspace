@@ -10,17 +10,17 @@
         <div class="status-area">
             <mat-chip
                 class="status-badge"
-                [class.cache]="scheduleState.lastSource() === 'CACHE'"
-                [class.regenerated]="scheduleState.lastSource() === 'REGENERATED'"
+                [class.cache]="turniFacade.lastSource() === 'CACHE'"
+                [class.regenerated]="turniFacade.lastSource() === 'REGENERATED'"
             >
-                {{ scheduleState.lastSource() }}
+                {{ turniFacade.lastSource() }}
             </mat-chip>
 
             <mat-chip
                 class="warning-badge"
-                *ngIf="scheduleState.periodWarningCount() > 0"
+                *ngIf="turniFacade.periodWarningCount() > 0"
             >
-                {{ scheduleState.periodWarningCount() }} warning
+                {{ turniFacade.periodWarningCount() }} warning
             </mat-chip>
         </div>
     </section>
@@ -64,18 +64,18 @@
     </section>
 
     <turni-schedule-range-toolbar
-        [mode]="scheduleState.mode()"
-        [range]="scheduleState.range()"
-        [generatedAtLabel]="scheduleState.generatedAtLabel()"
-        [generationSeed]="scheduleState.generationSeed()"
-        [source]="scheduleState.lastSource()"
-        [cacheKey]="scheduleState.currentRangeCacheKey()"
-        (modeChange)="scheduleState.setMode($event)"
-        (previousRange)="scheduleState.previous()"
-        (nextRange)="scheduleState.next()"
-        (refreshRange)="scheduleState.refresh()"
-        (refreshStrongRange)="scheduleState.refreshStrong()"
-        (clearCacheRange)="scheduleState.clearCurrentPeriodCache()"
+        [mode]="turniFacade.mode()"
+        [range]="turniFacade.range()"
+        [generatedAtLabel]="turniFacade.generatedAtLabel()"
+        [generationSeed]="turniFacade.generationSeed()"
+        [source]="turniFacade.lastSource()"
+        [cacheKey]="turniFacade.currentRangeCacheKey()"
+        (modeChange)="turniFacade.setMode($event)"
+        (previousRange)="turniFacade.previous()"
+        (nextRange)="turniFacade.next()"
+        (refreshRange)="turniFacade.refresh()"
+        (refreshStrongRange)="turniFacade.refreshStrong()"
+        (clearCacheRange)="turniFacade.clearCurrentPeriodCache()"
     ></turni-schedule-range-toolbar>
 
     <section
@@ -83,12 +83,12 @@
         class="schedule-section"
     >
         <turni-schedule-table
-            [days]="scheduleState.days()"
-            [shifts]="scheduleState.shifts()"
-            [workers]="scheduleState.workers()"
-            [getAssignmentsByShiftFn]="scheduleState.getAssignmentsByShift.bind(scheduleState)"
-            [getFigurativeAbsencesByDayFn]="scheduleState.getFigurativeAbsencesByDay.bind(scheduleState)"
-            [getWorkerFn]="scheduleState.getWorker.bind(scheduleState)"
+            [days]="turniFacade.days()"
+            [shifts]="turniFacade.shifts()"
+            [workers]="turniFacade.workers()"
+            [getAssignmentsByShiftFn]="turniFacade.getAssignmentsByShiftFn"
+            [getFigurativeAbsencesByDayFn]="turniFacade.getFigurativeAbsencesByDayFn"
+            [getWorkerFn]="turniFacade.getWorkerFn"
         ></turni-schedule-table>
     </section>
 
@@ -102,7 +102,7 @@
         >
             <mat-expansion-panel
                 id="section-avvisi"
-                [expanded]="scheduleState.periodWarnings().length > 0"
+                [expanded]="turniFacade.periodWarnings().length > 0"
             >
                 <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -111,7 +111,7 @@
                     </mat-panel-title>
 
                     <mat-panel-description>
-                        {{ scheduleState.periodWarnings().length }} elementi
+                        {{ turniFacade.periodWarnings().length }} elementi
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
@@ -127,7 +127,7 @@
                 </div>
 
                 <turni-warning-list
-                    [warnings]="scheduleState.periodWarnings().slice(0, 8)"
+                    [warnings]="turniFacade.periodWarnings().slice(0, 8)"
                 ></turni-warning-list>
             </mat-expansion-panel>
 
@@ -142,7 +142,7 @@
                     </mat-panel-title>
 
                     <mat-panel-description>
-                        {{ scheduleState.periodStats().length }} operatori in turno
+                        {{ turniFacade.periodStats().length }} operatori in turno
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
@@ -159,9 +159,9 @@
 
                 <div class="stats-preview">
                     <turni-operator-stats-card
-                        *ngFor="let stat of scheduleState.periodStats().slice(0, 6)"
+                        *ngFor="let stat of turniFacade.periodStats().slice(0, 6)"
                         [stat]="stat"
-                        [worker]="scheduleState.getWorker(stat.workerId)"
+                        [worker]="turniFacade.getWorker(stat.workerId)"
                     ></turni-operator-stats-card>
                 </div>
             </mat-expansion-panel>

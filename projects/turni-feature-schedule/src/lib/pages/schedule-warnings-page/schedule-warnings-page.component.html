@@ -3,8 +3,8 @@
         <div>
             <h1>Warning piano turni</h1>
             <p>
-                @if (scheduleState.selectedWorker()) {
-                    Warning filtrati per {{ scheduleState.selectedWorker()?.name }}.
+                @if (turniFacade.selectedWorker()) {
+                    Warning filtrati per {{ turniFacade.selectedWorker()?.workerName }}.
                 } @else {
                     Elenco completo di anomalie, forzature e regole non rispettate.
                 }
@@ -30,7 +30,7 @@
 
         <mat-button-toggle-group
             class="filter-group"
-            [value]="scheduleState.selectedWarningFilter()"
+            [value]="turniFacade.selectedWarningFilter()"
             aria-label="Filtri warning"
         >
             <mat-button-toggle
@@ -41,7 +41,7 @@
                 <span class="filter-label">{{ filter.label }}</span>
 
                 <span class="filter-count">
-                    {{ scheduleState.getWarningFilterCount(filter.value) }}
+                    {{ turniFacade.getWarningFilterCount(filter.value) }}
                 </span>
             </mat-button-toggle>
         </mat-button-toggle-group>
@@ -50,7 +50,7 @@
             mat-stroked-button
             color="warn"
             type="button"
-            *ngIf="scheduleState.selectedWorker()"
+            *ngIf="turniFacade.selectedWorker()"
             (click)="clearWorkerFilter()"
         >
             <mat-icon>close</mat-icon>
@@ -60,7 +60,7 @@
 
     <section class="content-card">
         <turni-warning-list
-            [warnings]="scheduleState.filteredWarnings()"
+            [warnings]="turniFacade.filteredWarnings()"
         ></turni-warning-list>
     </section>
 </div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
     ScheduleNavigationExtras,
-    ScheduleStateService,
+    TurniFacade,
     StatsFilterType,
     WarningFilterType,
 } from '@turni/data-access';
@@ -67,42 +67,42 @@ export class ScheduleStatsPageComponent implements OnInit {
     ];
 
     constructor(
-        public scheduleState: ScheduleStateService,
+        public turniFacade: TurniFacade,
         private activatedRoute: ActivatedRoute
     ) {}
 
     ngOnInit(): void {
-        this.scheduleState.init();
+        this.turniFacade.init();
 
         const navigationExtras = this.getNavigationExtras();
 
-        this.scheduleState.selectWorker(navigationExtras.workerId ?? null);
+        this.turniFacade.selectWorker(navigationExtras.workerId ?? null);
 
         if (navigationExtras.workerId) {
-            this.scheduleState.setWarningFilter(
+            this.turniFacade.setWarningFilter(
                 this.getWarningFilter(navigationExtras)
             );
-            this.scheduleState.setStatsFilter('ALL');
+            this.turniFacade.setStatsFilter('ALL');
             return;
         }
 
-        this.scheduleState.setStatsFilter(
+        this.turniFacade.setStatsFilter(
             this.getStatsFilter(navigationExtras)
         );
-        this.scheduleState.setWarningFilter('ALL');
+        this.turniFacade.setWarningFilter('ALL');
     }
 
     setStatsFilter(filter: StatsFilterType): void {
-        this.scheduleState.setStatsFilter(filter);
+        this.turniFacade.setStatsFilter(filter);
     }
 
     setWarningFilter(filter: WarningFilterType): void {
-        this.scheduleState.setWarningFilter(filter);
+        this.turniFacade.setWarningFilter(filter);
     }
 
     clearWorkerFilter(): void {
-        this.scheduleState.selectWorker(null);
-        this.scheduleState.setWarningFilter('ALL');
+        this.turniFacade.selectWorker(null);
+        this.turniFacade.setWarningFilter('ALL');
     }
 
     private getNavigationExtras(): ScheduleNavigationExtras {

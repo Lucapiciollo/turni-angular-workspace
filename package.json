@@ -24,7 +24,10 @@
         "zone.js": "~0.15.1",
         "@angular/material": "^19.2.0",
         "@angular/cdk": "^19.2.0",
-        "ux-directives": "latest"
+        "ux-directives": "latest",
+        "@ngrx/store": "^19.2.0",
+        "@ngrx/effects": "^19.2.0",
+        "@ngrx/store-devtools": "^19.2.0"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^19.2.0",

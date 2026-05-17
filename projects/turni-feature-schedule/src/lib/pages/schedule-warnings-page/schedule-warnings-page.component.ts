@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
     ScheduleNavigationExtras,
-    ScheduleStateService,
+    TurniFacade,
     WarningFilterType,
 } from '@turni/data-access';
 
@@ -40,27 +40,27 @@ export class ScheduleWarningsPageComponent implements OnInit {
     ];
 
     constructor(
-        public scheduleState: ScheduleStateService,
+        public turniFacade: TurniFacade,
         private activatedRoute: ActivatedRoute
     ) {}
 
     ngOnInit(): void {
-        this.scheduleState.init();
+        this.turniFacade.init();
 
         const navigationExtras = this.getNavigationExtras();
 
-        this.scheduleState.selectWorker(navigationExtras.workerId ?? null);
-        this.scheduleState.setWarningFilter(
+        this.turniFacade.selectWorker(navigationExtras.workerId ?? null);
+        this.turniFacade.setWarningFilter(
             this.getWarningFilter(navigationExtras)
         );
     }
 
     setFilter(filter: WarningFilterType): void {
-        this.scheduleState.setWarningFilter(filter);
+        this.turniFacade.setWarningFilter(filter);
     }
 
     clearWorkerFilter(): void {
-        this.scheduleState.selectWorker(null);
+        this.turniFacade.selectWorker(null);
     }
 
     private getNavigationExtras(): ScheduleNavigationExtras {

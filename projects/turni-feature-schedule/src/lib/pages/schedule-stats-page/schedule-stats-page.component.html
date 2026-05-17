@@ -2,7 +2,7 @@
     <section class="header-card">
         <div>
             <h1>
-                @if (scheduleState.selectedWorker()) {
+                @if (turniFacade.selectedWorker()) {
                     Dettaglio operatore
                 } @else {
                     Statistiche operatori
@@ -10,8 +10,8 @@
             </h1>
 
             <p>
-                @if (scheduleState.selectedWorker()) {
-                    Scheda di {{ scheduleState.selectedWorker()?.name }} nel periodo corrente.
+                @if (turniFacade.selectedWorker()) {
+                    Scheda di {{ turniFacade.selectedWorker()?.workerName }} nel periodo corrente.
                 } @else {
                     Vista completa di tutti gli operatori.
                 }
@@ -29,14 +29,14 @@
         </button>
     </section>
 
-    @if (scheduleState.selectedWorker()) {
+    @if (turniFacade.selectedWorker()) {
         <section
             class="detail-card"
-            *ngIf="scheduleState.selectedWorkerStats() as selectedStat"
+            *ngIf="turniFacade.selectedWorkerStats() as selectedStat"
         >
             <turni-operator-stats-card
                 [stat]="selectedStat"
-                [worker]="scheduleState.selectedWorker() || undefined"
+                [worker]="turniFacade.getWorker(selectedStat.workerId)"
             ></turni-operator-stats-card>
         </section>
 
@@ -48,7 +48,7 @@
 
             <mat-button-toggle-group
                 class="filter-group"
-                [value]="scheduleState.selectedWarningFilter()"
+                [value]="turniFacade.selectedWarningFilter()"
                 aria-label="Filtri warning operatore"
             >
                 <mat-button-toggle
@@ -59,7 +59,7 @@
                     <span class="filter-label">{{ filter.label }}</span>
 
                     <span class="filter-count">
-                        {{ scheduleState.getWarningFilterCount(filter.value) }}
+                        {{ turniFacade.getWarningFilterCount(filter.value) }}
                     </span>
                 </mat-button-toggle>
             </mat-button-toggle-group>
@@ -77,7 +77,7 @@
 
         <section class="content-card">
             <turni-warning-list
-                [warnings]="scheduleState.filteredWarnings()"
+                [warnings]="turniFacade.filteredWarnings()"
             ></turni-warning-list>
         </section>
     } @else {
@@ -89,7 +89,7 @@
 
             <mat-button-toggle-group
                 class="filter-group"
-                [value]="scheduleState.selectedStatsFilter()"
+                [value]="turniFacade.selectedStatsFilter()"
                 aria-label="Filtri statistiche"
             >
                 <mat-button-toggle
@@ -100,7 +100,7 @@
                     <span class="filter-label">{{ filter.label }}</span>
 
                     <span class="filter-count">
-                        {{ scheduleState.getStatsFilterCount(filter.value) }}
+                        {{ turniFacade.getStatsFilterCount(filter.value) }}
                     </span>
                 </mat-button-toggle>
             </mat-button-toggle-group>
@@ -108,15 +108,15 @@
 
         <section class="stats-grid">
             <turni-operator-stats-card
-                *ngFor="let stat of scheduleState.filteredStats()"
+                *ngFor="let stat of turniFacade.filteredStats()"
                 [stat]="stat"
-                [worker]="scheduleState.getWorker(stat.workerId)"
+                [worker]="turniFacade.getWorker(stat.workerId)"
             ></turni-operator-stats-card>
         </section>
 
         <section
             class="empty-card"
-            *ngIf="scheduleState.filteredStats().length === 0"
+            *ngIf="turniFacade.filteredStats().length === 0"
         >
             Nessuna statistica trovata con i filtri correnti.
         </section>

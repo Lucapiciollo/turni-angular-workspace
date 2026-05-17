@@ -1,4 +1,7 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule, isDevMode } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { BrowserModule } from '@angular/platform-browser';
@@ -14,6 +17,13 @@ registerLocaleData(localeIt);
         AppComponent,
     ],
     imports: [
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([]),
+        StoreDevtoolsModule.instrument({
+            maxAge: 25,
+            logOnly: !isDevMode(),
+            autoPause: true,
+        }),
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
