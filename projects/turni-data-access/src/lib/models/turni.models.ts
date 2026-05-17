@@ -267,8 +267,25 @@ export interface ShiftReplacementResult {
     forced: boolean;
     uncovered: boolean;
     originalWorkerId: string;
+    originalWorkerName?: string;
     replacementWorkerId?: string;
+    replacementWorkerName?: string;
     message: string;
+}
+
+export interface PendingSickReplacement {
+    date: string;
+    shift: ShiftType;
+    originalWorkerId: string;
+    originalWorkerName: string;
+    replacementWorkerId?: string;
+    replacementWorkerName?: string;
+    excludedReplacementWorkerIds: string[];
+    proposedPlan: SchedulePlan;
+    proposedAbsences: WorkerAbsence[];
+    message: string;
+    forced: boolean;
+    uncovered: boolean;
 }
 
 

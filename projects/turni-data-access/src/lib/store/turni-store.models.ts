@@ -3,6 +3,7 @@ import {
     DaySchedule,
     RangeMode,
     SchedulePlan,
+    PendingSickReplacement,
     SchedulePlanSource,
     ShiftDefinition,
     StatsFilterType,
@@ -32,6 +33,7 @@ export interface TurniState {
     error: string | null;
 
     selectedWorkerId: string | null;
+    pendingSickReplacement: PendingSickReplacement | null;
     selectedStatsFilter: StatsFilterType;
     selectedWarningFilter: WarningFilterType;
 }
@@ -55,6 +57,7 @@ export const initialTurniState: TurniState = {
     error: null,
 
     selectedWorkerId: null,
+    pendingSickReplacement: null,
     selectedStatsFilter: 'ALL',
     selectedWarningFilter: 'ALL',
 };

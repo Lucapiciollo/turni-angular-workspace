@@ -384,3 +384,8 @@ export const selectVisibleDays = createSelector(
             : days;
     }
 );
+
+export const selectPendingSickReplacement = createSelector(
+    selectTurniState,
+    (state) => state.pendingSickReplacement
+);

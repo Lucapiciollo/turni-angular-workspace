@@ -258,14 +258,10 @@ export const turniReducer = createReducer(
         };
     }),
 
-    on(TurniActions.markWorkerSickOnShiftSuccess, (state, { plan, absences }) => {
+    on(TurniActions.markWorkerSickOnShiftSuccess, (state, { pending }) => {
         return {
             ...state,
-            plan,
-            absences: absences.length > 0
-                ? absences
-                : state.absences,
-            lastSource: plan.source,
+            pendingSickReplacement: pending,
             loading: false,
             error: null,
         };
@@ -276,6 +272,31 @@ export const turniReducer = createReducer(
             ...state,
             loading: false,
             error,
+        };
+    }),
+
+    on(TurniActions.confirmSickReplacement, (state) => {
+        if (!state.pendingSickReplacement) {
+            return state;
+        }
+
+        return {
+            ...state,
+            plan: state.pendingSickReplacement.proposedPlan,
+            absences: state.pendingSickReplacement.proposedAbsences,
+            pendingSickReplacement: null,
+            lastSource: 'REGENERATED' as const,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.clearSickReplacementProposal, (state) => {
+        return {
+            ...state,
+            pendingSickReplacement: null,
+            loading: false,
+            error: null,
         };
     }),
 

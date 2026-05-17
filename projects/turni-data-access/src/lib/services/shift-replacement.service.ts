@@ -39,6 +39,7 @@ export class ShiftReplacementService {
         shift: ShiftType;
         workerId: string;
         note?: string;
+        excludedReplacementWorkerIds?: string[];
     }): ShiftReplacementResult {
         const plan = this.clonePlan(params.plan);
         const day = plan.days.find((item) => item.date === params.date);
@@ -98,6 +99,7 @@ export class ShiftReplacementService {
             absences: updatedAbsences,
             shift: shiftDefinition,
             originalWorkerId: params.workerId,
+            excludedReplacementWorkerIds: params.excludedReplacementWorkerIds ?? [],
         });
 
         let replaced = false;
@@ -172,7 +174,9 @@ export class ShiftReplacementService {
             forced,
             uncovered,
             originalWorkerId: params.workerId,
+            originalWorkerName: originalAssignment.workerName,
             replacementWorkerId,
+            replacementWorkerName: replacement?.worker.name,
             message: replaced
                 ? forced
                     ? 'Sostituto trovato in modalità forzata.'
@@ -188,6 +192,7 @@ export class ShiftReplacementService {
         absences: WorkerAbsence[];
         shift: ShiftDefinition;
         originalWorkerId: string;
+        excludedReplacementWorkerIds: string[];
     }): {
         worker: Worker;
         ruleCheck: RuleCheckResult;
@@ -200,7 +205,10 @@ export class ShiftReplacementService {
         });
 
         const candidates = params.workers
-            .filter((worker) => worker.id !== params.originalWorkerId)
+            .filter((worker) => {
+                return worker.id !== params.originalWorkerId
+                    && !params.excludedReplacementWorkerIds.includes(worker.id);
+            })
             .map((worker) => {
                 const ruleCheck = this.shiftRulesService.checkWorkerAssignment({
                     worker,

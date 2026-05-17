@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, from, map, of, switchMap, takeUntil, withLatestFrom } from 'rxjs';
+import { catchError, from, map, of, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs';
 
 import { TURNI_FULL_MOCK } from '../data/turni-full-mock';
 import { DateRangeService } from '../services/date-range.service';
@@ -12,7 +12,7 @@ import { TurniGeneratorService } from '../services/turni-generator.service';
 import { TurniStorageService } from '../services/turni-storage.service';
 import { TurniActions } from './turni.actions';
 import { Worker, WorkerEditorDraft } from '../models/turni.models';
-import { selectAbsences, selectGenerationSeed, selectIsPastRange, selectMode, selectPlan, selectRange, selectShifts, selectWorkers } from './turni.selectors';
+import { selectAbsences, selectGenerationSeed, selectIsPastRange, selectMode, selectPendingSickReplacement, selectPlan, selectRange, selectShifts, selectWorkers } from './turni.selectors';
 
 @Injectable()
 export class TurniEffects {
@@ -138,14 +138,81 @@ export class TurniEffects {
         switchMap(([action, currentPlan, workers, shifts, absences]) => {
             try {
                 if (!currentPlan) return of(TurniActions.markWorkerSickOnShiftFailure({ error: 'Piano turni non presente.' }));
-                const result = this.replacementService.markWorkerSickAndReplace({ plan: currentPlan, workers, shifts, absences, date: action.date, shift: action.shift, workerId: action.workerId, note: action.note });
-                this.cacheService.set(result.plan);
-                return of(TurniActions.markWorkerSickOnShiftSuccess({ plan: result.plan, absences: result.absences }));
+
+                const result = this.replacementService.markWorkerSickAndReplace({
+                    plan: currentPlan,
+                    workers,
+                    shifts,
+                    absences,
+                    date: action.date,
+                    shift: action.shift,
+                    workerId: action.workerId,
+                    note: action.note,
+                    excludedReplacementWorkerIds: action.excludedReplacementWorkerIds ?? [],
+                });
+
+                return of(TurniActions.markWorkerSickOnShiftSuccess({
+                    pending: {
+                        date: action.date,
+                        shift: action.shift,
+                        originalWorkerId: result.originalWorkerId,
+                        originalWorkerName: result.originalWorkerName ?? 'Operatore',
+                        replacementWorkerId: result.replacementWorkerId,
+                        replacementWorkerName: result.replacementWorkerName,
+                        excludedReplacementWorkerIds: [
+                            ...(action.excludedReplacementWorkerIds ?? []),
+                            ...(result.replacementWorkerId ? [result.replacementWorkerId] : []),
+                        ],
+                        proposedPlan: result.plan,
+                        proposedAbsences: result.absences,
+                        message: result.message,
+                        forced: result.forced,
+                        uncovered: result.uncovered,
+                    },
+                }));
             } catch (error) {
-                return of(TurniActions.markWorkerSickOnShiftFailure({ error: error instanceof Error ? error.message : 'Errore sostituzione operatore in malattia' }));
+                return of(TurniActions.markWorkerSickOnShiftFailure({ error: error instanceof Error ? error.message : 'Errore proposta sostituzione operatore in malattia' }));
             }
         })
     ));
+
+
+    readonly refreshSickReplacement$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.refreshSickReplacement),
+        withLatestFrom(this.store.select(selectPendingSickReplacement)),
+        map(([, pending]) => {
+            if (!pending) {
+                return TurniActions.noop();
+            }
+
+            return TurniActions.markWorkerSickOnShift({
+                date: pending.date,
+                shift: pending.shift,
+                workerId: pending.originalWorkerId,
+                excludedReplacementWorkerIds: pending.excludedReplacementWorkerIds,
+            });
+        })
+    ));
+
+
+    readonly confirmSickReplacementCache$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.confirmSickReplacement),
+        withLatestFrom(
+            this.store.select(selectPendingSickReplacement),
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts)
+        ),
+        tap(([, pending, workers, shifts]) => {
+            if (pending) {
+                this.cacheService.set(pending.proposedPlan);
+                this.storageService.save({
+                    workers,
+                    shifts,
+                    absences: pending.proposedAbsences,
+                });
+            }
+        })
+    ), { dispatch: false });
 
     readonly applyLongShift$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.applyLongShift),

@@ -4,6 +4,7 @@ import {
     DateRange,
     RangeMode,
     SchedulePlan,
+    PendingSickReplacement,
     DaySchedule,
     ShiftDefinition,
     ShiftType,
@@ -47,9 +48,12 @@ export const TurniActions = createActionGroup({
         'Cancel Plan Generation': emptyProps(),
         'Cancel Plan Generation Success': emptyProps(),
         'Clear Current Period Cache': emptyProps(),
-        'Mark Worker Sick On Shift': props<{ date: string; shift: ShiftType; workerId: string; note?: string }>(),
-        'Mark Worker Sick On Shift Success': props<{ plan: SchedulePlan; absences: WorkerAbsence[] }>(),
+        'Mark Worker Sick On Shift': props<{ date: string; shift: ShiftType; workerId: string; note?: string; excludedReplacementWorkerIds?: string[] }>(),
+        'Mark Worker Sick On Shift Success': props<{ pending: PendingSickReplacement }>(),
         'Mark Worker Sick On Shift Failure': props<{ error: string }>(),
+        'Confirm Sick Replacement': emptyProps(),
+        'Refresh Sick Replacement': emptyProps(),
+        'Clear Sick Replacement Proposal': emptyProps(),
         'Apply Long Shift': props<{
             date: string;
             shift: ShiftType;

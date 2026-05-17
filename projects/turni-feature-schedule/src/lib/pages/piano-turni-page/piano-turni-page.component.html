@@ -88,6 +88,63 @@
     ></turni-schedule-range-toolbar>
 
     <section
+        class="sick-replacement-proposal"
+        *ngIf="turniFacade.pendingSickReplacement() as pending"
+    >
+        <div class="proposal-icon">
+            <mat-icon>local_pharmacy</mat-icon>
+        </div>
+
+        <div class="proposal-copy">
+            <strong>Sostituzione da confermare</strong>
+
+            <span>
+                {{ pending.originalWorkerName }} è stato messo in malattia
+                sul turno {{ pending.shift | turniShiftLabel }} del {{ pending.date }}.
+                @if (pending.replacementWorkerName) {
+                    Sostituto proposto: <b>{{ pending.replacementWorkerName }}</b>.
+                } @else {
+                    Nessun sostituto disponibile: turno scoperto.
+                }
+            </span>
+
+            <small>{{ pending.message }}</small>
+        </div>
+
+        <div class="proposal-actions">
+            <button
+                mat-stroked-button
+                type="button"
+                color="warn"
+                (click)="turniFacade.clearSickReplacementProposal()"
+            >
+                <mat-icon>close</mat-icon>
+                Annulla
+            </button>
+
+            <button
+                mat-stroked-button
+                type="button"
+                [disabled]="pending.uncovered"
+                (click)="turniFacade.refreshSickReplacement()"
+            >
+                <mat-icon>refresh</mat-icon>
+                Cerca altro
+            </button>
+
+            <button
+                mat-flat-button
+                color="primary"
+                type="button"
+                (click)="turniFacade.confirmSickReplacement()"
+            >
+                <mat-icon>check_circle</mat-icon>
+                Conferma
+            </button>
+        </div>
+    </section>
+
+    <section
         id="section-turni"
         class="schedule-section"
     >

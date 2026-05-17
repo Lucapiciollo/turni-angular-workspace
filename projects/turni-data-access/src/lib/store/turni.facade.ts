@@ -34,6 +34,7 @@ import {
     selectPeriodStats,
     selectPeriodWarningCount,
     selectPeriodWarnings,
+    selectPendingSickReplacement,
     selectPlan,
     selectRange,
     selectSelectedStatsFilter,
@@ -92,6 +93,7 @@ export class TurniFacade {
     readonly sortedWorkers = this.store.selectSignal(selectSortedWorkers);
     readonly shifts = this.store.selectSignal(selectShifts);
     readonly absences = this.store.selectSignal(selectAbsences);
+    readonly pendingSickReplacement = this.store.selectSignal(selectPendingSickReplacement);
 
     readonly selectedWorkerName = () => {
         return this.selectedWorkerStats()?.workerName ?? null;
@@ -181,6 +183,18 @@ export class TurniFacade {
                 workerId: assignment.workerId,
             })
         );
+    }
+
+    confirmSickReplacement(): void {
+        this.store.dispatch(TurniActions.confirmSickReplacement());
+    }
+
+    refreshSickReplacement(): void {
+        this.store.dispatch(TurniActions.refreshSickReplacement());
+    }
+
+    clearSickReplacementProposal(): void {
+        this.store.dispatch(TurniActions.clearSickReplacementProposal());
     }
 
     applyLongShift(params: {
