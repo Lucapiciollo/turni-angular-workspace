@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
@@ -21,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 const MATERIAL_MODULES = [
+    MatProgressBarModule,
     MatSlideToggleModule,
     MatCheckboxModule,
     MatTableModule,

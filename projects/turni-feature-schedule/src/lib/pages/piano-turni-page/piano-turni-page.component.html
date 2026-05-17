@@ -75,12 +75,16 @@
         (exportPdf)="turniFacade.exportCurrentPlanPdf()"
         [isPastRange]="turniFacade.isPastRange()"
         [cacheKey]="turniFacade.currentRangeCacheKey()"
+        [generating]="turniFacade.generating()"
+        [generationProgress]="turniFacade.generationProgressValue()"
+        [generationCurrentDate]="turniFacade.generationCurrentDate()"
         (modeChange)="turniFacade.setMode($event)"
         (previousRange)="turniFacade.previous()"
         (nextRange)="turniFacade.next()"
         (refreshRange)="turniFacade.refresh()"
         (refreshStrongRange)="turniFacade.refreshStrong()"
         (clearCacheRange)="turniFacade.clearCurrentPeriodCache()"
+        (cancelGeneration)="turniFacade.cancelGeneration()"
     ></turni-schedule-range-toolbar>
 
     <section

@@ -353,3 +353,34 @@ export const selectSortedWorkers = createSelector(
         });
     }
 );
+
+export const selectGenerating = createSelector(
+    selectTurniState,
+    (state) => state.generating
+);
+
+export const selectGenerationProgress = createSelector(
+    selectTurniState,
+    (state) => state.generationProgress
+);
+
+export const selectGenerationCurrentDate = createSelector(
+    selectTurniState,
+    (state) => state.generationCurrentDate
+);
+
+export const selectPartialDays = createSelector(
+    selectTurniState,
+    (state) => state.partialDays
+);
+
+export const selectVisibleDays = createSelector(
+    selectGenerating,
+    selectPartialDays,
+    selectDays,
+    (generating, partialDays, days) => {
+        return generating && partialDays.length > 0
+            ? partialDays
+            : days;
+    }
+);

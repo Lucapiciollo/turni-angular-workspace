@@ -227,3 +227,43 @@
         }
     }
 }
+
+
+.generation-progress {
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: var(--turni-primary-soft, #eef4ff);
+    border: 1px solid #dbe7ff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    mat-progress-bar {
+        border-radius: 999px;
+        overflow: hidden;
+    }
+}
+
+.progress-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #315fcc;
+    font-size: 13px;
+    font-weight: 500;
+
+    mat-icon {
+        font-size: 19px;
+        width: 19px;
+        height: 19px;
+    }
+
+    strong {
+        margin-left: 4px;
+    }
+
+    small {
+        color: var(--turni-muted, #6b7280);
+        font-weight: 400;
+    }
+}

@@ -1,5 +1,6 @@
 import {
     DateRange,
+    DaySchedule,
     RangeMode,
     SchedulePlan,
     SchedulePlanSource,
@@ -24,6 +25,10 @@ export interface TurniState {
     generationSeed: number;
     lastSource: SchedulePlanSource;
     loading: boolean;
+    generating: boolean;
+    generationProgress: number;
+    generationCurrentDate: string | null;
+    partialDays: DaySchedule[];
     error: string | null;
 
     selectedWorkerId: string | null;
@@ -43,6 +48,10 @@ export const initialTurniState: TurniState = {
     generationSeed: 0,
     lastSource: 'GENERATED',
     loading: false,
+    generating: false,
+    generationProgress: 0,
+    generationCurrentDate: null,
+    partialDays: [],
     error: null,
 
     selectedWorkerId: null,

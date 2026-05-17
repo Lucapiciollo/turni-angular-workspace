@@ -270,3 +270,18 @@ export interface ShiftReplacementResult {
     replacementWorkerId?: string;
     message: string;
 }
+
+
+export type PlanGenerationStepType =
+    | 'STARTED'
+    | 'DAY_GENERATED'
+    | 'COMPLETED'
+    | 'CANCELLED';
+
+export interface PlanGenerationStep {
+    type: PlanGenerationStepType;
+    progress: number;
+    currentDate?: string;
+    days?: DaySchedule[];
+    plan?: SchedulePlan;
+}

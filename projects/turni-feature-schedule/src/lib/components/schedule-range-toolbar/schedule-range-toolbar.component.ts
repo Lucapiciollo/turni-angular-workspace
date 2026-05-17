@@ -15,6 +15,9 @@ export class ScheduleRangeToolbarComponent {
     @Input() isPastRange = false;
     @Input() source = 'GENERATED';
     @Input() cacheKey = '-';
+    @Input() generating = false;
+    @Input() generationProgress = 0;
+    @Input() generationCurrentDate: string | null = null;
 
     @Output() modeChange = new EventEmitter<RangeMode>();
     @Output() previousRange = new EventEmitter<void>();
@@ -26,4 +29,5 @@ export class ScheduleRangeToolbarComponent {
     @Output() clearCurrentPeriodCache = new EventEmitter<void>();
 
     @Output() exportPdf = new EventEmitter<void>();
+    @Output() cancelGeneration = new EventEmitter<void>();
 }

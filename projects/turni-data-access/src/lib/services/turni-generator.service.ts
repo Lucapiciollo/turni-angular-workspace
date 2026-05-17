@@ -9,6 +9,7 @@ import {
     RuleCheckResult,
     SchedulePlan,
     ScheduleWarning,
+    PlanGenerationStep,
     ShiftDefinition,
     Worker,
     WorkerAbsence,
@@ -84,6 +85,131 @@ export class TurniGeneratorService {
             source,
             generatedAt: this.dateRangeService.nowIso(),
         };
+    }
+
+
+    async *generatePlanSteps(params: {
+        range: DateRange;
+        workers: Worker[];
+        shifts: ShiftDefinition[];
+        generationSeed?: number;
+        source?: SchedulePlan['source'];
+        absences?: WorkerAbsence[];
+        signal?: AbortSignal;
+    }): AsyncGenerator<PlanGenerationStep> {
+        const generationSeed = params.generationSeed ?? 0;
+        const source = params.source ?? 'GENERATED';
+        const absences = params.absences ?? ABSENCES;
+
+        const dates = this.dateRangeService.getDatesBetween(
+            params.range.startDate,
+            params.range.endDate
+        );
+
+        const days: DaySchedule[] = [];
+        const warnings: ScheduleWarning[] = [];
+
+        yield {
+            type: 'STARTED',
+            progress: 0,
+            currentDate: dates[0],
+            days: [],
+        };
+
+        await this.waitFrame();
+
+        for (let dayIndex = 0; dayIndex < dates.length; dayIndex++) {
+            if (params.signal?.aborted) {
+                yield {
+                    type: 'CANCELLED',
+                    progress: this.calculateProgress(dayIndex, dates.length),
+                    currentDate: dates[dayIndex],
+                    days: [...days],
+                };
+
+                return;
+            }
+
+            const date = dates[dayIndex];
+
+            const day = this.generateDaySchedule({
+                date,
+                dayIndex,
+                workers: params.workers,
+                shifts: params.shifts,
+                previousDays: days,
+                generationSeed,
+                absences,
+            });
+
+            warnings.push(...day.warnings);
+            days.push(day);
+
+            yield {
+                type: 'DAY_GENERATED',
+                progress: this.calculateProgress(dayIndex + 1, dates.length),
+                currentDate: date,
+                days: [...days],
+            };
+
+            await this.waitFrame();
+        }
+
+        const stats = this.workerStatsService.calculateStats(
+            params.workers,
+            days
+        );
+
+        const qualityWarnings = this.warningService.createQualityWarnings({
+            range: params.range,
+            workers: params.workers,
+            days,
+            stats,
+        });
+
+        warnings.push(...qualityWarnings);
+
+        const plan: SchedulePlan = {
+            range: params.range,
+            days,
+            warnings,
+            stats,
+            source,
+            generatedAt: this.dateRangeService.nowIso(),
+        };
+
+        yield {
+            type: 'COMPLETED',
+            progress: 100,
+            currentDate: dates[dates.length - 1],
+            days: [...days],
+            plan,
+        };
+    }
+
+    private calculateProgress(
+        current: number,
+        total: number
+    ): number {
+        if (total <= 0) {
+            return 100;
+        }
+
+        return Math.min(
+            100,
+            Math.round((current / total) * 100)
+        );
+    }
+
+    private waitFrame(): Promise<void> {
+        return new Promise((resolve) => {
+            if (typeof requestAnimationFrame === 'function') {
+                requestAnimationFrame(() => resolve());
+                return;
+            }
+
+            setTimeout(() => resolve(), 0);
+        });
     }
 
     private generateDaySchedule(params: {

@@ -6,6 +6,7 @@
                     mat-icon-button
                     type="button"
                     class="nav-button"
+                    [disabled]="generating"
                     (click)="previousRange.emit()"
                     aria-label="Periodo precedente"
                 >
@@ -16,6 +17,7 @@
                     mat-icon-button
                     type="button"
                     class="nav-button"
+                    [disabled]="generating"
                     (click)="nextRange.emit()"
                     aria-label="Periodo successivo"
                 >
@@ -40,7 +42,7 @@
                 mat-flat-button
                 color="primary"
                 type="button"
-                [disabled]="isPastRange"
+                [disabled]="isPastRange || generating"
                 (click)="refreshRange.emit()"
             >
                 <mat-icon>autorenew</mat-icon>
@@ -51,7 +53,7 @@
                 mat-stroked-button
                 color="warn"
                 type="button"
-                [disabled]="isPastRange"
+                [disabled]="isPastRange || generating"
                 (click)="refreshStrongRange.emit()"
             >
                 <mat-icon>refresh</mat-icon>
@@ -60,8 +62,19 @@
 
             <button
                 mat-stroked-button
+                color="warn"
                 type="button"
-                [disabled]="isPastRange"
+                *ngIf="generating"
+                (click)="cancelGeneration.emit()"
+            >
+                <mat-icon>stop_circle</mat-icon>
+                Annulla
+            </button>
+
+            <button
+                mat-stroked-button
+                type="button"
+                [disabled]="isPastRange || generating"
                 (click)="clearCurrentPeriodCache.emit()"
             >
                 <mat-icon>cleaning_services</mat-icon>
@@ -87,6 +100,25 @@
             <mat-button-toggle value="MONTH">Mese</mat-button-toggle>
             <mat-button-toggle value="WEEK">Settimana</mat-button-toggle>
         </mat-button-toggle-group>
+    </div>
+
+    <div
+        class="generation-progress"
+        *ngIf="generating"
+    >
+        <div class="progress-copy">
+            <mat-icon>hourglass_top</mat-icon>
+            <span>
+                Generazione in corso
+                <strong>{{ generationProgress }}%</strong>
+                <small *ngIf="generationCurrentDate"> · {{ generationCurrentDate }}</small>
+            </span>
+        </div>
+
+        <mat-progress-bar
+            mode="determinate"
+            [value]="generationProgress"
+        ></mat-progress-bar>
     </div>
 
     <div

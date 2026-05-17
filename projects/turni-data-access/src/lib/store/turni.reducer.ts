@@ -64,6 +64,39 @@ export const turniReducer = createReducer(
         };
     }),
 
+    on(TurniActions.generatePlanProgressive, (state) => {
+        return {
+            ...state,
+            loading: true,
+            generating: true,
+            generationProgress: 0,
+            generationCurrentDate: null,
+            partialDays: [],
+            error: null,
+        };
+    }),
+
+    on(TurniActions.generatePlanProgress, (state, { progress, currentDate, days }) => {
+        return {
+            ...state,
+            loading: true,
+            generating: true,
+            generationProgress: progress,
+            generationCurrentDate: currentDate ?? null,
+            partialDays: days,
+        };
+    }),
+
+    on(TurniActions.cancelPlanGenerationSuccess, (state) => {
+        return {
+            ...state,
+            loading: false,
+            generating: false,
+            generationProgress: 0,
+            generationCurrentDate: null,
+        };
+    }),
+
     on(TurniActions.clearCurrentPeriodCache, (state) => {
         return {
             ...state,
@@ -265,6 +298,10 @@ export const turniReducer = createReducer(
             mode: plan.range.mode,
             range: plan.range,
             plan,
+            partialDays: [],
+            generationProgress: 100,
+            generationCurrentDate: null,
+            generating: false,
             lastSource: plan.source,
             loading: false,
             error: null,
@@ -275,6 +312,7 @@ export const turniReducer = createReducer(
         return {
             ...state,
             loading: false,
+            generating: false,
             error,
         };
     }),

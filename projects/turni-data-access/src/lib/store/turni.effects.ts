@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, from, map, of, switchMap, takeUntil, withLatestFrom } from 'rxjs';
 
 import { TURNI_FULL_MOCK } from '../data/turni-full-mock';
 import { DateRangeService } from '../services/date-range.service';
@@ -93,7 +93,7 @@ export class TurniEffects {
         map(([, range, isPastRange]) => {
             if (!range) return TurniActions.init();
             if (isPastRange) return TurniActions.generatePlanSuccess({ plan: this.createEmptyPlan(range) });
-            return TurniActions.openRange({ range, useCache: false });
+            return TurniActions.generatePlanProgressive({ range, source: 'REGENERATED' });
         })
     ));
 
@@ -104,7 +104,7 @@ export class TurniEffects {
             if (!range) return TurniActions.init();
             if (isPastRange) return TurniActions.generatePlanSuccess({ plan: this.createEmptyPlan(range) });
             this.cacheService.delete(range);
-            return TurniActions.openRange({ range, useCache: false });
+            return TurniActions.generatePlanProgressive({ range, source: 'REGENERATED' });
         })
     ));
 
@@ -257,6 +257,64 @@ export class TurniEffects {
                 }));
             }
         })
+    ));
+
+
+    readonly generatePlanProgressive$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.generatePlanProgressive),
+        withLatestFrom(
+            this.store.select(selectGenerationSeed),
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts),
+            this.store.select(selectAbsences)
+        ),
+        switchMap(([{ range, source }, generationSeed, workers, shifts, absences]) => {
+            return from(this.generatorService.generatePlanSteps({
+                range,
+                workers: [...workers],
+                shifts: [...shifts],
+                generationSeed: generationSeed + 1,
+                source,
+                absences: [...absences],
+            })).pipe(
+                map((step) => {
+                    if (step.type === 'COMPLETED' && step.plan) {
+                        this.cacheService.set(step.plan);
+
+                        return TurniActions.generatePlanSuccess({
+                            plan: step.plan,
+                        });
+                    }
+
+                    if (step.type === 'CANCELLED') {
+                        return TurniActions.cancelPlanGenerationSuccess();
+                    }
+
+                    return TurniActions.generatePlanProgress({
+                        progress: step.progress,
+                        currentDate: step.currentDate,
+                        days: step.days ?? [],
+                    });
+                }),
+                takeUntil(
+                    this.actions$.pipe(
+                        ofType(TurniActions.cancelPlanGeneration)
+                    )
+                ),
+                catchError((error) => {
+                    return of(TurniActions.generatePlanFailure({
+                        error: error instanceof Error
+                            ? error.message
+                            : 'Errore generazione progressiva piano turni',
+                    }));
+                })
+            );
+        })
+    ));
+
+    readonly cancelPlanGeneration$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.cancelPlanGeneration),
+        map(() => TurniActions.cancelPlanGenerationSuccess())
     ));
 
     readonly openRange$ = createEffect(() => this.actions$.pipe(

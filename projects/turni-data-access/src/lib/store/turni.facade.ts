@@ -22,6 +22,10 @@ import {
     selectFilteredStats,
     selectFilteredWarnings,
     selectGeneratedAtLabel,
+    selectVisibleDays,
+    selectGenerationCurrentDate,
+    selectGenerationProgress,
+    selectGenerating,
     selectGenerationSeed,
     selectIsPastRange,
     selectLastSource,
@@ -57,7 +61,7 @@ export class TurniFacade {
     readonly mode = this.store.selectSignal(selectMode);
     readonly range = this.store.selectSignal(selectRange);
     readonly plan = this.store.selectSignal(selectPlan);
-    readonly days = this.store.selectSignal(selectDays);
+    readonly days = this.store.selectSignal(selectVisibleDays);
     readonly warnings = this.store.selectSignal(selectWarnings);
     readonly stats = this.store.selectSignal(selectStats);
     readonly filteredStats = this.store.selectSignal(selectFilteredStats);
@@ -79,6 +83,9 @@ export class TurniFacade {
     readonly statsFilterCounts = this.store.selectSignal(selectStatsFilterCounts);
     readonly warningFilterCounts = this.store.selectSignal(selectWarningFilterCounts);
     readonly loading = this.store.selectSignal(selectLoading);
+    readonly generating = this.store.selectSignal(selectGenerating);
+    readonly generationProgressValue = this.store.selectSignal(selectGenerationProgress);
+    readonly generationCurrentDate = this.store.selectSignal(selectGenerationCurrentDate);
     readonly error = this.store.selectSignal(selectError);
 
     readonly workers = this.store.selectSignal(selectWorkers);
@@ -127,6 +134,10 @@ export class TurniFacade {
 
     refresh(): void {
         this.store.dispatch(TurniActions.refreshRange());
+    }
+
+    cancelGeneration(): void {
+        this.store.dispatch(TurniActions.cancelPlanGeneration());
     }
 
     refreshStrong(): void {
