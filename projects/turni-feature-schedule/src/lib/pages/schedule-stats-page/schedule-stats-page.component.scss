@@ -1,7 +1,7 @@
 .page {
     min-height: 100vh;
     padding: 24px;
-    background: #f3f4f6;
+    background: #f5f7fb;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -14,9 +14,9 @@
 .content-card,
 .empty-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e6eaf0;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.045);
     padding: 22px 24px;
 }
 
@@ -29,7 +29,7 @@
     h1 {
         margin: 0;
         font-size: 30px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     p {
@@ -53,7 +53,7 @@
 
         strong {
             font-size: 14px;
-            font-weight: 900;
+            font-weight: 600;
         }
 
         span {
@@ -81,7 +81,7 @@
 
 .empty-card {
     color: #6b7280;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 
@@ -92,7 +92,7 @@
 }
 
 .filter-label {
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .filter-count {
@@ -106,7 +106,7 @@
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 :host ::ng-deep .mat-button-toggle-checked .filter-count {

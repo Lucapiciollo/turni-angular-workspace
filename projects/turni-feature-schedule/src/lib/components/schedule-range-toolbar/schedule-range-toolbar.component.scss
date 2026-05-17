@@ -1,8 +1,8 @@
 .toolbar-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e6eaf0;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.045);
     padding: 16px;
     display: flex;
     align-items: center;
@@ -33,7 +33,7 @@
         --mdc-chip-elevated-container-color: #f3f4f6;
         --mdc-chip-label-text-color: #374151;
         font-size: 11px;
-        font-weight: 900;
+        font-weight: 600;
     }
 }
 
@@ -51,7 +51,7 @@
     strong {
         display: block;
         font-size: 20px;
-        font-weight: 800;
+        font-weight: 600;
         text-transform: capitalize;
     }
 
@@ -67,6 +67,6 @@
         margin-top: 4px;
         color: #374151;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 600;
     }
 }

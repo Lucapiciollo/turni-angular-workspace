@@ -1,0 +1,60 @@
+<div class="app-layout">
+    <aside class="app-menu">
+        <div class="brand">
+            <div class="brand-logo">
+                <mat-icon>event_available</mat-icon>
+            </div>
+
+            <div class="brand-text">
+                <h1>Turni</h1>
+                <span>Gestione pianificazione</span>
+            </div>
+        </div>
+
+        <nav class="menu-list">
+            <a
+                class="menu-item"
+                *ngFor="let item of menuItems"
+                [routerLink]="item.route"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: item.exact === true }"
+            >
+                <span class="menu-icon">
+                    <mat-icon>{{ item.icon }}</mat-icon>
+                </span>
+
+                <span class="menu-content">
+                    <strong>{{ item.label }}</strong>
+                    <small>{{ item.description }}</small>
+                </span>
+            </a>
+        </nav>
+
+        <div class="menu-footer">
+            <mat-icon>layers</mat-icon>
+            <span>NgModule · NgRx</span>
+        </div>
+    </aside>
+
+    <section class="app-page">
+        <header class="page-topbar">
+            <div>
+                <h2>Dashboard Turni</h2>
+                <p>Organizza periodo, operatori, statistiche e anomalie.</p>
+            </div>
+
+            <button
+                mat-stroked-button
+                type="button"
+                routerLink="/piano-turni"
+            >
+                <mat-icon>calendar_today</mat-icon>
+                Piano turni
+            </button>
+        </header>
+
+        <main class="page-scroll">
+            <router-outlet></router-outlet>
+        </main>
+    </section>
+</div>

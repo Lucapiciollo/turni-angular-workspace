@@ -6,9 +6,9 @@
 
 .schedule-header {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e6eaf0;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.045);
     padding: 22px 24px;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
     h2 {
         margin: 0;
         font-size: 22px;
-        font-weight: 900;
+        font-weight: 600;
     }
 
     p {
@@ -32,7 +32,7 @@
 .period-count {
     --mdc-chip-elevated-container-color: #eff6ff;
     --mdc-chip-label-text-color: #1d4ed8;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .schedule-grid {
@@ -43,8 +43,8 @@
 
 .day-row {
     border-radius: 22px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e6eaf0;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.045);
 
     &.weekend {
         border-color: #bfdbfe;
@@ -98,7 +98,7 @@
 .day-status-chip,
 .day-mini-chip,
 .figurative-chip {
-    font-weight: 900;
+    font-weight: 600;
 
     mat-icon {
         font-size: 17px;
@@ -166,14 +166,14 @@
 
     strong {
         font-size: 13px;
-        font-weight: 900;
+        font-weight: 600;
         color: #1e3a8a;
     }
 
     span {
         color: #64748b;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 500;
     }
 }
 
@@ -203,7 +203,7 @@
 .shift-cell {
     min-height: 245px;
     border-radius: 18px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e6eaf0;
     box-shadow: none;
     overflow: hidden;
 
@@ -240,7 +240,7 @@
         display: block;
         color: #111827;
         font-size: 15px;
-        font-weight: 900;
+        font-weight: 600;
     }
 
     span {
@@ -248,12 +248,12 @@
         margin-top: 2px;
         color: #6b7280;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 500;
     }
 }
 
 .coverage-chip {
-    font-weight: 900;
+    font-weight: 600;
 
     &.ok {
         --mdc-chip-elevated-container-color: #dcfce7;
@@ -284,7 +284,7 @@
     gap: 8px;
     color: #6b7280;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 500;
     text-align: center;
 
     mat-icon {
