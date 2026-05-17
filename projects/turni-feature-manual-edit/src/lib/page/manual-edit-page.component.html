@@ -1,12 +1,212 @@
-<section class="page manual">
-  <div class="page-head"><div class="page-title"><h1>Modifica manuale turno <span class="pill">● DRAFT</span></h1><p>Modifica le assegnazioni del turno selezionato</p></div></div>
-  @if (vm$ | async; as vm) {
+@if (vm$ | async; as vm) {
+  <section class="page manual">
+    <header class="page-head">
+      <div class="page-title">
+        <button type="button" class="back-link" (click)="backToSchedule()">
+          ← Torna alla pianificazione
+        </button>
+
+        <h1>
+          Modifica manuale turno
+
+          @if (vm.plan) {
+            <span class="pill">● {{ vm.plan.status }}</span>
+          }
+        </h1>
+
+        <p>Modifica le assegnazioni del turno selezionato.</p>
+      </div>
+
+      <div class="head-actions">
+        <button type="button" class="btn" (click)="regenerate()">
+          Ricalcola automatici
+        </button>
+
+        <button type="button" class="btn" (click)="optimize()">
+          Ottimizza
+        </button>
+
+        <button type="button" class="btn success" (click)="save()">
+          Salva
+        </button>
+
+        <button type="button" class="btn primary" (click)="publish()">
+          Pubblica
+        </button>
+      </div>
+    </header>
+
     <div class="layout">
-      <section class="editor card"><a routerLink="/piano-turni">← Torna alla pianificazione</a><div class="shift-head"><div class="icon">▣</div><div><h2>{{vm.date}} · {{vm.shift}} · 22:00–06:00</h2><p>Piano: Turni Maggio 2026 · Linea 1</p></div><span class="pill">DRAFT</span></div>
-        <h3>Operatori assegnati <small>{{vm.assignments.length}} assegnati</small></h3>
-        @for (a of vm.assignments; track a.id) { @if(vm.workerMap.get(a.workerId); as w) { <article class="assigned"><span class="avatar" [class]="w.color">{{w.initials}}</span><div><strong>{{w.name}}</strong><small>Operatore</small></div><b [class.forced]="a.source==='FORCED'">{{a.source}}</b><button (click)="a.locked ? facade.unlock(a.id) : facade.lock(a.id)">🔒</button><button class="danger" (click)="facade.removeWorker(vm.date, vm.shift, a.workerId)">♢</button></article> } }
-        <div class="add"><h3>Aggiungi operatore</h3><select [(ngModel)]="selected"><option value="">Seleziona operatore...</option>@for(w of vm.workers; track w.id){<option [value]="w.id">{{w.name}}</option>}</select><div><button class="btn success" (click)="add(vm.date, vm.shift)">＋ Aggiungi</button><button class="btn primary" (click)="add(vm.date, vm.shift, true)">⚡ Forza</button><button class="btn" (click)="facade.clearShift(vm.date, vm.shift)">♢ Pulisci turno</button></div></div><div class="note">ⓘ Le modifiche manuali saranno evidenziate e tracciate nel sistema di validazione.</div></section>
-      <aside class="help card"><h2>Azioni disponibili</h2><p>Scopri il significato delle azioni che puoi intraprendere</p>@for (a of ['Cambio operatore','Lucchetto','Forza','Pulisci']; track a){<article><span>↔</span><div><h3>{{a}}</h3><p>{{ a === 'Forza' ? 'Forza l’assegnazione anche se non rispetta le regole.' : a === 'Pulisci' ? 'Rimuove tutti gli operatori assegnati al turno.' : a === 'Lucchetto' ? 'Blocca il turno per le ottimizzazioni automatiche.' : 'Sostituisci l’operatore selezionando un nuovo nominativo.' }}</p></div></article>}</aside>
+      <section class="editor card">
+        <div class="shift-head">
+          <div class="icon">
+            <img [src]="icon('calendar')" alt="" />
+          </div>
+
+          <div>
+            <h2>
+              {{ vm.date }} · {{ vm.shift }} · {{ shiftTime(vm.shift) }}
+            </h2>
+            <p>Piano: {{ vm.plan?.name ?? 'Piano turni' }}</p>
+          </div>
+
+          <span class="pill">{{ vm.assignments.length }} assegnati</span>
+        </div>
+
+        @if (vm.issues.length) {
+          <section class="shift-issues">
+            @for (issue of vm.issues; track trackIssue($index, issue)) {
+              <article [ngClass]="issue.severity.toLowerCase()">
+                <strong>{{ issue.severity }}</strong>
+                <span>{{ issue.title }}</span>
+              </article>
+            }
+          </section>
+        }
+
+        <h3>
+          Operatori assegnati
+          <small>{{ vm.assignments.length }} assegnati</small>
+        </h3>
+
+        <div class="assigned-list">
+          @if (!vm.assignments.length) {
+            <div class="empty-state">
+              Nessun operatore assegnato a questo turno.
+            </div>
+          }
+
+          @for (assignment of vm.assignments; track trackAssignment($index, assignment)) {
+            @if (worker(vm.workerMap, assignment.workerId); as currentWorker) {
+              <article
+                class="assigned"
+                [class.forced-row]="assignment.source === 'FORCED'"
+              >
+                <span class="avatar" [ngClass]="currentWorker.color">
+                  {{ currentWorker.initials }}
+                </span>
+
+                <div class="assigned-person">
+                  <strong>{{ currentWorker.name }}</strong>
+                  <small>{{ currentWorker.role }}</small>
+                </div>
+
+                <select
+                  [ngModel]="assignment.workerId"
+                  [disabled]="!isEditable(vm.plan)"
+                  (ngModelChange)="changeWorker(assignment, $event)"
+                >
+                  @for (workerItem of vm.workers; track workerItem.id) {
+                    <option [value]="workerItem.id">
+                      {{ workerItem.name }}
+                    </option>
+                  }
+                </select>
+
+                <b [ngClass]="sourceClass(assignment)">
+                  {{ assignment.source }}
+                </b>
+
+                <button
+                  type="button"
+                  [disabled]="!isEditable(vm.plan)"
+                  (click)="toggleLock(assignment)"
+                >
+                  <img
+                    [src]="assignment.locked ? icon('lock') : icon('unlock')"
+                    alt=""
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  class="danger"
+                  [disabled]="!isEditable(vm.plan)"
+                  (click)="remove(assignment)"
+                >
+                  <img [src]="icon('trash')" alt="" />
+                </button>
+              </article>
+            }
+          }
+        </div>
+
+        <section class="add">
+          <h3>Aggiungi operatore</h3>
+
+          <select
+            [(ngModel)]="selectedWorkerId"
+            [disabled]="!isEditable(vm.plan)"
+          >
+            <option value="">Seleziona operatore...</option>
+
+            @for (workerItem of vm.workers; track workerItem.id) {
+              <option [value]="workerItem.id">
+                {{ workerItem.name }}
+              </option>
+            }
+          </select>
+
+          <div>
+            <button
+              type="button"
+              class="btn success"
+              [disabled]="!isEditable(vm.plan)"
+              (click)="add(vm.date, vm.shift)"
+            >
+              ＋ Aggiungi
+            </button>
+
+            <button
+              type="button"
+              class="btn primary"
+              [disabled]="!isEditable(vm.plan)"
+              (click)="add(vm.date, vm.shift, true)"
+            >
+              ⚡ Forza
+            </button>
+
+            <button
+              type="button"
+              class="btn"
+              [disabled]="!isEditable(vm.plan)"
+              (click)="clear(vm.date, vm.shift)"
+            >
+              🧹 Pulisci turno
+            </button>
+          </div>
+        </section>
+
+        <div class="note">
+          ⓘ Le modifiche manuali saranno evidenziate e tracciate nell’audit log.
+        </div>
+      </section>
+
+      <aside class="help card">
+        <h2>Azioni disponibili</h2>
+        <p>Scopri il significato delle azioni che puoi intraprendere.</p>
+
+        @for (action of ['Cambio operatore', 'Lucchetto', 'Forza', 'Pulisci']; track action) {
+          <article>
+            <span>↔</span>
+
+            <div>
+              <h3>{{ action }}</h3>
+              <p>
+                @if (action === 'Forza') {
+                  Forza l’assegnazione anche se non rispetta le regole.
+                } @else if (action === 'Pulisci') {
+                  Rimuove tutti gli operatori assegnati al turno.
+                } @else if (action === 'Lucchetto') {
+                  Blocca il turno per le ottimizzazioni automatiche.
+                } @else {
+                  Sostituisci l’operatore selezionando un nuovo nominativo.
+                }
+              </p>
+            </div>
+          </article>
+        }
+      </aside>
     </div>
-  }
-</section>
+  </section>
+}

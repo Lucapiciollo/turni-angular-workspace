@@ -18,17 +18,10 @@
     "target": "ES2022",
     "module": "ES2022",
     "typeRoots": ["node_modules/@types"],
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "lib": ["ES2022", "dom"],
     "paths": {
-      "@turni/data-access": [
-        "projects/turni-data-access/src/public-api.ts"
-      ],
-      "@turni/shared-ui": [
-        "projects/turni-shared-ui/src/public-api.ts"
-      ],
+      "@turni/data-access": ["projects/turni-data-access/src/public-api.ts"],
+      "@turni/shared-ui": ["projects/turni-shared-ui/src/public-api.ts"],
       "@turni/feature-dashboard": [
         "projects/turni-feature-dashboard/src/public-api.ts"
       ],

@@ -22,7 +22,11 @@
             "scripts": []
           },
           "configurations": {
-            "production": { "optimization": true, "sourceMap": false, "extractLicenses": true },
+            "production": {
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true
+            },
             "development": { "optimization": false, "sourceMap": true }
           },
           "defaultConfiguration": "development"
@@ -37,12 +41,99 @@
         }
       }
     },
-    "turni-data-access": { "projectType": "library", "root": "projects/turni-data-access", "sourceRoot": "projects/turni-data-access/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-data-access/ng-package.json" } } } },
-    "turni-shared-ui": { "projectType": "library", "root": "projects/turni-shared-ui", "sourceRoot": "projects/turni-shared-ui/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-shared-ui/ng-package.json" } } } },
-    "turni-feature-dashboard": { "projectType": "library", "root": "projects/turni-feature-dashboard", "sourceRoot": "projects/turni-feature-dashboard/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-feature-dashboard/ng-package.json" } } } },
-    "turni-feature-schedule": { "projectType": "library", "root": "projects/turni-feature-schedule", "sourceRoot": "projects/turni-feature-schedule/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-feature-schedule/ng-package.json" } } } },
-    "turni-feature-manual-edit": { "projectType": "library", "root": "projects/turni-feature-manual-edit", "sourceRoot": "projects/turni-feature-manual-edit/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-feature-manual-edit/ng-package.json" } } } },
-    "turni-feature-audit": { "projectType": "library", "root": "projects/turni-feature-audit", "sourceRoot": "projects/turni-feature-audit/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-feature-audit/ng-package.json" } } } },
-    "turni-feature-validation": { "projectType": "library", "root": "projects/turni-feature-validation", "sourceRoot": "projects/turni-feature-validation/src", "prefix": "turni", "architect": { "build": { "builder": "@angular-devkit/build-angular:ng-packagr", "options": { "project": "projects/turni-feature-validation/ng-package.json" } } } }
+    "turni-data-access": {
+      "projectType": "library",
+      "root": "projects/turni-data-access",
+      "sourceRoot": "projects/turni-data-access/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": { "project": "projects/turni-data-access/ng-package.json" }
+        }
+      }
+    },
+    "turni-shared-ui": {
+      "projectType": "library",
+      "root": "projects/turni-shared-ui",
+      "sourceRoot": "projects/turni-shared-ui/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": { "project": "projects/turni-shared-ui/ng-package.json" }
+        }
+      }
+    },
+    "turni-feature-dashboard": {
+      "projectType": "library",
+      "root": "projects/turni-feature-dashboard",
+      "sourceRoot": "projects/turni-feature-dashboard/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-feature-dashboard/ng-package.json"
+          }
+        }
+      }
+    },
+    "turni-feature-schedule": {
+      "projectType": "library",
+      "root": "projects/turni-feature-schedule",
+      "sourceRoot": "projects/turni-feature-schedule/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-feature-schedule/ng-package.json"
+          }
+        }
+      }
+    },
+    "turni-feature-manual-edit": {
+      "projectType": "library",
+      "root": "projects/turni-feature-manual-edit",
+      "sourceRoot": "projects/turni-feature-manual-edit/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-feature-manual-edit/ng-package.json"
+          }
+        }
+      }
+    },
+    "turni-feature-audit": {
+      "projectType": "library",
+      "root": "projects/turni-feature-audit",
+      "sourceRoot": "projects/turni-feature-audit/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-feature-audit/ng-package.json"
+          }
+        }
+      }
+    },
+    "turni-feature-validation": {
+      "projectType": "library",
+      "root": "projects/turni-feature-validation",
+      "sourceRoot": "projects/turni-feature-validation/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-feature-validation/ng-package.json"
+          }
+        }
+      }
+    }
   }
 }

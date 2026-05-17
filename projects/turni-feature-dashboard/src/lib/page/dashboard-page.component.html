@@ -1,23 +1,230 @@
-<section class="page dashboard">
-  <div class="page-head"><div class="page-title"><h1>Gestione turni <span class="pill">● DRAFT</span></h1><p>Pianificazione turni, validazione e pubblicazione</p></div></div>
-  <div class="toolbar card">
-    <label>Nome piano<input value="Turni Maggio 2026"></label><label>Dal<input value="2026-05-01"></label><label>Al<input value="2026-05-31"></label>
-    <button class="btn primary" (click)="generate()">✦ Genera</button><button class="btn" (click)="facade.optimize()">↻ Ricalcola automatici</button><button class="btn" (click)="facade.optimize()">⌁ Ottimizza</button><button class="btn" (click)="facade.save()">▣ Salva</button><button class="btn success" (click)="facade.publish()">➤ Pubblica</button><button class="btn">⇩ Export CSV</button>
-  </div>
-  <div class="stats-grid">
-    @for (s of stats$ | async; track s.workerId) {
-      <article class="stat card"><div class="avatar" [class]="s.color">{{s.initials}}</div><div><h3>{{s.name}}</h3><small>Operatore</small></div><button>⋮</button>
-        <div class="numbers"><span>Turni<b>{{s.turni}}</b></span><span>Ore<b>{{s.ore}}h</b></span><span>Notti<b>{{s.notti}}</b></span><span>Weekend<b>{{s.weekend}}</b></span><span>Manuali<b>{{s.manuali}}</b></span></div>
-        <div class="progress"><span>Completamento</span><b>{{s.completamento}}%</b><i [style.width.%]="s.completamento"></i></div></article>
+@if (vm$ | async; as vm) {
+  <section class="page dashboard">
+    <header class="page-head">
+      <div class="page-title">
+        <h1>
+          Gestione turni
+
+          @if (vm.plan) {
+            <span class="pill" [ngClass]="statusClass(vm.plan)">
+              ● {{ vm.plan.status }}
+            </span>
+          }
+        </h1>
+
+        <p>Pianificazione turni, validazione, pubblicazione e controllo storico.</p>
+      </div>
+
+      <div class="head-actions">
+        <button type="button" class="btn" (click)="openAudit()">
+          Storico modifiche
+        </button>
+
+        <button type="button" class="btn primary" (click)="openSchedule()">
+          Apri piano turni
+        </button>
+      </div>
+    </header>
+
+    <section class="toolbar card">
+      <label>
+        Nome piano
+        <input [(ngModel)]="planName" />
+      </label>
+
+      <label>
+        Dal
+        <input type="date" [(ngModel)]="startDate" />
+      </label>
+
+      <label>
+        Al
+        <input type="date" [(ngModel)]="endDate" />
+      </label>
+
+      <button type="button" class="btn primary" (click)="generate()">
+        <img [src]="icon('plus')" alt="" />
+        Genera
+      </button>
+
+      <button type="button" class="btn" (click)="setMode('MONTH')">
+        <img [src]="icon('month')" alt="" />
+        Mese
+      </button>
+
+      <button type="button" class="btn" (click)="setMode('WEEK')">
+        <img [src]="icon('week')" alt="" />
+        Settimana
+      </button>
+
+      <button type="button" class="btn" (click)="previousRange()">
+        ‹
+      </button>
+
+      <button type="button" class="btn" (click)="nextRange()">
+        ›
+      </button>
+
+      <button type="button" class="btn" (click)="regenerate()">
+        Ricalcola
+      </button>
+
+      <button type="button" class="btn" (click)="optimize()">
+        <img [src]="icon('optimize')" alt="" />
+        Ottimizza
+      </button>
+
+      <button type="button" class="btn success" (click)="save()">
+        <img [src]="icon('save')" alt="" />
+        Salva
+      </button>
+
+      <button type="button" class="btn publish" (click)="publish()">
+        <img [src]="icon('publish')" alt="" />
+        Pubblica
+      </button>
+    </section>
+
+    @if (vm.currentRange) {
+      <section class="range-card card">
+        <div>
+          <span>Range corrente</span>
+          <strong>{{ vm.currentRange.label }}</strong>
+          <small>
+            {{ vm.currentRange.startDate }} → {{ vm.currentRange.endDate }} ·
+            {{ vm.currentRange.visibleDays }} giorni visibili
+          </small>
+        </div>
+
+        @if (vm.optimizer) {
+          <div class="optimizer-pill">
+            Score {{ vm.optimizer.score }} ·
+            {{ vm.optimizer.errors }} errori ·
+            {{ vm.optimizer.warnings }} warning
+          </div>
+        }
+      </section>
     }
-  </div>
-  <div class="main-grid">
-    <section class="card issues"><h2>△ Problemi rilevati <span>2 Errori</span><span class="warn">5 Warning</span><span class="info">3 Info</span></h2>
-      @for (issue of issues$ | async; track issue.id) { <article class="issue" [class]="issue.severity.toLowerCase()"><b>{{issue.severity}}</b><div><strong>{{issue.title}}</strong><small>{{issue.message}}</small></div><em>›</em></article> }
-      <a routerLink="/validazioni">Vedi tutti i problemi ›</a>
+
+    <section class="stats-grid">
+      @for (stat of vm.stats; track trackStat($index, stat)) {
+        <article class="stat card">
+          <div class="avatar" [ngClass]="stat.color">
+            {{ stat.initials }}
+          </div>
+
+          <div>
+            <h3>{{ stat.name }}</h3>
+            <small>Operatore</small>
+          </div>
+
+          <button type="button" title="Dettaglio operatore">
+            ⋮
+          </button>
+
+          <div class="numbers">
+            <span>Turni <b>{{ stat.turni }}</b></span>
+            <span>Ore <b>{{ stat.ore }}h</b></span>
+            <span>Notti <b>{{ stat.notti }}</b></span>
+            <span>Weekend <b>{{ stat.weekend }}</b></span>
+            <span>Manuali <b>{{ stat.manuali }}</b></span>
+          </div>
+
+          <div class="progress">
+            <span>Completamento</span>
+            <b>{{ stat.completamento }}%</b>
+            <i [style.width.%]="stat.completamento"></i>
+          </div>
+        </article>
+      }
     </section>
-    <section class="card plans"><h2>▣ Piani salvati <button class="btn">＋ Nuovo piano</button></h2>
-      @for (p of ['Turni Maggio 2026','Turni Aprile 2026','Turni Marzo 2026','Turni Febbraio 2026','Turni Gennaio 2026']; track p) { <div class="plan-row"><strong>{{p}}</strong><span>01/05/2026 - 31/05/2026</span><b [class.pub]="p !== 'Turni Maggio 2026'">{{p === 'Turni Maggio 2026' ? 'DRAFT' : 'PUBLISHED'}}</b><em>⋯</em></div> }
+
+    <section class="main-grid">
+      <section class="card issues">
+        <h2>
+          Problemi rilevati
+          <span>{{ vm.errorCount }} Errori</span>
+          <span class="warn">{{ vm.warningCount }} Warning</span>
+          <span class="info">{{ vm.infoCount }} Info</span>
+        </h2>
+
+        @for (issue of visibleIssues(vm.issues); track trackIssue($index, issue)) {
+          <article
+            class="issue"
+            [ngClass]="issue.severity.toLowerCase()"
+            (click)="openManualEdit(issue)"
+          >
+            <b>{{ issue.severity }}</b>
+
+            <div>
+              <strong>{{ issue.title }}</strong>
+              <small>{{ issue.message }}</small>
+            </div>
+
+            <em>›</em>
+          </article>
+        }
+
+        @if (!vm.issues.length) {
+          <div class="empty-state">
+            Nessun problema rilevato nel piano corrente.
+          </div>
+        }
+
+        <div class="panel-actions">
+          <button type="button" class="link-button" (click)="openValidation()">
+            Vedi tutti i problemi ›
+          </button>
+
+          <button type="button" class="link-button" (click)="exportIssues()">
+            Export problemi
+          </button>
+        </div>
+      </section>
+
+      <section class="card plans">
+        <h2>
+          Piani salvati
+
+          <button type="button" class="btn" (click)="openSchedule()">
+            ＋ Apri piano turni
+          </button>
+        </h2>
+
+        @for (plan of vm.plans; track trackPlan($index, plan)) {
+          <div class="plan-row" [class.current]="isCurrentPlan(plan, vm.plan)">
+            <strong>{{ plan.name }}</strong>
+            <span>{{ plan.startDate }} - {{ plan.endDate }}</span>
+            <b [class.pub]="plan.status === 'PUBLISHED'">
+              {{ plan.status }}
+            </b>
+
+            <button type="button" (click)="openPlan(plan)">
+              Apri
+            </button>
+          </div>
+        }
+
+        @if (!vm.plans.length) {
+          <div class="empty-state">
+            Nessun piano salvato. Genera il primo piano dalla toolbar.
+          </div>
+        }
+      </section>
     </section>
-  </div>
-</section>
+
+    <section class="footer-actions card">
+      <button type="button" class="btn" (click)="exportCsv()">
+        Export CSV turni
+      </button>
+
+      <button type="button" class="btn" (click)="exportStats()">
+        Export statistiche
+      </button>
+
+      <button type="button" class="btn" (click)="archive()">
+        Archivia piano corrente
+      </button>
+    </section>
+  </section>
+}

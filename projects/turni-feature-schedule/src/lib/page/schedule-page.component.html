@@ -1,93 +1,326 @@
 <section class="page schedule">
   @if (currentRange$ | async; as range) {
-    <div class="page-head">
-      <div class="page-title">
-        <h1>{{ range.mode === 'MONTH' ? 'Piano mensile' : 'Piano settimanale' }}</h1>
-        <p>{{ range.startDate }} → {{ range.endDate }} · {{ range.visibleDays }} giorni visibili</p>
-      </div>
-      <div class="actions">
-        <button class="btn" [class.primary]="isCurrentMode(range, 'MONTH')" (click)="setMode('MONTH')">Vista mese</button>
-        <button class="btn" [class.primary]="isCurrentMode(range, 'WEEK')" (click)="setMode('WEEK')">Vista settimana</button>
-        <button class="btn" (click)="facade.regenerateCurrentRange()">Ricalcola automatici</button>
-        <button class="btn" (click)="facade.optimize()">Ottimizza</button>
-        <button class="btn success" (click)="facade.save()">Salva</button>
-      </div>
-    </div>
+    @if (plan$ | async; as plan) {
+      <header class="page-head">
+        <div class="page-title">
+          <h1>
+            {{ range.mode === 'MONTH' ? 'Piano mensile' : 'Piano settimanale' }}
+            <span class="pill">{{ plan.status }}</span>
+          </h1>
+          <p>
+            {{ range.startDate }} → {{ range.endDate }} ·
+            {{ range.visibleDays }} giorni visibili
+          </p>
+        </div>
 
-    <div class="range-toolbar card">
-      <button class="range-nav" (click)="previous()">‹</button>
-      <div class="range-center">
-        <strong>{{ range.label }}</strong>
-        <small>{{ range.mode === 'MONTH' ? 'Mese esteso al lunedì precedente e alla domenica successiva' : 'Settimana sempre da lunedì a domenica' }}</small>
-      </div>
-      <button class="range-nav" (click)="next()">›</button>
-    </div>
+        <div class="actions">
+          <button
+            type="button"
+            class="btn"
+            [class.primary]="isCurrentMode(range, 'MONTH')"
+            (click)="setMode('MONTH')"
+          >
+            <img [src]="icon('month')" alt="" />
+            Vista mese
+          </button>
 
-    @if (rangeKeys$ | async; as keys) {
-      <div class="cache-row">
-        <span>Range caricati nello store:</span>
-        @for (key of keys; track key) { <b>{{ key }}</b> }
-      </div>
+          <button
+            type="button"
+            class="btn"
+            [class.primary]="isCurrentMode(range, 'WEEK')"
+            (click)="setMode('WEEK')"
+          >
+            <img [src]="icon('week')" alt="" />
+            Vista settimana
+          </button>
+
+          <button type="button" class="btn" (click)="regenerate()">
+            <img [src]="icon('optimize')" alt="" />
+            Ricalcola automatici
+          </button>
+
+          <button type="button" class="btn" (click)="optimize()">
+            <img [src]="icon('optimize')" alt="" />
+            Ottimizza
+          </button>
+
+          <button type="button" class="btn success" (click)="save()">
+            <img [src]="icon('save')" alt="" />
+            Salva
+          </button>
+
+          <button type="button" class="btn" (click)="exportCsv()">
+            Export CSV
+          </button>
+
+          <button
+            type="button"
+            class="btn publish"
+            [disabled]="!(canPublish$ | async)"
+            (click)="publish()"
+          >
+            <img [src]="icon('publish')" alt="" />
+            Pubblica
+          </button>
+
+          <button type="button" class="btn" (click)="archive()">
+            <img [src]="icon('archive')" alt="" />
+            Archivia
+          </button>
+        </div>
+      </header>
+
+      <section class="range-toolbar card">
+        <button
+          type="button"
+          class="range-nav"
+          aria-label="Range precedente"
+          (click)="previous()"
+        >
+          <img [src]="icon('chevron-left')" alt="" />
+        </button>
+
+        <div class="range-center">
+          <strong>{{ range.label }}</strong>
+          <small>
+            @if (range.mode === 'MONTH') {
+              Mese esteso dal lunedì precedente alla domenica successiva
+            } @else {
+              Settimana sempre da lunedì a domenica
+            }
+          </small>
+        </div>
+
+        <button
+          type="button"
+          class="range-nav"
+          aria-label="Range successivo"
+          (click)="next()"
+        >
+          <img [src]="icon('chevron-right')" alt="" />
+        </button>
+      </section>
+
+      @if (rangeKeys$ | async; as keys) {
+        <section class="cache-row">
+          <span>Range caricati nello store:</span>
+
+          @for (key of keys; track key) {
+            <b>{{ key }}</b>
+          }
+        </section>
+      }
     }
   }
 
-  @if ({days: days$ | async, workerMap: workerMap$ | async, workers: workers$ | async, range: currentRange$ | async}; as vm) {
-    <div class="table-card card" [class.week-mode]="vm.range?.mode === 'WEEK'">
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            @for (s of shifts; track s.type) { <th>{{s.label}}<small>{{s.time}}</small></th> }
-            <th>Warning</th>
-          </tr>
-        </thead>
-        <tbody>
-        @for (day of vm.days ?? []; track day.date) {
-          <tr>
-            <td class="date">
-              <small>{{day.weekday}}</small>
-              <b>{{day.dayNumber}}</b>
-              <span>{{day.monthLabel}}</span>
-              @for (b of day.badges; track b){<em [class.out]="b === 'Fuori mese'">{{b}}</em>}
-            </td>
-            @for (s of shifts; track s.type) {
-              <td>
-                <div class="shift-cell">
-                  <div class="shift-meta">
-                    <span>{{ assignmentsCount(day, s.type) }} persone</span>
-                    <small>richieste: {{ s.required }}</small>
-                  </div>
-                  <div class="people-scroll">
-                    @for (a of day.assignments; track a.id) { @if (a.shift === s.type && vm.workerMap) {
-                      @if (worker(vm.workerMap, a.workerId); as w) {
-                        <div class="assignment" [class.manual]="a.source === 'MANUAL'" [class.forced]="a.source === 'FORCED'">
-                          <span class="drag"><img src="assets/icons/drag.svg" alt="drag"></span>
-                          <span class="avatar" [class]="w.color">{{w.initials}}</span>
-                          <div class="person"><strong>{{w.name.split(' ')[0]}}</strong><small>{{w.role}}</small></div>
-                          <b>{{a.source}}</b>
-                          <button (click)="a.locked ? facade.unlock(a.id) : facade.lock(a.id)"><img [src]="a.locked ? 'assets/icons/lock.svg' : 'assets/icons/unlock.svg'" alt="lock"></button>
-                          <button class="danger" (click)="facade.removeWorker(day.date, s.type, a.workerId)"><img src="assets/icons/trash.svg" alt="remove"></button>
-                        </div>
-                      }
-                    }}
-                  </div>
-                  <div class="add">
-                    <select [(ngModel)]="selected[day.date + '_' + s.type]"><option value="">Assegna operatore</option>@for(w of vm.workers ?? []; track w.id){<option [value]="w.id">{{w.name}}</option>}</select>
-                    <button title="Aggiungi" (click)="assign(day.date, s.type)"><img src="assets/icons/plus.svg" alt="add"></button>
-                    <button title="Forza" class="force" (click)="force(day.date, s.type)">!</button>
-                    <button title="Pulisci turno" class="danger" (click)="facade.clearShift(day.date, s.type)"><img src="assets/icons/trash.svg" alt="clear"></button>
-                  </div>
-                </div>
-              </td>
+  @if ({
+    days: days$ | async,
+    workerMap: workerMap$ | async,
+    workers: workers$ | async,
+    range: currentRange$ | async,
+    plan: plan$ | async
+  }; as vm) {
+    <section
+      class="table-card card"
+      [class.week-mode]="vm.range?.mode === 'WEEK'"
+    >
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+
+              @for (shift of shifts; track shift.type) {
+                <th>
+                  {{ shift.label }}
+                  <small>{{ shift.time }}</small>
+                </th>
+              }
+
+              <th>Warning</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (day of vm.days ?? []; track day.date) {
+              <tr>
+                <td class="date">
+                  <small>{{ day.weekday }}</small>
+                  <b>{{ day.dayNumber }}</b>
+                  <span>{{ day.monthLabel }}</span>
+
+                  @for (badge of day.badges; track badge) {
+                    <em [class.out]="badge === 'Fuori mese'">
+                      {{ badge }}
+                    </em>
+                  }
+                </td>
+
+                @for (shift of shifts; track shift.type) {
+                  <td>
+                    <div
+                      class="shift-cell"
+                      cdkDropList
+                      [id]="getDropListId(day.date, shift.type)"
+                      [cdkDropListData]="getAssignmentsByShift(day, shift.type)"
+                      [cdkDropListConnectedTo]="dropListIds(vm.days ?? [])"
+                      [cdkDropListDisabled]="!isEditable(vm.plan)"
+                      (cdkDropListDropped)="dropAssignment($event, day.date, shift.type)"
+                    >
+                      <div class="shift-meta">
+                        <span>
+                          {{ assignmentsCount(day, shift.type) }} persone
+                        </span>
+                        <small>richieste: {{ shift.required }}</small>
+                      </div>
+
+                      <div class="people-scroll">
+                        @for (assignment of getAssignmentsByShift(day, shift.type); track assignment.id) {
+                          @if (worker(vm.workerMap, assignment.workerId); as currentWorker) {
+                            <article
+                              class="assignment"
+                              cdkDrag
+                              [cdkDragData]="dragData(assignment)"
+                              [cdkDragDisabled]="!isEditable(vm.plan)"
+                              [class.manual]="assignment.source === 'MANUAL'"
+                              [class.forced]="assignment.source === 'FORCED'"
+                              [class.locked]="assignment.locked"
+                            >
+                              <ng-template cdkDragPreview>
+                                <div class="drag-preview-card">
+                                  <strong>{{ currentWorker.name }}</strong>
+                                  <span>{{ shift.label }}</span>
+                                  <small>{{ day.date }}</small>
+                                </div>
+                              </ng-template>
+
+                              <div *cdkDragPlaceholder class="drag-placeholder">
+                                Sposta qui
+                              </div>
+
+                              <button
+                                type="button"
+                                class="drag"
+                                cdkDragHandle
+                                title="Trascina turno"
+                              >
+                                <img [src]="icon('drag')" alt="" />
+                              </button>
+
+                              <span class="avatar" [ngClass]="currentWorker.color">
+                                {{ currentWorker.initials }}
+                              </span>
+
+                              <div class="person">
+                                <strong>{{ currentWorker.name }}</strong>
+                                <small>{{ currentWorker.role }}</small>
+                              </div>
+
+                              <b>{{ assignment.source }}</b>
+
+                              <button
+                                type="button"
+                                [disabled]="!isEditable(vm.plan)"
+                                (click)="toggleLock(assignment)"
+                              >
+                                <img
+                                  [src]="assignment.locked ? icon('lock') : icon('unlock')"
+                                  alt=""
+                                />
+                              </button>
+
+                              <button
+                                type="button"
+                                class="danger"
+                                [disabled]="!isEditable(vm.plan)"
+                                (click)="removeAssignment(assignment)"
+                              >
+                                <img [src]="icon('trash')" alt="" />
+                              </button>
+                            </article>
+                          }
+                        }
+                      </div>
+
+                      <div class="add">
+                        <select
+                          [ngModel]="getSelectedWorker(day.date, shift.type)"
+                          [disabled]="!isEditable(vm.plan)"
+                          (ngModelChange)="setSelectedWorker(day.date, shift.type, $event)"
+                        >
+                          <option value="">Assegna operatore</option>
+
+                          @for (workerItem of vm.workers ?? []; track workerItem.id) {
+                            <option [value]="workerItem.id">
+                              {{ workerItem.name }}
+                            </option>
+                          }
+                        </select>
+
+                        <button
+                          type="button"
+                          title="Aggiungi"
+                          [disabled]="!isEditable(vm.plan)"
+                          (click)="assign(day.date, shift.type)"
+                        >
+                          <img [src]="icon('plus')" alt="" />
+                        </button>
+
+                        <button
+                          type="button"
+                          title="Forza"
+                          class="force"
+                          [disabled]="!isEditable(vm.plan)"
+                          (click)="force(day.date, shift.type)"
+                        >
+                          !
+                        </button>
+
+                        <button
+                          type="button"
+                          title="Apri modifica manuale"
+                          [disabled]="!isEditable(vm.plan)"
+                          (click)="openManualEdit(day.date, shift.type)"
+                        >
+                          ✎
+                        </button>
+
+                        <button
+                          type="button"
+                          title="Pulisci turno"
+                          class="danger"
+                          [disabled]="!isEditable(vm.plan)"
+                          (click)="clearShift(day.date, shift.type)"
+                        >
+                          <img [src]="icon('trash')" alt="" />
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                }
+
+                <td class="warn-cell">
+                  @for (issue of day.warnings; track issue.id) {
+                    <div class="warn">
+                      <img [src]="icon('warning')" alt="" />
+                      {{ issue.title }}
+                    </div>
+                  }
+
+                  @if (!day.warnings.length) {
+                    <div class="ok">
+                      <img [src]="icon('check')" alt="" />
+                      OK
+                      <br />
+                      <small>Nessun problema</small>
+                    </div>
+                  }
+                </td>
+              </tr>
             }
-            <td class="warn-cell">
-              @for (issue of day.warnings; track issue.id) { <div class="warn"><img src="assets/icons/warning.svg" alt="warning"> {{issue.title}}</div> }
-              @if (!day.warnings.length) { <div class="ok"><img src="assets/icons/check.svg" alt="ok"> OK<br><small>Nessun problema</small></div> }
-            </td>
-          </tr>
-        }
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
+    </section>
   }
 </section>
