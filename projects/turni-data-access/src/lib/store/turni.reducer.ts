@@ -122,6 +122,36 @@ export const turniReducer = createReducer(
         };
     }),
 
+
+    on(TurniActions.markWorkerSickOnShift, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.markWorkerSickOnShiftSuccess, (state, { plan, absences }) => {
+        return {
+            ...state,
+            plan,
+            absences: absences.length > 0
+                ? absences
+                : state.absences,
+            lastSource: plan.source,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.markWorkerSickOnShiftFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
     on(TurniActions.generatePlanSuccess, (state, { plan }) => {
         return {
             ...state,

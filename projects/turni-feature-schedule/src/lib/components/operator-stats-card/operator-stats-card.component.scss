@@ -1,8 +1,8 @@
 .operator-card {
     padding: 14px;
     border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    background: #f9fafb;
+    border: 1px solid #edf1f6;
+    background: #fbfcfe;
 }
 
 .operator-header {
@@ -21,12 +21,12 @@
 
     strong {
         font-size: 14px;
-        font-weight: 900;
+        font-weight: 600;
         color: #111827;
     }
 
     span {
-        color: #6b7280;
+        color: #748094;
         font-size: 12px;
         font-weight: 700;
     }
@@ -35,7 +35,7 @@
 .hours-badge {
     min-height: 28px;
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 600;
     white-space: nowrap;
     cursor: help;
 
@@ -66,7 +66,7 @@
     padding: 9px;
     border-radius: 14px;
     background: #ffffff;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #edf1f6;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -74,9 +74,9 @@
     cursor: help;
 
     small {
-        color: #6b7280;
+        color: #748094;
         font-size: 11px;
-        font-weight: 800;
+        font-weight: 500;
     }
 
     b {
@@ -88,8 +88,8 @@
     em {
         font-size: 10px;
         font-style: normal;
-        font-weight: 800;
-        color: #6b7280;
+        font-weight: 500;
+        color: #748094;
     }
 
     &.neutral {
@@ -120,7 +120,7 @@
 
     &.error {
         background: #fef2f2;
-        border-color: #fecaca;
+        border-color: #fee2e2;
 
         small {
             color: #991b1b;

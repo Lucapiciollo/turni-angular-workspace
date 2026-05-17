@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import {
     catchError,
     map,
@@ -7,18 +8,19 @@ import {
     switchMap,
     withLatestFrom,
 } from 'rxjs';
-import { Store } from '@ngrx/store';
 
-import { SHIFTS, WORKERS } from '../data/mock-turni.data';
 import { ABSENCES } from '../data/absences.mock';
+import { SHIFTS, WORKERS } from '../data/mock-turni.data';
 import { DateRangeService } from '../services/date-range.service';
 import { ScheduleCacheService } from '../services/schedule-cache.service';
+import { ShiftReplacementService } from '../services/shift-replacement.service';
 import { TurniGeneratorService } from '../services/turni-generator.service';
 import { TurniActions } from './turni.actions';
 import {
     selectAbsences,
     selectGenerationSeed,
     selectMode,
+    selectPlan,
     selectRange,
     selectShifts,
     selectWorkers,
@@ -26,22 +28,32 @@ import {
 
 @Injectable()
 export class TurniEffects {
-    private actions$: Actions = inject(Actions);
-    private store: Store = inject(Store);
-    private dateRangeService: DateRangeService = inject(DateRangeService);
-    private cacheService: ScheduleCacheService = inject(ScheduleCacheService);
-    private generatorService: TurniGeneratorService = inject(TurniGeneratorService);
+    private readonly actions$: Actions = inject(Actions);
+    private readonly store: Store = inject(Store);
+    private readonly dateRangeService: DateRangeService = inject(DateRangeService);
+    private readonly cacheService: ScheduleCacheService = inject(ScheduleCacheService);
+    private readonly generatorService: TurniGeneratorService = inject(TurniGeneratorService);
+    private readonly replacementService: ShiftReplacementService = inject(ShiftReplacementService);
 
-    loadInitialData$ = createEffect(() => {
+    readonly loadInitialData$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.loadInitialData),
-            switchMap(() => {
+            withLatestFrom(
+                this.store.select(selectWorkers),
+                this.store.select(selectShifts),
+                this.store.select(selectAbsences)
+            ),
+            switchMap(([, currentWorkers, currentShifts, currentAbsences]) => {
                 try {
+                    const hasStoreData =
+                        currentWorkers.length > 0 &&
+                        currentShifts.length > 0;
+
                     return of(
                         TurniActions.loadInitialDataSuccess({
-                            workers: [...WORKERS],
-                            shifts: [...SHIFTS],
-                            absences: [...ABSENCES],
+                            workers: hasStoreData ? currentWorkers : [...WORKERS],
+                            shifts: hasStoreData ? currentShifts : [...SHIFTS],
+                            absences: hasStoreData ? currentAbsences : [...ABSENCES],
                         })
                     );
                 } catch (error) {
@@ -57,7 +69,7 @@ export class TurniEffects {
         );
     });
 
-    init$ = createEffect(() => {
+    readonly init$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.init),
             map(() => {
@@ -66,7 +78,7 @@ export class TurniEffects {
         );
     });
 
-    openCurrentRangeAfterLoad$ = createEffect(() => {
+    readonly openCurrentRangeAfterLoad$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.loadInitialDataSuccess),
             withLatestFrom(
@@ -81,7 +93,7 @@ export class TurniEffects {
         );
     });
 
-    setMode$ = createEffect(() => {
+    readonly setMode$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.setMode),
             withLatestFrom(
@@ -99,7 +111,7 @@ export class TurniEffects {
         );
     });
 
-    previous$ = createEffect(() => {
+    readonly previous$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.previousRange),
             withLatestFrom(
@@ -118,7 +130,7 @@ export class TurniEffects {
         );
     });
 
-    next$ = createEffect(() => {
+    readonly next$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.nextRange),
             withLatestFrom(
@@ -137,12 +149,11 @@ export class TurniEffects {
         );
     });
 
-    refresh$ = createEffect(() => {
+    readonly refresh$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.refreshRange),
             withLatestFrom(
-                this.store.select(selectRange),
-                this.store.select(selectGenerationSeed)
+                this.store.select(selectRange)
             ),
             map(([, range]) => {
                 if (!range) {
@@ -157,7 +168,7 @@ export class TurniEffects {
         );
     });
 
-    refreshStrong$ = createEffect(() => {
+    readonly refreshStrong$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.refreshRangeStrong),
             withLatestFrom(
@@ -178,7 +189,7 @@ export class TurniEffects {
         );
     });
 
-    clearCache$ = createEffect(() => {
+    readonly clearCache$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.clearCurrentPeriodCache),
             withLatestFrom(
@@ -199,7 +210,58 @@ export class TurniEffects {
         );
     });
 
-    openRange$ = createEffect(() => {
+    readonly markWorkerSickOnShift$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(TurniActions.markWorkerSickOnShift),
+            withLatestFrom(
+                this.store.select(selectPlan),
+                this.store.select(selectWorkers),
+                this.store.select(selectShifts),
+                this.store.select(selectAbsences)
+            ),
+            switchMap(([action, currentPlan, workers, shifts, absences]) => {
+                try {
+                    if (!currentPlan) {
+                        return of(
+                            TurniActions.markWorkerSickOnShiftFailure({
+                                error: 'Piano turni non presente.',
+                            })
+                        );
+                    }
+
+                    const result = this.replacementService.markWorkerSickAndReplace({
+                        plan: currentPlan,
+                        workers,
+                        shifts,
+                        absences,
+                        date: action.date,
+                        shift: action.shift,
+                        workerId: action.workerId,
+                        note: action.note,
+                    });
+
+                    this.cacheService.set(result.plan);
+
+                    return of(
+                        TurniActions.markWorkerSickOnShiftSuccess({
+                            plan: result.plan,
+                            absences: result.absences,
+                        })
+                    );
+                } catch (error) {
+                    return of(
+                        TurniActions.markWorkerSickOnShiftFailure({
+                            error: error instanceof Error
+                                ? error.message
+                                : 'Errore sostituzione operatore in malattia',
+                        })
+                    );
+                }
+            })
+        );
+    });
+
+    readonly openRange$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(TurniActions.openRange),
             withLatestFrom(

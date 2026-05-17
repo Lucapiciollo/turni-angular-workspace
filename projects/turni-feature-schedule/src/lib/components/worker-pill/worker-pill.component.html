@@ -1,40 +1,55 @@
 <div
     class="person-pill"
-    [class.forced]="isForced"
-    [class.manual]="isManual"
-    (mouseleave)="hideTooltips()"
+    [class.forced]="assignment.source === 'FORCED'"
+    [class.manual]="assignment.source === 'MANUAL'"
+    [class.sick]="assignment.isFigurative === true && assignment.absenceType === 'MALATTIA'"
+    [matTooltip]="tooltip"
+    matTooltipPosition="above"
 >
-    <span
+    <div
         class="avatar"
-        [style.background]="color"
+        [style.background]="worker?.color || '#64748b'"
     >
-        {{ assignment.workerName.charAt(0) }}
-    </span>
+        {{ assignment.workerName | turniInitials }}
+    </div>
 
-    <span class="person-text">
-        <strong>
-            {{ assignment.workerName }}
-        </strong>
+    <div class="person-text">
+        <strong>{{ assignment.workerName }}</strong>
 
-        <small>
-            {{ role }}
+        <small>{{ assignment.source }}</small>
+
+        <small
+            class="replacement-label"
+            *ngIf="assignment.replacesWorkerName"
+        >
+            Sostituisce {{ assignment.replacesWorkerName }}
         </small>
-    </span>
+    </div>
 
     <mat-chip
         class="source-badge"
         *ngIf="assignment.source !== 'AUTO'"
-        #sourceTooltip="matTooltip"
-        [matTooltip]="tooltip"
-        matTooltipPosition="above"
     >
-        {{ assignment.source === 'FORCED' ? 'FORZATO' : 'MANUALE' }}
+        {{ assignment.source }}
     </mat-chip>
 
-    <span
+    <div
         class="pill-actions"
         *ngIf="showActions"
     >
+        <button
+            mat-icon-button
+            type="button"
+            class="sick-action"
+            (click)="emitMarkSick($event)"
+            matTooltip="Metti in malattia e cerca sostituto"
+            matTooltipPosition="above"
+            aria-label="Metti in malattia e cerca sostituto"
+            *ngIf="assignment.isFigurative !== true"
+        >
+            <mat-icon>local_pharmacy</mat-icon>
+        </button>
+
         <button
             mat-icon-button
             type="button"
@@ -53,11 +68,12 @@
             class="warning"
             #warningTooltip="matTooltip"
             (click)="openWarnings($event)"
-            matTooltip="Apri warning operatore"
+            [matTooltip]="tooltip"
             matTooltipPosition="above"
-            aria-label="Apri warning operatore"
+            aria-label="Apri dettaglio warning"
+            *ngIf="assignment.violatedRules.length > 0"
         >
-            <mat-icon>priority_high</mat-icon>
+            <mat-icon>report_problem</mat-icon>
         </button>
-    </span>
+    </div>
 </div>

@@ -2,44 +2,48 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 42px;
+    min-height: 40px;
     padding: 6px 8px;
     border-radius: 13px;
-    border: 1px solid #e5e7eb;
-    background: #f9fafb;
-
+    border: 1px solid #edf1f6;
+    background: #ffffff;
 
     &.forced {
-        background: #fef2f2;
-        border-color: #fecaca;
+        background: #fffdf7;
+        border-color: #fdecc8;
 
         .source-badge {
-            --mdc-chip-elevated-container-color: #fee2e2;
-            --mdc-chip-label-text-color: #991b1b;
+            --mdc-chip-elevated-container-color: #fff8e6;
+            --mdc-chip-label-text-color: #b45309;
         }
     }
 
+    &.sick {
+        background: #fff7f7;
+        border-color: #fecaca;
+    }
+
     &.manual {
-        background: #fffbeb;
-        border-color: #fde68a;
+        background: #f8fbff;
+        border-color: #dbeafe;
 
         .source-badge {
-            --mdc-chip-elevated-container-color: #fef3c7;
-            --mdc-chip-label-text-color: #92400e;
+            --mdc-chip-elevated-container-color: #eef6ff;
+            --mdc-chip-label-text-color: #2563eb;
         }
     }
 }
 
 .avatar {
-    width: 29px;
-    height: 29px;
+    width: 28px;
+    height: 28px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 13px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 600;
     flex: 0 0 auto;
 }
 
@@ -51,24 +55,25 @@
     flex: 1 1 auto;
 
     strong {
-        font-size: 14px;
-        font-weight: 800;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1f2937;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     small {
-        color: #6b7280;
+        color: #8b95a5;
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 400;
     }
 }
 
 .source-badge {
     min-height: 22px;
     font-size: 9px;
-    font-weight: 900;
+    font-weight: 600;
 }
 
 .pill-actions {
@@ -80,6 +85,7 @@
         width: 28px;
         height: 28px;
         padding: 0;
+        color: #64748b;
 
         mat-icon {
             font-size: 17px;
@@ -88,7 +94,28 @@
         }
 
         &.warning {
-            color: #991b1b;
+            color: #be123c;
         }
     }
+}
+
+
+.sick-action {
+    color: #dc2626 !important;
+
+    mat-icon {
+        color: #dc2626;
+    }
+}
+
+
+.replacement-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 1px;
+    color: #2563eb !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    line-height: 1.2;
 }

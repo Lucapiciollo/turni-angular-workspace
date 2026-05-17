@@ -157,6 +157,7 @@
                             *ngFor="let assignment of getAssignmentsByShift(day, shift.type); trackBy: trackByAssignment"
                             [assignment]="assignment"
                             [worker]="getWorker(assignment.workerId)"
+                            (markSick)="markWorkerSick.emit($event)"
                         ></turni-worker-pill>
                     </div>
 

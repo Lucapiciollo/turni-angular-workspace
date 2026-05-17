@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
     AssignedShift,
     DaySchedule,
@@ -30,6 +30,8 @@ export class ScheduleTableComponent {
     @Input() getFigurativeAbsencesByDayFn?: (
         day: DaySchedule
     ) => AssignedShift[];
+
+    @Output() markWorkerSick = new EventEmitter<AssignedShift>();
 
     getAssignmentsByShift(
         day: DaySchedule,

@@ -424,7 +424,7 @@ export class TurniGeneratorService {
             return warning.id.startsWith('UNCOVERED_');
         }).length;
 
-        const status = errorWarnings > 0 || uncoveredShifts > 0
+        const status: DayScheduleIndicators['status'] = errorWarnings > 0 || uncoveredShifts > 0
             ? 'ERROR'
             : forcedAssignments > 0 || absentWorkers > 0 || params.warnings.length > 0
                 ? 'WARNING'

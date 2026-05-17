@@ -133,6 +133,16 @@ export class TurniFacade {
         this.store.dispatch(TurniActions.clearCurrentPeriodCache());
     }
 
+    markWorkerSickOnShift(assignment: AssignedShift): void {
+        this.store.dispatch(
+            TurniActions.markWorkerSickOnShift({
+                date: assignment.date,
+                shift: assignment.shift,
+                workerId: assignment.workerId,
+            })
+        );
+    }
+
     selectWorker(workerId: string | null): void {
         this.store.dispatch(
             TurniActions.selectWorker({

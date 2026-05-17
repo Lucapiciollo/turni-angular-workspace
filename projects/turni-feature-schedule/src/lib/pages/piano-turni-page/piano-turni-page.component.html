@@ -89,6 +89,7 @@
             [getAssignmentsByShiftFn]="turniFacade.getAssignmentsByShiftFn"
             [getFigurativeAbsencesByDayFn]="turniFacade.getFigurativeAbsencesByDayFn"
             [getWorkerFn]="turniFacade.getWorkerFn"
+            (markWorkerSick)="turniFacade.markWorkerSickOnShift($event)"
         ></turni-schedule-table>
     </section>
 

@@ -151,6 +151,11 @@ export interface AssignedShift {
     isFigurative?: boolean;
     absenceType?: AbsenceType;
     absenceNote?: string;
+
+    replacesWorkerId?: string;
+    replacesWorkerName?: string;
+    replacedByWorkerId?: string;
+    replacedByWorkerName?: string;
 }
 
 export interface DaySchedule {
@@ -226,4 +231,15 @@ export interface SchedulePlan {
     stats: WorkerStats[];
     source: SchedulePlanSource;
     generatedAt: string;
+}
+
+export interface ShiftReplacementResult {
+    plan: SchedulePlan;
+    absences: WorkerAbsence[];
+    replaced: boolean;
+    forced: boolean;
+    uncovered: boolean;
+    originalWorkerId: string;
+    replacementWorkerId?: string;
+    message: string;
 }

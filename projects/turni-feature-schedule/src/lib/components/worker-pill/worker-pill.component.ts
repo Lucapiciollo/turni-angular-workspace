@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { AssignedShift, Worker } from '@turni/data-access';
@@ -13,6 +13,8 @@ export class WorkerPillComponent {
     @Input() assignment!: AssignedShift;
     @Input() worker?: Worker;
     @Input() showActions = true;
+
+    @Output() markSick = new EventEmitter<AssignedShift>();
 
     @ViewChild('sourceTooltip') sourceTooltip?: MatTooltip;
     @ViewChild('statsTooltip') statsTooltip?: MatTooltip;
@@ -61,6 +63,12 @@ export class WorkerPillComponent {
         this.sourceTooltip?.hide(0);
         this.statsTooltip?.hide(0);
         this.warningTooltip?.hide(0);
+    }
+
+    emitMarkSick(event: MouseEvent): void {
+        event.stopPropagation();
+        this.hideTooltips();
+        this.markSick.emit(this.assignment);
     }
 
     openStats(event: MouseEvent): void {
