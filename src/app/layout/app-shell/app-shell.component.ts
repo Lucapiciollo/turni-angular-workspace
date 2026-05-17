@@ -23,5 +23,11 @@ export class AppShellComponent {
             route: '/piano-turni',
             exact: true,
         },
+        {
+            label: 'Operatori',
+            description: 'Anagrafica e regole operatori',
+            icon: 'manage_accounts',
+            route: '/piano-turni/operatori',
+        },
     ];
 }

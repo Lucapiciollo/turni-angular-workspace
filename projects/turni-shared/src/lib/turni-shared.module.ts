@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
 import { PreventDefaultDirective } from './directives/prevent-default.directive';
@@ -25,13 +25,14 @@ const DECLARATIONS = [
     imports: [
         CommonModule,
         FormsModule,
-        FormsModule,
+        ReactiveFormsModule,
         TurniMaterialModule,
         UxDirectivesSharedModule,
     ],
     exports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         TurniMaterialModule,
         UxDirectivesSharedModule,
         ...DECLARATIONS,

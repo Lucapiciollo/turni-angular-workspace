@@ -1,0 +1,277 @@
+<div class="page">
+    <section class="hero-card">
+        <div>
+            <span class="eyebrow">
+                <mat-icon>manage_accounts</mat-icon>
+                Anagrafica operatori
+            </span>
+
+            <h1>Operatori</h1>
+            <p>
+                Gestisci operatori, contratto e regole. Per ora il salvataggio è locale sullo storage del browser.
+            </p>
+        </div>
+
+        <div class="hero-actions">
+            <div class="summary-pill">
+                <mat-icon>groups</mat-icon>
+                {{ turniFacade.workers().length }} operatori
+            </div>
+
+            <button
+                mat-stroked-button
+                type="button"
+                routerLink="/piano-turni"
+            >
+                <mat-icon>calendar_month</mat-icon>
+                Piano turni
+            </button>
+
+            <button
+                mat-flat-button
+                color="primary"
+                type="button"
+                (click)="createNew()"
+            >
+                <mat-icon>add</mat-icon>
+                Nuovo
+            </button>
+        </div>
+    </section>
+
+    <section class="content-grid">
+        <mat-card class="list-card">
+            <div class="card-header">
+                <div>
+                    <h2>Lista operatori</h2>
+                    <p>Seleziona una riga per modificarla.</p>
+                </div>
+
+                <button
+                    mat-icon-button
+                    type="button"
+                    matTooltip="Ripristina mock iniziale"
+                    (click)="resetStorage()"
+                >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+            </div>
+
+            <mat-form-field
+                class="search-field"
+                appearance="outline"
+            >
+                <mat-label>Cerca operatore</mat-label>
+                <input
+                    matInput
+                    [value]="searchText()"
+                    (input)="searchText.set($any($event.target).value)"
+                    placeholder="Nome, cognome, ruolo"
+                />
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+
+            <div class="worker-list">
+                <button
+                    type="button"
+                    class="worker-row"
+                    *ngFor="let worker of filteredWorkers(); trackBy: trackByWorker"
+                    [class.selected]="selectedWorkerId() === worker.id"
+                    [class.disabled]="worker.enabled === false"
+                    (click)="editWorker(worker)"
+                >
+                    <span
+                        class="avatar"
+                        [style.background]="worker.color || '#64748b'"
+                    >
+                        {{ worker.fullName || worker.name | turniInitials }}
+                    </span>
+
+                    <span class="worker-main">
+                        <strong>{{ worker.fullName || worker.name }}</strong>
+                        <small>
+                            {{ worker.role || 'Operatore' }}
+                            · {{ worker.contract?.monthlyHours || 168 }}h/mese
+                        </small>
+                    </span>
+
+                    <mat-icon *ngIf="worker.enabled === false">visibility_off</mat-icon>
+                </button>
+            </div>
+        </mat-card>
+
+        <mat-card class="form-card">
+            <div class="card-header">
+                <div>
+                    <h2>
+                        {{ selectedWorkerId() ? 'Modifica operatore' : 'Nuovo operatore' }}
+                    </h2>
+                    <p>Dati anagrafici, contratto e limiti di pianificazione.</p>
+                </div>
+
+                <button
+                    mat-icon-button
+                    color="warn"
+                    type="button"
+                    *ngIf="selectedWorkerId() as workerId"
+                    matTooltip="Elimina operatore"
+                    (click)="deleteWorker(turniFacade.getWorker(workerId)!)"
+                >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <form
+                class="operator-form"
+                [formGroup]="form"
+                (ngSubmit)="saveWorker()"
+            >
+                <div class="form-section">
+                    <h3>Anagrafica</h3>
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nome</mat-label>
+                            <input
+                                matInput
+                                formControlName="firstName"
+                                (blur)="syncFullName()"
+                            />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Cognome</mat-label>
+                            <input
+                                matInput
+                                formControlName="lastName"
+                                (blur)="syncFullName()"
+                            />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="span-2">
+                            <mat-label>Nome completo</mat-label>
+                            <input matInput formControlName="fullName" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ruolo</mat-label>
+                            <mat-select formControlName="role">
+                                <mat-option value="OSS">OSS</mat-option>
+                                <mat-option value="Infermiere">Infermiere</mat-option>
+                                <mat-option value="Coordinatore">Coordinatore</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Colore</mat-label>
+                            <input
+                                matInput
+                                type="color"
+                                formControlName="color"
+                            />
+                        </mat-form-field>
+                    </div>
+
+                    <mat-slide-toggle formControlName="enabled">
+                        Operatore attivo
+                    </mat-slide-toggle>
+                </div>
+
+                <div class="form-section">
+                    <h3>Contratto</h3>
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ore settimana</mat-label>
+                            <input matInput type="number" formControlName="contractWeeklyHours" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ore mese</mat-label>
+                            <input matInput type="number" formControlName="contractMonthlyHours" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Min ore mese</mat-label>
+                            <input matInput type="number" formControlName="minMonthlyHours" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max ore mese</mat-label>
+                            <input matInput type="number" formControlName="maxMonthlyHours" />
+                        </mat-form-field>
+                    </div>
+
+                    <mat-slide-toggle formControlName="partTime">
+                        Part-time
+                    </mat-slide-toggle>
+                </div>
+
+                <div class="form-section">
+                    <h3>Regole turni</h3>
+
+                    <div class="checks">
+                        <mat-checkbox formControlName="canWorkMorning">Mattina</mat-checkbox>
+                        <mat-checkbox formControlName="canWorkAfternoon">Pomeriggio</mat-checkbox>
+                        <mat-checkbox formControlName="canWorkNight">Notte</mat-checkbox>
+                        <mat-checkbox formControlName="restAfterNight">Riposo dopo notte</mat-checkbox>
+                        <mat-checkbox formControlName="requireAtLeastOneFreeWeekendPerMonth">
+                            Almeno un weekend libero
+                        </mat-checkbox>
+                    </div>
+
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max giorni consecutivi</mat-label>
+                            <input matInput type="number" formControlName="maxConsecutiveDays" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max mattine consecutive</mat-label>
+                            <input matInput type="number" formControlName="maxConsecutiveMorningShifts" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max pomeriggi consecutivi</mat-label>
+                            <input matInput type="number" formControlName="maxConsecutiveAfternoonShifts" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max notti consecutive</mat-label>
+                            <input matInput type="number" formControlName="maxConsecutiveNightShifts" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max notti settimana</mat-label>
+                            <input matInput type="number" formControlName="maxNightShiftsPerWeek" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Max notti mese</mat-label>
+                            <input matInput type="number" formControlName="maxNightShiftsPerMonth" />
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button
+                        mat-stroked-button
+                        type="button"
+                        (click)="createNew()"
+                    >
+                        Annulla
+                    </button>
+
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        type="submit"
+                    >
+                        <mat-icon>save</mat-icon>
+                        Salva operatore
+                    </button>
+                </div>
+            </form>
+        </mat-card>
+    </section>
+</div>

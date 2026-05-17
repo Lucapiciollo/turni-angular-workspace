@@ -7,7 +7,9 @@
       "startTime": "06:00",
       "endTime": "14:00",
       "hours": 8,
-      "requiredWorkers": 6
+      "requiredWorkers": 6,
+      "start": "06:00",
+      "end": "14:00"
     },
     {
       "type": "POMERIGGIO",
@@ -16,7 +18,9 @@
       "startTime": "14:00",
       "endTime": "22:00",
       "hours": 8,
-      "requiredWorkers": 6
+      "requiredWorkers": 6,
+      "start": "14:00",
+      "end": "22:00"
     },
     {
       "type": "NOTTE",
@@ -25,7 +29,9 @@
       "startTime": "22:00",
       "endTime": "06:00",
       "hours": 8,
-      "requiredWorkers": 3
+      "requiredWorkers": 3,
+      "start": "22:00",
+      "end": "06:00"
     }
   ],
   "workers": [

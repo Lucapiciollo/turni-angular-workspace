@@ -344,3 +344,12 @@ function applyWarningFilter(
 
     return warnings;
 }
+
+export const selectSortedWorkers = createSelector(
+    selectWorkers,
+    (workers) => {
+        return [...workers].sort((a, b) => {
+            return (a.fullName || a.name).localeCompare(b.fullName || b.name);
+        });
+    }
+);

@@ -9,10 +9,12 @@ import {
     StatsFilterType,
     WarningFilterType,
     Worker,
+    WorkerEditorDraft,
 } from '../models/turni.models';
 import { SchedulePdfExportService } from '../services/schedule-pdf-export.service';
 import { TurniActions } from './turni.actions';
 import {
+    selectAbsences,
     selectCurrentRangeCacheKey,
     selectDays,
     selectError,
@@ -22,7 +24,6 @@ import {
     selectGenerationSeed,
     selectIsPastRange,
     selectLastSource,
-    selectAbsences,
     selectLoading,
     selectMode,
     selectPeriodStats,
@@ -35,20 +36,21 @@ import {
     selectSelectedWorker,
     selectSelectedWorkerId,
     selectSelectedWorkerStats,
+    selectShifts,
+    selectSortedWorkers,
     selectStats,
     selectStatsFilterCounts,
     selectWarningCount,
     selectWarningFilterCounts,
     selectWarnings,
     selectWorkers,
-    selectShifts,
 } from './turni.selectors';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TurniFacade {
-    private store: Store = inject(Store);
+    private readonly store: Store = inject(Store);
     private readonly pdfExportService: SchedulePdfExportService = inject(SchedulePdfExportService);
 
     readonly mode = this.store.selectSignal(selectMode);
@@ -71,10 +73,6 @@ export class TurniFacade {
     readonly selectedWorkerId = this.store.selectSignal(selectSelectedWorkerId);
     readonly selectedWorker = this.store.selectSignal(selectSelectedWorker);
     readonly selectedWorkerStats = this.store.selectSignal(selectSelectedWorkerStats);
-
-    readonly selectedWorkerName = () => {
-        return this.selectedWorkerStats()?.workerName ?? null;
-    };
     readonly selectedStatsFilter = this.store.selectSignal(selectSelectedStatsFilter);
     readonly selectedWarningFilter = this.store.selectSignal(selectSelectedWarningFilter);
     readonly statsFilterCounts = this.store.selectSignal(selectStatsFilterCounts);
@@ -83,8 +81,13 @@ export class TurniFacade {
     readonly error = this.store.selectSignal(selectError);
 
     readonly workers = this.store.selectSignal(selectWorkers);
+    readonly sortedWorkers = this.store.selectSignal(selectSortedWorkers);
     readonly shifts = this.store.selectSignal(selectShifts);
     readonly absences = this.store.selectSignal(selectAbsences);
+
+    readonly selectedWorkerName = () => {
+        return this.selectedWorkerStats()?.workerName ?? null;
+    };
 
     readonly getAssignmentsByShiftFn = (
         day: DaySchedule,
@@ -110,11 +113,7 @@ export class TurniFacade {
     }
 
     setMode(mode: RangeMode): void {
-        this.store.dispatch(
-            TurniActions.setMode({
-                mode,
-            })
-        );
+        this.store.dispatch(TurniActions.setMode({ mode }));
     }
 
     previous(): void {
@@ -132,7 +131,6 @@ export class TurniFacade {
     refreshStrong(): void {
         this.store.dispatch(TurniActions.refreshRangeStrong());
     }
-
 
     exportCurrentPlanPdf(): void {
         const plan = this.plan();
@@ -174,27 +172,15 @@ export class TurniFacade {
     }
 
     selectWorker(workerId: string | null): void {
-        this.store.dispatch(
-            TurniActions.selectWorker({
-                workerId,
-            })
-        );
+        this.store.dispatch(TurniActions.selectWorker({ workerId }));
     }
 
     setStatsFilter(filter: StatsFilterType): void {
-        this.store.dispatch(
-            TurniActions.setStatsFilter({
-                filter,
-            })
-        );
+        this.store.dispatch(TurniActions.setStatsFilter({ filter }));
     }
 
     setWarningFilter(filter: WarningFilterType): void {
-        this.store.dispatch(
-            TurniActions.setWarningFilter({
-                filter,
-            })
-        );
+        this.store.dispatch(TurniActions.setWarningFilter({ filter }));
     }
 
     resetStatsFilters(): void {
@@ -229,7 +215,10 @@ export class TurniFacade {
         });
     }
 
-    getLongShiftCandidates(day: DaySchedule, assignment: AssignedShift): AssignedShift[] {
+    getLongShiftCandidates(
+        day: DaySchedule,
+        assignment: AssignedShift
+    ): AssignedShift[] {
         return day.assignments.filter((item) => {
             return item.shift === assignment.shift
                 && item.workerId !== assignment.workerId
@@ -241,5 +230,17 @@ export class TurniFacade {
         return this.workers().find((worker) => {
             return worker.id === workerId;
         });
+    }
+
+    upsertWorker(worker: WorkerEditorDraft): void {
+        this.store.dispatch(TurniActions.upsertWorker({ worker }));
+    }
+
+    deleteWorker(workerId: string): void {
+        this.store.dispatch(TurniActions.deleteWorker({ workerId }));
+    }
+
+    resetWorkersStorage(): void {
+        this.store.dispatch(TurniActions.resetWorkersStorage());
     }
 }

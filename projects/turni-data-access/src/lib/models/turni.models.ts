@@ -82,9 +82,9 @@ export interface WorkerAbsence {
     type: AbsenceType;
     startDate: string;
     endDate: string;
-        startTime?: string;
+    startTime?: string;
     endTime?: string;
-note?: string;
+    note?: string;
 }
 
 export interface WorkerContract {
@@ -111,6 +111,19 @@ export interface WorkerRules {
 
     restAfterNight: boolean;
     requireAtLeastOneFreeWeekendPerMonth: boolean;
+}
+
+export interface WorkerEditorDraft {
+    id?: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    name: string;
+    color: string;
+    role?: string;
+    enabled: boolean;
+    contract: WorkerContract;
+    rules: WorkerRules;
 }
 
 export interface Worker {

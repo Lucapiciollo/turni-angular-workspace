@@ -10,6 +10,7 @@ import {
     WarningFilterType,
     Worker,
     WorkerAbsence,
+    WorkerEditorDraft,
 } from '../models/turni.models';
 
 export const TurniActions = createActionGroup({
@@ -20,6 +21,14 @@ export const TurniActions = createActionGroup({
         'Load Initial Data Success': props<{ workers: Worker[]; shifts: ShiftDefinition[]; absences: WorkerAbsence[] }>(),
         'Load Initial Data Failure': props<{ error: string }>(),
         'Set Workers': props<{ workers: Worker[] }>(),
+        'Upsert Worker': props<{ worker: WorkerEditorDraft }>(),
+        'Upsert Worker Success': props<{ workers: Worker[] }>(),
+        'Upsert Worker Failure': props<{ error: string }>(),
+        'Delete Worker': props<{ workerId: string }>(),
+        'Delete Worker Success': props<{ workers: Worker[] }>(),
+        'Delete Worker Failure': props<{ error: string }>(),
+        'Reset Workers Storage': emptyProps(),
+        'Reset Workers Storage Success': props<{ workers: Worker[]; shifts: ShiftDefinition[]; absences: WorkerAbsence[] }>(), 
         'Set Shifts': props<{ shifts: ShiftDefinition[] }>(),
         'Set Absences': props<{ absences: WorkerAbsence[] }>(),
         'Open Range': props<{ range: DateRange; useCache: boolean }>(),

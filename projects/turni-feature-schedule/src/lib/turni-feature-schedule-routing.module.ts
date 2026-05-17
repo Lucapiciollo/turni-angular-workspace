@@ -3,10 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
-        path: '',
+        path: 'operatori',
         loadChildren: () => {
-            return import('./pages/piano-turni-page/piano-turni-page.module')
-                .then((module) => module.PianoTurniPageModule);
+            return import('./pages/operators-page/operators-page.module')
+                .then((module) => module.OperatorsPageModule);
         },
     },
     {
@@ -21,6 +21,13 @@ const routes: Routes = [
         loadChildren: () => {
             return import('./pages/schedule-warnings-page/schedule-warnings-page.module')
                 .then((module) => module.ScheduleWarningsPageModule);
+        },
+    },
+    {
+        path: '',
+        loadChildren: () => {
+            return import('./pages/piano-turni-page/piano-turni-page.module')
+                .then((module) => module.PianoTurniPageModule);
         },
     },
 ];

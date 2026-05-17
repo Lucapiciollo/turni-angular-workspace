@@ -3,15 +3,15 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 
-import { ABSENCES } from '../data/absences.mock';
 import { TURNI_FULL_MOCK } from '../data/turni-full-mock';
-import { SHIFTS, WORKERS } from '../data/mock-turni.data';
 import { DateRangeService } from '../services/date-range.service';
 import { LongShiftService } from '../services/long-shift.service';
 import { ScheduleCacheService } from '../services/schedule-cache.service';
 import { ShiftReplacementService } from '../services/shift-replacement.service';
 import { TurniGeneratorService } from '../services/turni-generator.service';
+import { TurniStorageService } from '../services/turni-storage.service';
 import { TurniActions } from './turni.actions';
+import { Worker, WorkerEditorDraft } from '../models/turni.models';
 import { selectAbsences, selectGenerationSeed, selectIsPastRange, selectMode, selectPlan, selectRange, selectShifts, selectWorkers } from './turni.selectors';
 
 @Injectable()
@@ -23,17 +23,41 @@ export class TurniEffects {
     private readonly generatorService: TurniGeneratorService = inject(TurniGeneratorService);
     private readonly replacementService: ShiftReplacementService = inject(ShiftReplacementService);
     private readonly longShiftService: LongShiftService = inject(LongShiftService);
+    private readonly storageService: TurniStorageService = inject(TurniStorageService);
 
     readonly loadInitialData$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.loadInitialData),
         withLatestFrom(this.store.select(selectWorkers), this.store.select(selectShifts), this.store.select(selectAbsences)),
         switchMap(([, currentWorkers, currentShifts, currentAbsences]) => {
             const hasStoreData = currentWorkers.length > 0 && currentShifts.length > 0;
-            return of(TurniActions.loadInitialDataSuccess({
-                workers: hasStoreData ? currentWorkers : [...TURNI_FULL_MOCK.workers],
-                shifts: hasStoreData ? currentShifts : [...TURNI_FULL_MOCK.shifts],
-                absences: hasStoreData ? currentAbsences : [...TURNI_FULL_MOCK.absences],
-            }));
+
+            if (hasStoreData) {
+                return of(TurniActions.loadInitialDataSuccess({
+                    workers: currentWorkers,
+                    shifts: currentShifts,
+                    absences: currentAbsences,
+                }));
+            }
+
+            const storedData = this.storageService.load();
+
+            if (storedData?.workers?.length && storedData?.shifts?.length) {
+                return of(TurniActions.loadInitialDataSuccess({
+                    workers: storedData.workers,
+                    shifts: storedData.shifts,
+                    absences: storedData.absences ?? [],
+                }));
+            }
+
+            const initialData = {
+                workers: [...TURNI_FULL_MOCK.workers],
+                shifts: [...TURNI_FULL_MOCK.shifts],
+                absences: [...TURNI_FULL_MOCK.absences],
+            };
+
+            this.storageService.save(initialData);
+
+            return of(TurniActions.loadInitialDataSuccess(initialData));
         })
     ));
 
@@ -124,6 +148,83 @@ export class TurniEffects {
         })
     ));
 
+
+    readonly upsertWorker$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.upsertWorker),
+        withLatestFrom(
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts),
+            this.store.select(selectAbsences)
+        ),
+        switchMap(([{ worker }, workers, shifts, absences]) => {
+            try {
+                const normalizedWorker = this.toWorker(worker);
+                const exists = workers.some((item) => item.id === normalizedWorker.id);
+                const nextWorkers = exists
+                    ? workers.map((item) => item.id === normalizedWorker.id ? normalizedWorker : item)
+                    : [...workers, normalizedWorker];
+
+                this.storageService.save({
+                    workers: nextWorkers,
+                    shifts,
+                    absences,
+                });
+
+                return of(TurniActions.upsertWorkerSuccess({
+                    workers: nextWorkers,
+                }));
+            } catch (error) {
+                return of(TurniActions.upsertWorkerFailure({
+                    error: error instanceof Error ? error.message : 'Errore salvataggio operatore',
+                }));
+            }
+        })
+    ));
+
+    readonly deleteWorker$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.deleteWorker),
+        withLatestFrom(
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts),
+            this.store.select(selectAbsences)
+        ),
+        switchMap(([{ workerId }, workers, shifts, absences]) => {
+            try {
+                const nextWorkers = workers.filter((worker) => worker.id !== workerId);
+                const nextAbsences = absences.filter((absence) => absence.workerId !== workerId);
+
+                this.storageService.save({
+                    workers: nextWorkers,
+                    shifts,
+                    absences: nextAbsences,
+                });
+
+                return of(TurniActions.deleteWorkerSuccess({
+                    workers: nextWorkers,
+                }));
+            } catch (error) {
+                return of(TurniActions.deleteWorkerFailure({
+                    error: error instanceof Error ? error.message : 'Errore eliminazione operatore',
+                }));
+            }
+        })
+    ));
+
+    readonly resetWorkersStorage$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.resetWorkersStorage),
+        map(() => {
+            const initialData = {
+                workers: [...TURNI_FULL_MOCK.workers],
+                shifts: [...TURNI_FULL_MOCK.shifts],
+                absences: [...TURNI_FULL_MOCK.absences],
+            };
+
+            this.storageService.save(initialData);
+
+            return TurniActions.resetWorkersStorageSuccess(initialData);
+        })
+    ));
+
     readonly openRange$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.openRange),
         withLatestFrom(this.store.select(selectGenerationSeed), this.store.select(selectIsPastRange), this.store.select(selectWorkers), this.store.select(selectShifts), this.store.select(selectAbsences)),
@@ -144,6 +245,29 @@ export class TurniEffects {
         }),
         catchError((error) => of(TurniActions.generatePlanFailure({ error: error instanceof Error ? error.message : 'Errore inatteso NgRx Turni' })))
     ));
+
+
+    private toWorker(draft: WorkerEditorDraft): Worker {
+        const fullName = (draft.fullName || `${draft.firstName} ${draft.lastName}`).trim();
+        const id = draft.id?.trim() || `worker-${Date.now()}`;
+
+        return {
+            id,
+            firstName: draft.firstName.trim(),
+            lastName: draft.lastName.trim(),
+            fullName,
+            name: fullName,
+            color: draft.color || '#64748b',
+            role: draft.role || 'OSS',
+            enabled: draft.enabled,
+            contract: {
+                ...draft.contract,
+            },
+            rules: {
+                ...draft.rules,
+            },
+        };
+    }
 
     private createEmptyPlan(range: ReturnType<DateRangeService['createCurrentRange']>) {
         return {

@@ -23,3 +23,4 @@ export * from './lib/services/shift-replacement.service';
 export * from './lib/services/long-shift.service';
 export * from './lib/services/schedule-pdf-export.service';
 export * from './lib/data/turni-full-mock';
+export * from './lib/services/turni-storage.service';

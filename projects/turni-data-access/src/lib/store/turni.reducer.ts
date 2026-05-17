@@ -108,6 +108,74 @@ export const turniReducer = createReducer(
         };
     }),
 
+    on(TurniActions.upsertWorker, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.upsertWorkerSuccess, (state, { workers }) => {
+        return {
+            ...state,
+            workers,
+            generationSeed: state.generationSeed + 1,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.upsertWorkerFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
+    on(TurniActions.deleteWorker, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.deleteWorkerSuccess, (state, { workers }) => {
+        return {
+            ...state,
+            workers,
+            selectedWorkerId: state.selectedWorkerId && workers.some((worker) => worker.id === state.selectedWorkerId)
+                ? state.selectedWorkerId
+                : null,
+            generationSeed: state.generationSeed + 1,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.deleteWorkerFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
+    on(TurniActions.resetWorkersStorageSuccess, (state, { workers, shifts, absences }) => {
+        return {
+            ...state,
+            workers,
+            shifts,
+            absences,
+            selectedWorkerId: null,
+            generationSeed: state.generationSeed + 1,
+            loading: false,
+            error: null,
+        };
+    }),
+
     on(TurniActions.setShifts, (state, { shifts }) => {
         return {
             ...state,
