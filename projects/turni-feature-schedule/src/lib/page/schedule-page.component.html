@@ -1,27 +1,89 @@
 <section class="page schedule">
-  <div class="page-head"><div class="page-title"><h1>Turni Maggio 2026 <span>★</span></h1><p>Vista settimanale</p></div><div class="actions"><button class="btn">▣ Vista mese</button><button class="btn primary">▣ Vista settimana</button><button class="btn">▽ Filtri</button><button class="btn" (click)="facade.optimize()">⌁ Ottimizza</button><button class="btn success" (click)="facade.save()">▣ Salva</button></div></div>
-  @if ({days: days$ | async, workerMap: workerMap$ | async, workers: workers$ | async}; as vm) {
-    <div class="table-card card">
+  @if (currentRange$ | async; as range) {
+    <div class="page-head">
+      <div class="page-title">
+        <h1>{{ range.mode === 'MONTH' ? 'Piano mensile' : 'Piano settimanale' }}</h1>
+        <p>{{ range.startDate }} → {{ range.endDate }} · {{ range.visibleDays }} giorni visibili</p>
+      </div>
+      <div class="actions">
+        <button class="btn" [class.primary]="isCurrentMode(range, 'MONTH')" (click)="setMode('MONTH')">Vista mese</button>
+        <button class="btn" [class.primary]="isCurrentMode(range, 'WEEK')" (click)="setMode('WEEK')">Vista settimana</button>
+        <button class="btn" (click)="facade.regenerateCurrentRange()">Ricalcola automatici</button>
+        <button class="btn" (click)="facade.optimize()">Ottimizza</button>
+        <button class="btn success" (click)="facade.save()">Salva</button>
+      </div>
+    </div>
+
+    <div class="range-toolbar card">
+      <button class="range-nav" (click)="previous()">‹</button>
+      <div class="range-center">
+        <strong>{{ range.label }}</strong>
+        <small>{{ range.mode === 'MONTH' ? 'Mese esteso al lunedì precedente e alla domenica successiva' : 'Settimana sempre da lunedì a domenica' }}</small>
+      </div>
+      <button class="range-nav" (click)="next()">›</button>
+    </div>
+
+    @if (rangeKeys$ | async; as keys) {
+      <div class="cache-row">
+        <span>Range caricati nello store:</span>
+        @for (key of keys; track key) { <b>{{ key }}</b> }
+      </div>
+    }
+  }
+
+  @if ({days: days$ | async, workerMap: workerMap$ | async, workers: workers$ | async, range: currentRange$ | async}; as vm) {
+    <div class="table-card card" [class.week-mode]="vm.range?.mode === 'WEEK'">
       <table>
-        <thead><tr><th>Data</th>@for (s of shifts; track s.type) { <th>{{s.label}}<small>{{s.time}}</small></th> }<th>Warning</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Data</th>
+            @for (s of shifts; track s.type) { <th>{{s.label}}<small>{{s.time}}</small></th> }
+            <th>Warning</th>
+          </tr>
+        </thead>
         <tbody>
         @for (day of vm.days ?? []; track day.date) {
           <tr>
-            <td class="date"><small>{{day.weekday}}</small><b>{{day.dayNumber}}</b><span>{{day.monthLabel}}</span>@for (b of day.badges; track b){<em>{{b}}</em>}</td>
+            <td class="date">
+              <small>{{day.weekday}}</small>
+              <b>{{day.dayNumber}}</b>
+              <span>{{day.monthLabel}}</span>
+              @for (b of day.badges; track b){<em [class.out]="b === 'Fuori mese'">{{b}}</em>}
+            </td>
             @for (s of shifts; track s.type) {
-              <td><div class="shift-cell">
-                @for (a of day.assignments; track a.id) { @if (a.shift === s.type && vm.workerMap) {
-                  @if (worker(vm.workerMap, a.workerId); as w) {
-                    <div class="assignment" [class.manual]="a.source === 'MANUAL'" [class.forced]="a.source === 'FORCED'">
-                      <span class="drag">⋮⋮</span><span class="avatar" [class]="w.color">{{w.initials}}</span><strong>{{w.name.split(' ')[0]}}</strong><b>{{a.source}}</b>
-                      <button (click)="a.locked ? facade.unlock(a.id) : facade.lock(a.id)">{{a.locked ? '🔒' : '🔓'}}</button><button class="danger" (click)="facade.removeWorker(day.date, s.type, a.workerId)">♢</button>
-                    </div>
-                  }
-                }}
-                <div class="add"><select [(ngModel)]="selected[day.date + '_' + s.type]"><option value="">Assegna operatore</option>@for(w of vm.workers ?? []; track w.id){<option [value]="w.id">{{w.name}}</option>}</select><button (click)="assign(day.date, s.type)">＋</button></div>
-              </div></td>
+              <td>
+                <div class="shift-cell">
+                  <div class="shift-meta">
+                    <span>{{ assignmentsCount(day, s.type) }} persone</span>
+                    <small>richieste: {{ s.required }}</small>
+                  </div>
+                  <div class="people-scroll">
+                    @for (a of day.assignments; track a.id) { @if (a.shift === s.type && vm.workerMap) {
+                      @if (worker(vm.workerMap, a.workerId); as w) {
+                        <div class="assignment" [class.manual]="a.source === 'MANUAL'" [class.forced]="a.source === 'FORCED'">
+                          <span class="drag"><img src="assets/icons/drag.svg" alt="drag"></span>
+                          <span class="avatar" [class]="w.color">{{w.initials}}</span>
+                          <div class="person"><strong>{{w.name.split(' ')[0]}}</strong><small>{{w.role}}</small></div>
+                          <b>{{a.source}}</b>
+                          <button (click)="a.locked ? facade.unlock(a.id) : facade.lock(a.id)"><img [src]="a.locked ? 'assets/icons/lock.svg' : 'assets/icons/unlock.svg'" alt="lock"></button>
+                          <button class="danger" (click)="facade.removeWorker(day.date, s.type, a.workerId)"><img src="assets/icons/trash.svg" alt="remove"></button>
+                        </div>
+                      }
+                    }}
+                  </div>
+                  <div class="add">
+                    <select [(ngModel)]="selected[day.date + '_' + s.type]"><option value="">Assegna operatore</option>@for(w of vm.workers ?? []; track w.id){<option [value]="w.id">{{w.name}}</option>}</select>
+                    <button title="Aggiungi" (click)="assign(day.date, s.type)"><img src="assets/icons/plus.svg" alt="add"></button>
+                    <button title="Forza" class="force" (click)="force(day.date, s.type)">!</button>
+                    <button title="Pulisci turno" class="danger" (click)="facade.clearShift(day.date, s.type)"><img src="assets/icons/trash.svg" alt="clear"></button>
+                  </div>
+                </div>
+              </td>
             }
-            <td class="warn-cell">@for (issue of day.warnings; track issue.id) { <div class="warn">⚠ {{issue.title}}</div> } @if (!day.warnings.length) { <div class="ok">✓ OK<br><small>Nessun problema</small></div> }</td>
+            <td class="warn-cell">
+              @for (issue of day.warnings; track issue.id) { <div class="warn"><img src="assets/icons/warning.svg" alt="warning"> {{issue.title}}</div> }
+              @if (!day.warnings.length) { <div class="ok"><img src="assets/icons/check.svg" alt="ok"> OK<br><small>Nessun problema</small></div> }
+            </td>
           </tr>
         }
         </tbody>

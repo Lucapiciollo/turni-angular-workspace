@@ -1,23 +1,17 @@
 import { Injectable } from '@angular/core';
-import { AuditLog, OptimizerResult, SchedulePlan, ValidationIssue, Worker } from '../models/turni.models';
-import { createInitialMockPlan, createIssues, mockAudits, mockWorkers } from '../utils/mock-data';
-
+import { AuditLog, OptimizerResult, SchedulePlan, ScheduleRange, ValidationIssue, Worker } from '../models/turni.models';
+import { createIssues, createPlanForRange, mockAudits, mockOptimizer, mockWorkers } from '../utils/mock-data';
+import { DateRangeUtils } from '../utils/date-range.utils';
+export interface PersistedTurniState { workers: Worker[]; planCache: Record<string, SchedulePlan>; currentRange: ScheduleRange; issues: ValidationIssue[]; audits: AuditLog[]; optimizer: OptimizerResult; }
 @Injectable({ providedIn: 'root' })
 export class MockTurniApiService {
-  load(): { workers: Worker[]; plan: SchedulePlan; issues: ValidationIssue[]; audits: AuditLog[]; optimizer: OptimizerResult } {
-    const stored = localStorage.getItem('turni-workforce-state');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as { plan: SchedulePlan; audits: AuditLog[] };
-        return { workers: mockWorkers, plan: parsed.plan, issues: createIssues(parsed.plan), audits: parsed.audits, optimizer: { score: 450, attempts: 250, errors: 1, warnings: 4 } };
-      } catch { /* fallback */ }
-    }
-    const plan = createInitialMockPlan('Turni Maggio 2026', '2026-05-01', '2026-05-31');
-    return { workers: mockWorkers, plan, issues: createIssues(plan), audits: mockAudits, optimizer: { score: 450, attempts: 250, errors: 1, warnings: 4 } };
+  private readonly storageKey = 'turni-workforce-state-v5';
+  load(): PersistedTurniState {
+    const stored = localStorage.getItem(this.storageKey);
+    if (stored) { try { return JSON.parse(stored) as PersistedTurniState; } catch { localStorage.removeItem(this.storageKey); } }
+    const range = DateRangeUtils.currentRange('MONTH'); const plan = createPlanForRange(range); const issues = createIssues(plan);
+    return { workers: mockWorkers, planCache: { [range.key]: plan }, currentRange: range, issues, audits: mockAudits, optimizer: { ...mockOptimizer, errors: issues.filter(i => i.severity === 'ERROR').length, warnings: issues.filter(i => i.severity === 'WARNING').length } };
   }
-
-  persist(plan: SchedulePlan | null, audits: AuditLog[]): void {
-    if (!plan) return;
-    localStorage.setItem('turni-workforce-state', JSON.stringify({ plan, audits }));
-  }
+  persist(state: PersistedTurniState): void { localStorage.setItem(this.storageKey, JSON.stringify(state)); }
+  clear(): void { localStorage.removeItem(this.storageKey); }
 }

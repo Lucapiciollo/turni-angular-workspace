@@ -1,114 +1,44 @@
 import { createReducer, on } from '@ngrx/store';
 import { TurniActions } from './turni.actions';
-import { Assignment, AuditAction, AuditLog, OptimizerResult, SchedulePlan, ValidationIssue, Worker } from '../models/turni.models';
-import { createInitialMockPlan, createIssues, optimizeMockPlan } from '../utils/mock-data';
-
+import { Assignment, AuditAction, AuditLog, OptimizerResult, SchedulePlan, ScheduleRange, ValidationIssue, Worker } from '../models/turni.models';
+import { DateRangeUtils } from '../utils/date-range.utils';
+import { MomentDateUtils } from '../utils/moment-date.utils';
+import { assignWorkerToPlan, calculateWorkerStats, clearShiftInPlan, defaultShiftDefinitions, generatePlan, lockAssignmentInPlan, moveAssignmentInPlan, optimizePlan, regenerateAutomaticKeepingManual, removeWorkerFromPlan, validatePlan, withRevalidatedPlan } from '../utils/schedule-engine.utils';
+import { mockAbsences, mockHolidays } from '../utils/mock-data';
 export const turniFeatureKey = 'turni';
-
-export interface TurniState {
-  loading: boolean;
-  error: string | null;
-  workers: Worker[];
-  plan: SchedulePlan | null;
-  issues: ValidationIssue[];
-  audits: AuditLog[];
-  optimizer: OptimizerResult | null;
-}
-
-export const initialState: TurniState = {
-  loading: false,
-  error: null,
-  workers: [],
-  plan: null,
-  issues: [],
-  audits: [],
-  optimizer: null
-};
-
-function id(prefix: string): string { return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}`; }
-function now(): string { return new Date().toISOString(); }
-function audit(action: AuditAction, message: string, extra: Partial<AuditLog> = {}): AuditLog {
-  return { id: id('audit'), action, message, createdAt: now(), createdBy: 'Admin', ...extra };
-}
+export interface TurniState { loading: boolean; error: string | null; workers: Worker[]; planCache: Record<string, SchedulePlan>; currentRange: ScheduleRange | null; issues: ValidationIssue[]; audits: AuditLog[]; optimizer: OptimizerResult | null; }
+export const initialState: TurniState = { loading: false, error: null, workers: [], planCache: {}, currentRange: null, issues: [], audits: [], optimizer: null };
+function audit(action: AuditAction, message: string, extra: Partial<AuditLog> = {}): AuditLog { return { id: MomentDateUtils.uniqueId('audit'), action, message, createdAt: MomentDateUtils.nowIso(), createdBy: 'Admin', ...extra }; }
+function currentPlan(state: TurniState): SchedulePlan | null { return state.currentRange ? state.planCache[state.currentRange.key] ?? null : null; }
+function rangeFromPlan(plan: SchedulePlan): ScheduleRange { return { key: plan.rangeKey, mode: plan.mode, label: plan.name.replace(/^Turni\s+|^Settimana\s+/, ''), startDate: plan.startDate, endDate: plan.endDate, visibleDays: plan.days.length, anchorDate: plan.mode === 'WEEK' ? plan.startDate : plan.startDate }; }
+function setCurrentPlan(state: TurniState, plan: SchedulePlan, issues?: ValidationIssue[]): TurniState { const result = issues ? { plan, issues } : withRevalidatedPlan(plan, state.workers, defaultShiftDefinitions); const updated = { ...result.plan, updatedAt: MomentDateUtils.nowIso() }; return { ...state, currentRange: rangeFromPlan(updated), planCache: { ...state.planCache, [updated.rangeKey]: updated }, issues: result.issues }; }
 function appendAudit(state: TurniState, log: AuditLog): TurniState { return { ...state, audits: [log, ...state.audits] }; }
-function withPlan(state: TurniState, plan: SchedulePlan): TurniState { return { ...state, plan: { ...plan, updatedAt: now() }, issues: createIssues(plan) }; }
-
+function ensureRange(state: TurniState, range: ScheduleRange): TurniState { const cached = state.planCache[range.key]; if (cached) return { ...state, currentRange: range, issues: validatePlan(cached, state.workers, defaultShiftDefinitions) }; const plan = generatePlan({ range, workers: state.workers, shifts: defaultShiftDefinitions, absences: mockAbsences, holidays: mockHolidays }); return appendAudit(setCurrentPlan(state, plan), audit('CREATE_PLAN', `Generato nuovo piano ${plan.name}`)); }
+function updateCurrentPlan(state: TurniState, project: (plan: SchedulePlan) => SchedulePlan, log: AuditLog): TurniState { const plan = currentPlan(state); return plan ? appendAudit(setCurrentPlan(state, project(plan)), log) : state; }
+function findAssignment(plan: SchedulePlan | null, assignmentId: string): Assignment | null { return plan?.days.flatMap(d => d.assignments).find(a => a.id === assignmentId) ?? null; }
 export const turniReducer = createReducer(
   initialState,
   on(TurniActions.loadPlanningData, state => ({ ...state, loading: true, error: null })),
-  on(TurniActions.loadPlanningDataSuccess, (state, { workers, plan, issues, audits, optimizer }) => ({ ...state, loading: false, workers, plan, issues, audits, optimizer })),
+  on(TurniActions.loadPlanningDataSuccess, (state, payload) => ({ ...state, loading: false, ...payload })),
   on(TurniActions.loadPlanningDataFailure, (state, { error }) => ({ ...state, loading: false, error })),
-
-  on(TurniActions.createPlan, (state, { name, startDate, endDate }) => {
-    const plan = createInitialMockPlan(name, startDate, endDate);
-    return appendAudit({ ...state, plan, issues: createIssues(plan) }, audit('CREATE_PLAN', `Creato piano ${name}`));
-  }),
-
-  on(TurniActions.assignWorker, (state, { date, shift, workerId, forced }) => {
-    if (!state.plan) return state;
-    const exists = state.plan.days.some(d => d.date === date && d.assignments.some(a => a.workerId === workerId && a.shift === shift));
-    if (exists) return state;
-    const assignment: Assignment = { id: `${date}_${shift}_${workerId}`, date, shift, workerId, locked: true, source: forced ? 'FORCED' : 'MANUAL', forced };
-    const plan = { ...state.plan, days: state.plan.days.map(d => d.date === date ? { ...d, assignments: [...d.assignments, assignment] } : d) };
-    return appendAudit(withPlan(state, plan), audit(forced ? 'FORCE_ASSIGNMENT' : 'ASSIGN_WORKER', `${forced ? 'Forzato' : 'Assegnato'} operatore al turno ${shift} del ${date}`, { date, shift, workerId }));
-  }),
-
-  on(TurniActions.removeWorker, (state, { date, shift, workerId }) => {
-    if (!state.plan) return state;
-    const plan = { ...state.plan, days: state.plan.days.map(d => d.date === date ? { ...d, assignments: d.assignments.filter(a => !(a.workerId === workerId && a.shift === shift)) } : d) };
-    return appendAudit(withPlan(state, plan), audit('REMOVE_WORKER', `Rimosso operatore dal turno ${shift} del ${date}`, { date, shift, workerId }));
-  }),
-
-  on(TurniActions.lockAssignment, (state, { assignmentId }) => {
-    if (!state.plan) return state;
-    let found: Assignment | undefined;
-    const plan = { ...state.plan, days: state.plan.days.map(d => ({ ...d, assignments: d.assignments.map(a => {
-      if (a.id === assignmentId) { found = a; return { ...a, locked: true, source: 'MANUAL' as const }; }
-      return a;
-    }) })) };
-    return appendAudit(withPlan(state, plan), audit('LOCK_ASSIGNMENT', `Bloccato turno ${found?.shift ?? ''} del ${found?.date ?? ''}`, { date: found?.date, shift: found?.shift, workerId: found?.workerId }));
-  }),
-
-  on(TurniActions.unlockAssignment, (state, { assignmentId }) => {
-    if (!state.plan) return state;
-    let found: Assignment | undefined;
-    const plan = { ...state.plan, days: state.plan.days.map(d => ({ ...d, assignments: d.assignments.map(a => {
-      if (a.id === assignmentId) { found = a; return { ...a, locked: false, source: 'AUTO' as const, forced: false }; }
-      return a;
-    }) })) };
-    return appendAudit(withPlan(state, plan), audit('UNLOCK_ASSIGNMENT', `Sbloccato turno ${found?.shift ?? ''} del ${found?.date ?? ''}`, { date: found?.date, shift: found?.shift, workerId: found?.workerId }));
-  }),
-
-  on(TurniActions.moveAssignment, (state, { assignmentId, targetDate, targetShift, forced }) => {
-    if (!state.plan) return state;
-    let moved: Assignment | undefined;
-    let fromDate = '';
-    const daysWithout = state.plan.days.map(d => {
-      const found = d.assignments.find(a => a.id === assignmentId);
-      if (found) { moved = found; fromDate = d.date; }
-      return { ...d, assignments: d.assignments.filter(a => a.id !== assignmentId) };
-    });
-    if (!moved) return state;
-    const newA: Assignment = { ...moved, id: `${targetDate}_${targetShift}_${moved.workerId}`, date: targetDate, shift: targetShift, source: forced ? 'FORCED' : 'MANUAL', forced, locked: true };
-    const plan = { ...state.plan, days: daysWithout.map(d => d.date === targetDate ? { ...d, assignments: [...d.assignments, newA] } : d) };
-    return appendAudit(withPlan(state, plan), audit('MOVE_ASSIGNMENT', `Spostato operatore da ${fromDate} a ${targetDate}`, { date: targetDate, shift: targetShift, workerId: moved.workerId }));
-  }),
-
-  on(TurniActions.clearShift, (state, { date, shift }) => {
-    if (!state.plan) return state;
-    const plan = { ...state.plan, days: state.plan.days.map(d => d.date === date ? { ...d, assignments: d.assignments.filter(a => a.shift !== shift) } : d) };
-    return appendAudit(withPlan(state, plan), audit('CLEAR_SHIFT', `Pulito turno ${shift} del ${date}`, { date, shift }));
-  }),
-
-  on(TurniActions.optimizePlan, state => {
-    if (!state.plan) return state;
-    const { plan, optimizer } = optimizeMockPlan(state.plan);
-    return appendAudit({ ...withPlan(state, plan), optimizer }, audit('OPTIMIZE_PLAN', `Ottimizzato piano ${plan.name}. Score: ${optimizer.score}`));
-  }),
-  on(TurniActions.optimizePlanSuccess, (state, { plan, issues, optimizer }) => appendAudit({ ...state, plan, issues, optimizer }, audit('OPTIMIZE_PLAN', `Ottimizzato piano ${plan.name}. Score: ${optimizer.score}`))),
-  on(TurniActions.savePlan, state => state.plan ? appendAudit({ ...state, plan: { ...state.plan, saved: true, updatedAt: now() } }, audit('SAVE_PLAN', `Salvato piano ${state.plan.name}`)) : state),
-  on(TurniActions.publishPlan, state => state.plan ? appendAudit({ ...state, plan: { ...state.plan, status: 'PUBLISHED', updatedAt: now() } }, audit('PUBLISH_PLAN', `Pubblicato piano ${state.plan.name}`)) : state),
-  on(TurniActions.archivePlan, state => state.plan ? appendAudit({ ...state, plan: { ...state.plan, status: 'ARCHIVED', updatedAt: now() } }, audit('SAVE_PLAN', `Archiviato piano ${state.plan.name}`)) : state),
-  on(TurniActions.recalculateIssues, state => state.plan ? { ...state, issues: createIssues(state.plan) } : state),
-  on(TurniActions.auditAdded, (state, { log }) => appendAudit(state, log))
+  on(TurniActions.setRangeMode, (state, { mode }) => appendAudit(ensureRange(state, DateRangeUtils.switchMode(state.currentRange ?? DateRangeUtils.currentRange('MONTH'), mode)), audit('CHANGE_RANGE_MODE', `Cambiata vista in ${mode === 'MONTH' ? 'mese' : 'settimana'}`))),
+  on(TurniActions.navigatePreviousRange, state => { const range = DateRangeUtils.previousRange(state.currentRange ?? DateRangeUtils.currentRange('MONTH')); return appendAudit(ensureRange(state, range), audit('NAVIGATE_RANGE', `Aperto range precedente: ${range.label}`)); }),
+  on(TurniActions.navigateNextRange, state => { const range = DateRangeUtils.nextRange(state.currentRange ?? DateRangeUtils.currentRange('MONTH')); return appendAudit(ensureRange(state, range), audit('NAVIGATE_RANGE', `Aperto range successivo: ${range.label}`)); }),
+  on(TurniActions.openRange, (state, { range }) => ensureRange(state, range)),
+  on(TurniActions.generateRange, (state, { range }) => appendAudit(setCurrentPlan(state, generatePlan({ range, workers: state.workers, shifts: defaultShiftDefinitions, previousPlan: state.planCache[range.key] ?? null, absences: mockAbsences, holidays: mockHolidays })), audit('CREATE_PLAN', `Rigenerato range ${range.label}`))),
+  on(TurniActions.regenerateCurrentRange, state => { const plan = currentPlan(state); return plan ? appendAudit(setCurrentPlan(state, regenerateAutomaticKeepingManual(plan, state.workers, defaultShiftDefinitions)), audit('REGENERATE_KEEPING_LOCKED', `Rigenerati automatici mantenendo manuali/bloccati per ${plan.name}`)) : state; }),
+  on(TurniActions.createPlan, (state, { name, startDate, endDate }) => { const range: ScheduleRange = { key: `CUSTOM:${startDate}:${endDate}`, mode: 'MONTH', label: name, startDate, endDate, visibleDays: DateRangeUtils.daysBetween(startDate, endDate).length, anchorDate: startDate }; const plan = generatePlan({ range, workers: state.workers, shifts: defaultShiftDefinitions, absences: mockAbsences, holidays: mockHolidays }); return appendAudit(setCurrentPlan(state, { ...plan, name }), audit('CREATE_PLAN', `Creato piano ${name}`)); }),
+  on(TurniActions.assignWorker, (state, { date, shift, workerId, forced }) => updateCurrentPlan(state, plan => assignWorkerToPlan(plan, state.workers, defaultShiftDefinitions, date, shift, workerId, forced), audit(forced ? 'FORCE_ASSIGNMENT' : 'ASSIGN_WORKER', `${forced ? 'Forzato' : 'Assegnato'} operatore al turno ${shift} del ${date}`, { date, shift, workerId }))),
+  on(TurniActions.removeWorker, (state, { date, shift, workerId }) => updateCurrentPlan(state, plan => removeWorkerFromPlan(plan, date, shift, workerId), audit('REMOVE_WORKER', `Rimosso operatore dal turno ${shift} del ${date}`, { date, shift, workerId }))),
+  on(TurniActions.lockAssignment, (state, { assignmentId }) => { const found = findAssignment(currentPlan(state), assignmentId); return updateCurrentPlan(state, plan => lockAssignmentInPlan(plan, assignmentId, true), audit('LOCK_ASSIGNMENT', `Bloccato turno ${found?.shift ?? ''} del ${found?.date ?? ''}`, { date: found?.date, shift: found?.shift, workerId: found?.workerId })); }),
+  on(TurniActions.unlockAssignment, (state, { assignmentId }) => { const found = findAssignment(currentPlan(state), assignmentId); return updateCurrentPlan(state, plan => lockAssignmentInPlan(plan, assignmentId, false), audit('UNLOCK_ASSIGNMENT', `Sbloccato turno ${found?.shift ?? ''} del ${found?.date ?? ''}`, { date: found?.date, shift: found?.shift, workerId: found?.workerId })); }),
+  on(TurniActions.moveAssignment, (state, payload) => { const found = findAssignment(currentPlan(state), payload.assignmentId); return updateCurrentPlan(state, plan => moveAssignmentInPlan(plan, payload), audit(payload.forced ? 'FORCE_ASSIGNMENT' : 'MOVE_ASSIGNMENT', `Spostato operatore da ${found?.date ?? ''} a ${payload.targetDate}`, { date: payload.targetDate, shift: payload.targetShift, workerId: found?.workerId })); }),
+  on(TurniActions.clearShift, (state, { date, shift }) => updateCurrentPlan(state, plan => clearShiftInPlan(plan, date, shift), audit('CLEAR_SHIFT', `Pulito turno ${shift} del ${date}`, { date, shift }))),
+  on(TurniActions.optimizePlan, state => { const plan = currentPlan(state); if (!plan) return state; const result = optimizePlan(plan, state.workers, defaultShiftDefinitions, 120); return appendAudit({ ...setCurrentPlan(state, result.plan, result.issues), optimizer: result.optimizer }, audit('OPTIMIZE_PLAN', `Ottimizzato piano ${plan.name}. Score: ${result.optimizer.score}`)); }),
+  on(TurniActions.savePlan, state => updateCurrentPlan(state, plan => ({ ...plan, saved: true }), audit('SAVE_PLAN', `Salvato piano ${currentPlan(state)?.name ?? ''}`))),
+  on(TurniActions.publishPlan, state => updateCurrentPlan(state, plan => ({ ...plan, status: 'PUBLISHED', saved: true, publishedAt: MomentDateUtils.nowIso() }), audit('PUBLISH_PLAN', `Pubblicato piano ${currentPlan(state)?.name ?? ''}`))),
+  on(TurniActions.archivePlan, state => updateCurrentPlan(state, plan => ({ ...plan, status: 'ARCHIVED' }), audit('ARCHIVE_PLAN', `Archiviato piano ${currentPlan(state)?.name ?? ''}`))),
+  on(TurniActions.recalculateIssues, state => { const plan = currentPlan(state); return plan ? appendAudit(setCurrentPlan(state, plan, validatePlan(plan, state.workers, defaultShiftDefinitions)), audit('RECALCULATE_ISSUES', `Ricalcolata validazione piano ${plan.name}`)) : state; }),
+  on(TurniActions.auditAdded, (state, { log }) => appendAudit(state, log)),
 );
+export { calculateWorkerStats };

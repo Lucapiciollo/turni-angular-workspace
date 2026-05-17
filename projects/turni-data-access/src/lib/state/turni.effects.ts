@@ -1,27 +1,25 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, delay, map, of, tap, withLatestFrom } from 'rxjs';
 import { TurniActions } from './turni.actions';
 import { MockTurniApiService } from '../services/mock-turni-api.service';
-import { selectAudits, selectPlan } from './turni.selectors';
-import { TurniState } from './turni.reducer';
+import { selectAudits, selectCurrentRange, selectIssues, selectOptimizer, selectPlanCache, selectWorkers } from './turni.selectors';
 
 @Injectable()
 export class TurniEffects {
-
-  public store: Store<{ reducer: TurniState }> = inject(Store<{ reducer: TurniState }>);
-  private actions: Actions = inject(Actions);
-
-  load$ = createEffect(() => this.actions.pipe(
+  private actions$: Actions = inject(Actions);
+  private store: Store = inject(Store);
+  private api: MockTurniApiService = inject(MockTurniApiService);
+  load$ = createEffect(() => this.actions$.pipe(
     ofType(TurniActions.loadPlanningData),
-    delay(250),
+    delay(150),
     map(() => this.api.load()),
     map(data => TurniActions.loadPlanningDataSuccess(data)),
     catchError(err => of(TurniActions.loadPlanningDataFailure({ error: String(err) })))
   ));
 
-  persist$ = createEffect(() => this.actions.pipe(
+  persist$ = createEffect(() => this.actions$.pipe(
     ofType(
       TurniActions.savePlan,
       TurniActions.publishPlan,
@@ -32,11 +30,27 @@ export class TurniEffects {
       TurniActions.unlockAssignment,
       TurniActions.moveAssignment,
       TurniActions.clearShift,
-      TurniActions.optimizePlan
+      TurniActions.optimizePlan,
+      TurniActions.navigatePreviousRange,
+      TurniActions.navigateNextRange,
+      TurniActions.setRangeMode,
+      TurniActions.regenerateCurrentRange,
+      TurniActions.createPlan,
+      TurniActions.openRange,
+      TurniActions.generateRange,
+      TurniActions.recalculateIssues
     ),
-    withLatestFrom(this.store.select(selectPlan), this.store.select(selectAudits)),
-    tap(([, plan, audits]) => this.api.persist(plan, audits))
+    withLatestFrom(
+      this.store.select(selectWorkers),
+      this.store.select(selectPlanCache),
+      this.store.select(selectCurrentRange),
+      this.store.select(selectIssues),
+      this.store.select(selectAudits),
+      this.store.select(selectOptimizer)
+    ),
+    tap(([, workers, planCache, currentRange, issues, audits, optimizer]) => {
+      if (!currentRange) return;
+      this.api.persist({ workers, planCache, currentRange, issues, audits, optimizer: optimizer ?? { score: 0, attempts: 0, errors: 0, warnings: 0 } });
+    })
   ), { dispatch: false });
-
-  constructor(private api: MockTurniApiService) { }
 }
