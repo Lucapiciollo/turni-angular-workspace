@@ -1,0 +1,80 @@
+.person-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 6px 8px;
+    border-radius: 13px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    cursor: help;
+
+    &.forced {
+        background: #fef2f2;
+        border-color: #fecaca;
+
+        .source-badge {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+    }
+
+    &.manual {
+        background: #fffbeb;
+        border-color: #fde68a;
+
+        .source-badge {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+    }
+}
+
+.avatar {
+    width: 29px;
+    height: 29px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    flex: 0 0 auto;
+}
+
+.person-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    flex: 1 1 auto;
+
+    strong {
+        font-size: 14px;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    small {
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 700;
+    }
+}
+
+.source-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+}

@@ -1,0 +1,23 @@
+<div class="page">
+    <section class="header-card">
+        <div>
+            <h1>Warning piano turni</h1>
+            <p>
+                Elenco anomalie, forzature e regole non rispettate.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            routerLink="/piano-turni"
+        >
+            Torna al piano
+        </button>
+    </section>
+
+    <section class="content-card">
+        <turni-warning-list
+            [warnings]="scheduleState.warnings()"
+        ></turni-warning-list>
+    </section>
+</div>

@@ -1,0 +1,74 @@
+<section class="table-card">
+    <div class="table-wrapper">
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Giorno</th>
+
+                    <th *ngFor="let shift of shifts; trackBy: trackByShift">
+                        <div class="shift-head">
+                            <strong>
+                                {{ shift.label }}
+                            </strong>
+
+                            <span>
+                                {{ shift.start }} - {{ shift.end }}
+                            </span>
+
+                            <small>
+                                Richiesti: {{ shift.requiredWorkers }}
+                            </small>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr
+                    *ngFor="let day of days; trackBy: trackByDay"
+                    [class.weekend-row]="day.isWeekend"
+                >
+                    <td class="day-cell">
+                        <strong>
+                            {{ day.label }}
+                        </strong>
+
+                        <span>
+                            {{ day.date }}
+                        </span>
+
+                        <em *ngIf="day.isWeekend">
+                            Weekend
+                        </em>
+                    </td>
+
+                    <td *ngFor="let shift of shifts; trackBy: trackByShift">
+                        <div class="shift-cell">
+                            <div class="cell-summary">
+                                <span>
+                                    {{ getAssignmentsByShift(day, shift.type).length }}
+                                    persone
+                                </span>
+
+                                <small>
+                                    richieste: {{ shift.requiredWorkers }}
+                                </small>
+                            </div>
+
+                            <div class="people-list">
+                                <turni-worker-pill
+                                    *ngFor="
+                                        let assignment of getAssignmentsByShift(day, shift.type);
+                                        trackBy: trackByAssignment
+                                    "
+                                    [assignment]="assignment"
+                                    [worker]="getWorker(assignment.workerId)"
+                                ></turni-worker-pill>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

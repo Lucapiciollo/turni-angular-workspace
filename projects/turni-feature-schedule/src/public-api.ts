@@ -1,1 +1,1 @@
-export * from './lib/feature-schedule.module';
+export * from './lib/turni-feature-schedule.module';

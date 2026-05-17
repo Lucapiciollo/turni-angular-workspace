@@ -1,50 +1,39 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "ES2022",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2022", "dom"],
-    "paths": {
-      "@turni/data-access": ["projects/turni-data-access/src/public-api.ts"],
-      "@turni/shared-ui": ["projects/turni-shared-ui/src/public-api.ts"],
-      "@turni/feature-dashboard": [
-        "projects/turni-feature-dashboard/src/public-api.ts"
-      ],
-      "@turni/feature-schedule": [
-        "projects/turni-feature-schedule/src/public-api.ts"
-      ],
-      "@turni/feature-manual-edit": [
-        "projects/turni-feature-manual-edit/src/public-api.ts"
-      ],
-      "@turni/feature-audit": [
-        "projects/turni-feature-audit/src/public-api.ts"
-      ],
-      "@turni/feature-validation": [
-        "projects/turni-feature-validation/src/public-api.ts"
-      ]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "outDir": "./dist/out-tsc",
+        "strict": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "ES2022",
+        "module": "ES2022",
+        "useDefineForClassFields": false,
+        "baseUrl": ".",
+        "paths": {
+            "@turni/data-access": [
+                "projects/turni-data-access/src/public-api.ts"
+            ],
+            "@turni/feature-schedule": [
+                "projects/turni-feature-schedule/src/public-api.ts"
+            ]
+        },
+        "lib": [
+            "ES2022",
+            "dom"
+        ]
     },
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true
+    }
 }

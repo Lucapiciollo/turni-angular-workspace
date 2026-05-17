@@ -1,0 +1,108 @@
+<article class="operator-card">
+    <div class="operator-header">
+        <div class="operator-title">
+            <strong>
+                {{ stat.workerName }}
+            </strong>
+
+            <span>
+                {{ worker?.role || 'Operatore' }}
+            </span>
+        </div>
+
+        <span
+            class="hours-badge"
+            [class.ok]="isHoursOk()"
+            [class.warning]="isUnderMinHours()"
+            [class.error]="isOverMaxHours()"
+            [matTooltip]="getHoursTooltip()"
+            matTooltipPosition="above"
+        >
+            {{ stat.totalHours }}/{{ stat.contractMonthlyHours }} ore
+        </span>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-box neutral">
+            <small>Turni</small>
+            <b>{{ stat.totalAssignments }}</b>
+        </div>
+
+        <div
+            class="stat-box"
+            [class.ok]="isMorningConsecutiveOk()"
+            [class.error]="!isMorningConsecutiveOk()"
+            [matTooltip]="getMorningTooltip()"
+            matTooltipPosition="above"
+        >
+            <small>Mattine</small>
+            <b>{{ stat.morningCount }}</b>
+            <em>cons. {{ stat.maxConsecutiveMorningShiftsReached }}</em>
+        </div>
+
+        <div
+            class="stat-box"
+            [class.ok]="isAfternoonConsecutiveOk()"
+            [class.error]="!isAfternoonConsecutiveOk()"
+            [matTooltip]="getAfternoonTooltip()"
+            matTooltipPosition="above"
+        >
+            <small>Pomeriggi</small>
+            <b>{{ stat.afternoonCount }}</b>
+            <em>cons. {{ stat.maxConsecutiveAfternoonShiftsReached }}</em>
+        </div>
+
+        <div
+            class="stat-box"
+            [class.ok]="isNightOk()"
+            [class.error]="!isNightOk()"
+            [matTooltip]="getNightTooltip()"
+            matTooltipPosition="above"
+        >
+            <small>Notti</small>
+            <b>{{ stat.nightCount }}</b>
+            <em>
+                cons. {{ stat.maxConsecutiveNightShiftsReached }}
+                · sett. {{ stat.maxNightShiftsInWeek }}
+            </em>
+        </div>
+
+        <div class="stat-box neutral">
+            <small>WE lav.</small>
+            <b>{{ stat.weekendWorkedCount }}</b>
+        </div>
+
+        <div
+            class="stat-box"
+            [class.ok]="stat.freeWeekendCount >= 1"
+            [class.error]="stat.freeWeekendCount < 1"
+            [matTooltip]="getFreeWeekendTooltip()"
+            matTooltipPosition="above"
+        >
+            <small>WE liberi</small>
+            <b>{{ stat.freeWeekendCount }}</b>
+        </div>
+
+        <div
+            class="stat-box"
+            [class.ok]="stat.forcedAssignmentsCount === 0"
+            [class.error]="stat.forcedAssignmentsCount > 0"
+            [matTooltip]="getForcedTooltip()"
+            matTooltipPosition="above"
+        >
+            <small>Forzati</small>
+            <b>{{ stat.forcedAssignmentsCount }}</b>
+        </div>
+
+        <div
+            class="stat-box"
+            [class.ok]="stat.extraHours === 0"
+            [class.error]="stat.extraHours > 0"
+            [matTooltip]="getExtraTooltip()"
+            matTooltipPosition="above"
+        >
+            <small>Extra</small>
+            <b>{{ stat.extraHours }}</b>
+        </div>
+    </div>
+</article>

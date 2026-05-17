@@ -1,0 +1,138 @@
+.operator-card {
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.operator-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.operator-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+
+    strong {
+        font-size: 14px;
+        font-weight: 900;
+        color: #111827;
+    }
+
+    span {
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 700;
+    }
+}
+
+.hours-badge {
+    padding: 5px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+    cursor: help;
+
+    &.ok {
+        background: #dcfce7;
+        border-color: #bbf7d0;
+        color: #166534;
+    }
+
+    &.warning {
+        background: #fef3c7;
+        border-color: #fde68a;
+        color: #92400e;
+    }
+
+    &.error {
+        background: #fee2e2;
+        border-color: #fecaca;
+        color: #991b1b;
+    }
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.stat-box {
+    min-height: 58px;
+    padding: 9px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    cursor: help;
+
+    small {
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    b {
+        color: #111827;
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    em {
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 800;
+        color: #6b7280;
+    }
+
+    &.neutral {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+
+        small {
+            color: #1e40af;
+        }
+
+        b {
+            color: #1d4ed8;
+        }
+    }
+
+    &.ok {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+
+        small {
+            color: #166534;
+        }
+
+        b {
+            color: #15803d;
+        }
+    }
+
+    &.error {
+        background: #fef2f2;
+        border-color: #fecaca;
+
+        small {
+            color: #991b1b;
+        }
+
+        b {
+            color: #dc2626;
+        }
+    }
+}

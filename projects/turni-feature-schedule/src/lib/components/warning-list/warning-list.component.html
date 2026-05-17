@@ -1,0 +1,37 @@
+<div
+    class="empty-state"
+    *ngIf="warnings.length === 0"
+>
+    Nessun warning presente nel piano corrente.
+</div>
+
+<div
+    class="warnings-list"
+    *ngIf="warnings.length > 0"
+>
+    <div
+        class="warning-item"
+        *ngFor="let warning of warnings; trackBy: trackByWarning"
+        [class.error]="warning.severity === 'ERROR'"
+        [class.warning]="warning.severity === 'WARNING'"
+        [class.info]="warning.severity === 'INFO'"
+    >
+        <div class="warning-severity">
+            {{ warning.severity }}
+        </div>
+
+        <div class="warning-content">
+            <strong>
+                {{ warning.workerName || warning.shift || 'Piano turni' }}
+            </strong>
+
+            <span>
+                {{ warning.message }}
+            </span>
+
+            <small *ngIf="warning.date">
+                {{ warning.date }}
+            </small>
+        </div>
+    </div>
+</div>

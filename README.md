@@ -1,21 +1,103 @@
-# Turni Workforce Angular
+# Turni Step 4 - Pagine modulari lazy + stato condiviso
 
-Workspace Angular modulare per gestione turni **Mattina / Pomeriggio / Notte** con UI moderna, NgRx, lazy routing e librerie per pagina.
+Questo pacchetto corregge lo Step 4 rendendo le pagine davvero modulari e lazy.
 
-## Struttura
+## Architettura
+
+La web app principale resta shell:
 
 ```txt
 src/app
-  shell/                      # layout principale con sidebar
-projects/
-  turni-data-access/          # modelli, NgRx actions/reducer/selectors/effects/facade, mock API
-  turni-shared-ui/            # SharedModule + motore SCSS tokens/mixin/theme
-  turni-feature-dashboard/    # Dashboard
-  turni-feature-schedule/     # Tabella turni
-  turni-feature-manual-edit/  # Modifica manuale turno
-  turni-feature-audit/        # Storico modifiche
-  turni-feature-validation/   # Validazione e ottimizzazione
 ```
+
+La feature principale resta lazy:
+
+```txt
+/piano-turni -> TurniFeatureScheduleModule
+```
+
+Dentro la feature, anche le pagine sono lazy:
+
+```txt
+/piano-turni              -> PianoTurniPageModule
+/piano-turni/statistiche  -> ScheduleStatsPageModule
+/piano-turni/warning      -> ScheduleWarningsPageModule
+```
+
+## Routing interno lazy
+
+```ts
+const routes: Routes = [
+    {
+        path: '',
+        loadChildren: () => {
+            return import('./pages/piano-turni-page/piano-turni-page.module')
+                .then((module) => module.PianoTurniPageModule);
+        },
+    },
+    {
+        path: 'statistiche',
+        loadChildren: () => {
+            return import('./pages/schedule-stats-page/schedule-stats-page.module')
+                .then((module) => module.ScheduleStatsPageModule);
+        },
+    },
+    {
+        path: 'warning',
+        loadChildren: () => {
+            return import('./pages/schedule-warnings-page/schedule-warnings-page.module')
+                .then((module) => module.ScheduleWarningsPageModule);
+        },
+    },
+];
+```
+
+## Moduli pagina
+
+```txt
+pages/piano-turni-page/
+ ├── piano-turni-page.component.*
+ ├── piano-turni-page-routing.module.ts
+ └── piano-turni-page.module.ts
+
+pages/schedule-stats-page/
+ ├── schedule-stats-page.component.*
+ ├── schedule-stats-page-routing.module.ts
+ └── schedule-stats-page.module.ts
+
+pages/schedule-warnings-page/
+ ├── schedule-warnings-page.component.*
+ ├── schedule-warnings-page-routing.module.ts
+ └── schedule-warnings-page.module.ts
+```
+
+## Componenti condivisi
+
+Creato:
+
+```txt
+projects/turni-feature-schedule/src/lib/components/turni-schedule-shared.module.ts
+```
+
+Esporta:
+
+```txt
+OperatorStatsCardComponent
+ScheduleRangeToolbarComponent
+ScheduleTableComponent
+WarningListComponent
+WorkerPillComponent
+```
+
+## Stato condiviso
+
+Resta attivo:
+
+```txt
+projects/turni-data-access/src/lib/services/schedule-state.service.ts
+```
+
+Quindi piano, statistiche e warning leggono lo stesso piano generato.
 
 ## Avvio
 
@@ -24,27 +106,8 @@ npm install
 npm start
 ```
 
-Apri `http://localhost:4200`.
-
-## NgRx incluso
-
-- `TurniActions`
-- `turniReducer`
-- `TurniEffects`
-- `TurniFacade`
-- selector per piano, operatori, giorni, audit, errori, warning, statistiche
-- persistenza mock su `localStorage`
-
-## Rotte principali
+Apri:
 
 ```txt
-/dashboard
-/piano-turni
-/modifica-turno/:date/:shift
-/validazioni
-/audit
+http://localhost:4200/piano-turni
 ```
-
-## Note
-
-Il progetto è generato come base modulare. Le API sono mock, già separate in `MockTurniApiService`, quindi puoi sostituirle facilmente con HTTP reali.

@@ -1,0 +1,25 @@
+<div class="page">
+    <section class="header-card">
+        <div>
+            <h1>Statistiche operatori</h1>
+            <p>
+                Indicatori per ore, turni, notti, weekend, forzature ed extra.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            routerLink="/piano-turni"
+        >
+            Torna al piano
+        </button>
+    </section>
+
+    <section class="stats-grid">
+        <turni-operator-stats-card
+            *ngFor="let stat of scheduleState.stats()"
+            [stat]="stat"
+            [worker]="scheduleState.getWorker(stat.workerId)"
+        ></turni-operator-stats-card>
+    </section>
+</div>

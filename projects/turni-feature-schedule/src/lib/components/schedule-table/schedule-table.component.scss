@@ -1,0 +1,115 @@
+.table-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+}
+
+.table-wrapper {
+    overflow: auto;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 1100px;
+
+    th {
+        padding: 14px;
+        background: #111827;
+        color: #ffffff;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        vertical-align: top;
+        background: #ffffff;
+    }
+
+    tr.weekend-row td {
+        background: #faf5ff;
+    }
+}
+
+.shift-head {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    strong {
+        font-size: 15px;
+    }
+
+    span {
+        font-size: 12px;
+        color: #d1d5db;
+    }
+
+    small {
+        font-size: 11px;
+        color: #9ca3af;
+    }
+}
+
+.day-cell {
+    width: 170px;
+
+    strong {
+        display: block;
+        font-size: 15px;
+        text-transform: capitalize;
+    }
+
+    span {
+        display: block;
+        margin-top: 4px;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    em {
+        display: inline-flex;
+        margin-top: 8px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #ede9fe;
+        color: #5b21b6;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 800;
+    }
+}
+
+.shift-cell {
+    min-width: 260px;
+    max-width: 320px;
+}
+
+.cell-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #6b7280;
+
+    span {
+        font-weight: 800;
+        color: #111827;
+    }
+}
+
+.people-list {
+    max-height: 170px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-right: 4px;
+}

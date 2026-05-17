@@ -1,0 +1,106 @@
+<div class="page">
+    <section class="header-card">
+        <div>
+            <h1>Piano turni</h1>
+            <p>
+                Step 4: piano, statistiche e warning separati con stato condiviso.
+            </p>
+        </div>
+
+        <div class="status-area">
+            <span
+                class="status-badge"
+                [class.cache]="scheduleState.lastSource() === 'CACHE'"
+                [class.regenerated]="scheduleState.lastSource() === 'REGENERATED'"
+            >
+                {{ scheduleState.lastSource() }}
+            </span>
+
+            <span
+                class="warning-badge"
+                *ngIf="scheduleState.warningCount() > 0"
+            >
+                {{ scheduleState.warningCount() }} warning
+            </span>
+        </div>
+    </section>
+
+    <section class="quick-actions-card">
+        <button
+            type="button"
+            routerLink="/piano-turni/statistiche"
+        >
+            Statistiche operatori
+        </button>
+
+        <button
+            type="button"
+            routerLink="/piano-turni/warning"
+        >
+            Warning e anomalie
+        </button>
+    </section>
+
+    <turni-schedule-range-toolbar
+        [mode]="scheduleState.mode()"
+        [range]="scheduleState.range()"
+        (modeChange)="scheduleState.setMode($event)"
+        (previousRange)="scheduleState.previous()"
+        (nextRange)="scheduleState.next()"
+        (refreshRange)="scheduleState.refresh()"
+    ></turni-schedule-range-toolbar>
+
+    <section
+        class="warnings-card"
+        *ngIf="scheduleState.warnings().length > 0"
+    >
+        <div class="section-header">
+            <h2>Avvisi principali</h2>
+
+            <button
+                type="button"
+                routerLink="/piano-turni/warning"
+            >
+                Vedi tutti
+            </button>
+        </div>
+
+        <turni-warning-list
+            [warnings]="scheduleState.warnings().slice(0, 5)"
+        ></turni-warning-list>
+    </section>
+
+    <section class="stats-card">
+        <div class="section-header">
+            <div>
+                <h2>Statistiche operatori</h2>
+                <p>
+                    Prime statistiche del range corrente.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                routerLink="/piano-turni/statistiche"
+            >
+                Vedi tutte
+            </button>
+        </div>
+
+        <div class="stats-preview">
+            <turni-operator-stats-card
+                *ngFor="let stat of scheduleState.stats().slice(0, 6)"
+                [stat]="stat"
+                [worker]="scheduleState.getWorker(stat.workerId)"
+            ></turni-operator-stats-card>
+        </div>
+    </section>
+
+    <turni-schedule-table
+        [days]="scheduleState.days()"
+        [shifts]="scheduleState.shifts()"
+        [workers]="scheduleState.workers()"
+        [getAssignmentsByShiftFn]="scheduleState.getAssignmentsByShift.bind(scheduleState)"
+        [getWorkerFn]="scheduleState.getWorker.bind(scheduleState)"
+    ></turni-schedule-table>
+</div>

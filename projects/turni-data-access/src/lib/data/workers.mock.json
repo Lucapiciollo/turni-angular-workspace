@@ -1,0 +1,1697 @@
+{
+    "workers": [
+        {
+            "id": "W001",
+            "firstName": "Luca",
+            "lastName": "Bianchi",
+            "fullName": "Luca Bianchi",
+            "color": "#2563eb",
+            "role": "Operatore",
+            "skills": [
+                "produzione",
+                "accoglienza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W002",
+            "firstName": "Marco",
+            "lastName": "Conti",
+            "fullName": "Marco Conti",
+            "color": "#16a34a",
+            "role": "Senior",
+            "skills": [
+                "magazzino",
+                "amministrazione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W003",
+            "firstName": "Anna",
+            "lastName": "Rossi",
+            "fullName": "Anna Rossi",
+            "color": "#db2777",
+            "role": "Responsabile",
+            "skills": [
+                "notte",
+                "manutenzione"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W004",
+            "firstName": "Giulia",
+            "lastName": "Servi",
+            "fullName": "Giulia Servi",
+            "color": "#f59e0b",
+            "role": "Operatore",
+            "skills": [
+                "accoglienza",
+                "primo-soccorso",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W005",
+            "firstName": "Paolo",
+            "lastName": "Neri",
+            "fullName": "Paolo Neri",
+            "color": "#7c3aed",
+            "role": "Operatore",
+            "skills": [
+                "amministrazione",
+                "controllo-qualita",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W006",
+            "firstName": "Sara",
+            "lastName": "Greco",
+            "fullName": "Sara Greco",
+            "color": "#0891b2",
+            "role": "Tecnico",
+            "skills": [
+                "manutenzione",
+                "coordinamento",
+                "sicurezza"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": false,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 0,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 0
+            }
+        },
+        {
+            "id": "W007",
+            "firstName": "Davide",
+            "lastName": "Romano",
+            "fullName": "Davide Romano",
+            "color": "#dc2626",
+            "role": "Addetto qualità",
+            "skills": [
+                "primo-soccorso",
+                "logistica",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W008",
+            "firstName": "Elena",
+            "lastName": "Marini",
+            "fullName": "Elena Marini",
+            "color": "#9333ea",
+            "role": "Coordinatore",
+            "skills": [
+                "controllo-qualita",
+                "sicurezza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W009",
+            "firstName": "Francesco",
+            "lastName": "De Luca",
+            "fullName": "Francesco De Luca",
+            "color": "#0f766e",
+            "role": "Operatore",
+            "skills": [
+                "coordinamento",
+                "reparto-a",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W010",
+            "firstName": "Martina",
+            "lastName": "Ferrari",
+            "fullName": "Martina Ferrari",
+            "color": "#ea580c",
+            "role": "Senior",
+            "skills": [
+                "logistica",
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": false,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W011",
+            "firstName": "Roberto",
+            "lastName": "Gallo",
+            "fullName": "Roberto Gallo",
+            "color": "#475569",
+            "role": "Responsabile",
+            "skills": [
+                "sicurezza",
+                "produzione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W012",
+            "firstName": "Chiara",
+            "lastName": "Moretti",
+            "fullName": "Chiara Moretti",
+            "color": "#be123c",
+            "role": "Operatore",
+            "skills": [
+                "reparto-a",
+                "magazzino",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W013",
+            "firstName": "Alessandro",
+            "lastName": "Rinaldi",
+            "fullName": "Alessandro Rinaldi",
+            "color": "#1d4ed8",
+            "role": "Operatore",
+            "skills": [
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W014",
+            "firstName": "Federica",
+            "lastName": "Costa",
+            "fullName": "Federica Costa",
+            "color": "#15803d",
+            "role": "Tecnico",
+            "skills": [
+                "produzione",
+                "accoglienza",
+                "manutenzione"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": false,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 0,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 0
+            }
+        },
+        {
+            "id": "W015",
+            "firstName": "Simone",
+            "lastName": "Mancini",
+            "fullName": "Simone Mancini",
+            "color": "#c026d3",
+            "role": "Addetto qualità",
+            "skills": [
+                "magazzino",
+                "amministrazione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W016",
+            "firstName": "Valentina",
+            "lastName": "Barbieri",
+            "fullName": "Valentina Barbieri",
+            "color": "#ca8a04",
+            "role": "Coordinatore",
+            "skills": [
+                "notte",
+                "manutenzione"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W017",
+            "firstName": "Andrea",
+            "lastName": "Fontana",
+            "fullName": "Andrea Fontana",
+            "color": "#6d28d9",
+            "role": "Operatore",
+            "skills": [
+                "accoglienza",
+                "primo-soccorso",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W018",
+            "firstName": "Giorgia",
+            "lastName": "Lombardi",
+            "fullName": "Giorgia Lombardi",
+            "color": "#0e7490",
+            "role": "Senior",
+            "skills": [
+                "amministrazione",
+                "controllo-qualita",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W019",
+            "firstName": "Matteo",
+            "lastName": "Martini",
+            "fullName": "Matteo Martini",
+            "color": "#b91c1c",
+            "role": "Responsabile",
+            "skills": [
+                "manutenzione",
+                "coordinamento",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W020",
+            "firstName": "Laura",
+            "lastName": "Ricci",
+            "fullName": "Laura Ricci",
+            "color": "#7e22ce",
+            "role": "Operatore",
+            "skills": [
+                "primo-soccorso",
+                "logistica",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W021",
+            "firstName": "Stefano",
+            "lastName": "Gentile",
+            "fullName": "Stefano Gentile",
+            "color": "#2563eb",
+            "role": "Operatore",
+            "skills": [
+                "controllo-qualita",
+                "sicurezza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W022",
+            "firstName": "Ilaria",
+            "lastName": "Ferraro",
+            "fullName": "Ilaria Ferraro",
+            "color": "#16a34a",
+            "role": "Tecnico",
+            "skills": [
+                "coordinamento",
+                "reparto-a",
+                "produzione"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": false,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 0,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 0
+            }
+        },
+        {
+            "id": "W023",
+            "firstName": "Gabriele",
+            "lastName": "Marchetti",
+            "fullName": "Gabriele Marchetti",
+            "color": "#db2777",
+            "role": "Addetto qualità",
+            "skills": [
+                "logistica",
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W024",
+            "firstName": "Silvia",
+            "lastName": "Leone",
+            "fullName": "Silvia Leone",
+            "color": "#f59e0b",
+            "role": "Coordinatore",
+            "skills": [
+                "sicurezza",
+                "produzione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W025",
+            "firstName": "Riccardo",
+            "lastName": "Longo",
+            "fullName": "Riccardo Longo",
+            "color": "#7c3aed",
+            "role": "Operatore",
+            "skills": [
+                "reparto-a",
+                "magazzino",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W026",
+            "firstName": "Elisa",
+            "lastName": "Sanna",
+            "fullName": "Elisa Sanna",
+            "color": "#0891b2",
+            "role": "Senior",
+            "skills": [
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W027",
+            "firstName": "Daniele",
+            "lastName": "Sala",
+            "fullName": "Daniele Sala",
+            "color": "#dc2626",
+            "role": "Responsabile",
+            "skills": [
+                "produzione",
+                "accoglienza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W028",
+            "firstName": "Marta",
+            "lastName": "Testa",
+            "fullName": "Marta Testa",
+            "color": "#9333ea",
+            "role": "Operatore",
+            "skills": [
+                "magazzino",
+                "amministrazione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W029",
+            "firstName": "Fabio",
+            "lastName": "Ferri",
+            "fullName": "Fabio Ferri",
+            "color": "#0f766e",
+            "role": "Operatore",
+            "skills": [
+                "notte",
+                "manutenzione"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W030",
+            "firstName": "Veronica",
+            "lastName": "Pellegrini",
+            "fullName": "Veronica Pellegrini",
+            "color": "#ea580c",
+            "role": "Tecnico",
+            "skills": [
+                "accoglienza",
+                "primo-soccorso",
+                "coordinamento"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": false,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 0,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 0
+            }
+        },
+        {
+            "id": "W031",
+            "firstName": "Claudio",
+            "lastName": "Caruso",
+            "fullName": "Claudio Caruso",
+            "color": "#475569",
+            "role": "Addetto qualità",
+            "skills": [
+                "amministrazione",
+                "controllo-qualita",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W032",
+            "firstName": "Noemi",
+            "lastName": "Riva",
+            "fullName": "Noemi Riva",
+            "color": "#be123c",
+            "role": "Coordinatore",
+            "skills": [
+                "manutenzione",
+                "coordinamento",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W033",
+            "firstName": "Antonio",
+            "lastName": "Vitale",
+            "fullName": "Antonio Vitale",
+            "color": "#1d4ed8",
+            "role": "Operatore",
+            "skills": [
+                "primo-soccorso",
+                "logistica",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W034",
+            "firstName": "Beatrice",
+            "lastName": "Fabbri",
+            "fullName": "Beatrice Fabbri",
+            "color": "#15803d",
+            "role": "Senior",
+            "skills": [
+                "controllo-qualita",
+                "sicurezza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W035",
+            "firstName": "Gianluca",
+            "lastName": "Amato",
+            "fullName": "Gianluca Amato",
+            "color": "#c026d3",
+            "role": "Responsabile",
+            "skills": [
+                "coordinamento",
+                "reparto-a",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W036",
+            "firstName": "Serena",
+            "lastName": "D'Amico",
+            "fullName": "Serena D'Amico",
+            "color": "#ca8a04",
+            "role": "Operatore",
+            "skills": [
+                "logistica",
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W037",
+            "firstName": "Michele",
+            "lastName": "Palmieri",
+            "fullName": "Michele Palmieri",
+            "color": "#6d28d9",
+            "role": "Operatore",
+            "skills": [
+                "sicurezza",
+                "produzione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W038",
+            "firstName": "Arianna",
+            "lastName": "Bianco",
+            "fullName": "Arianna Bianco",
+            "color": "#0e7490",
+            "role": "Tecnico",
+            "skills": [
+                "reparto-a",
+                "magazzino",
+                "accoglienza"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": true,
+                "canWorkNight": false,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 0,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 0
+            }
+        },
+        {
+            "id": "W039",
+            "firstName": "Emanuele",
+            "lastName": "Grasso",
+            "fullName": "Emanuele Grasso",
+            "color": "#b91c1c",
+            "role": "Addetto qualità",
+            "skills": [
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W040",
+            "firstName": "Camilla",
+            "lastName": "Pagano",
+            "fullName": "Camilla Pagano",
+            "color": "#7e22ce",
+            "role": "Coordinatore",
+            "skills": [
+                "produzione",
+                "accoglienza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W041",
+            "firstName": "Nicola",
+            "lastName": "Piras",
+            "fullName": "Nicola Piras",
+            "color": "#2563eb",
+            "role": "Operatore",
+            "skills": [
+                "magazzino",
+                "amministrazione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W042",
+            "firstName": "Greta",
+            "lastName": "Fiore",
+            "fullName": "Greta Fiore",
+            "color": "#16a34a",
+            "role": "Senior",
+            "skills": [
+                "notte",
+                "manutenzione"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W043",
+            "firstName": "Pietro",
+            "lastName": "Ruggieri",
+            "fullName": "Pietro Ruggieri",
+            "color": "#db2777",
+            "role": "Responsabile",
+            "skills": [
+                "accoglienza",
+                "primo-soccorso",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W044",
+            "firstName": "Alessia",
+            "lastName": "Mazza",
+            "fullName": "Alessia Mazza",
+            "color": "#f59e0b",
+            "role": "Operatore",
+            "skills": [
+                "amministrazione",
+                "controllo-qualita",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W045",
+            "firstName": "Cristian",
+            "lastName": "Bernardi",
+            "fullName": "Cristian Bernardi",
+            "color": "#7c3aed",
+            "role": "Operatore",
+            "skills": [
+                "manutenzione",
+                "coordinamento",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 24,
+                "monthlyHours": 96,
+                "partTime": true,
+                "minMonthlyHours": 76,
+                "maxMonthlyHours": 96
+            },
+            "rules": {
+                "canWorkMorning": false,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W046",
+            "firstName": "Aurora",
+            "lastName": "Coppola",
+            "fullName": "Aurora Coppola",
+            "color": "#0891b2",
+            "role": "Tecnico",
+            "skills": [
+                "primo-soccorso",
+                "logistica",
+                "reparto-a"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": false,
+                "canWorkNight": false,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 0,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 0
+            }
+        },
+        {
+            "id": "W047",
+            "firstName": "Vincenzo",
+            "lastName": "Landi",
+            "fullName": "Vincenzo Landi",
+            "color": "#dc2626",
+            "role": "Addetto qualità",
+            "skills": [
+                "controllo-qualita",
+                "sicurezza",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W048",
+            "firstName": "Sofia",
+            "lastName": "Serra",
+            "fullName": "Sofia Serra",
+            "color": "#9333ea",
+            "role": "Coordinatore",
+            "skills": [
+                "coordinamento",
+                "reparto-a",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W049",
+            "firstName": "Tommaso",
+            "lastName": "Villa",
+            "fullName": "Tommaso Villa",
+            "color": "#0f766e",
+            "role": "Operatore",
+            "skills": [
+                "logistica",
+                "reparto-b",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 40,
+                "monthlyHours": 160,
+                "partTime": false,
+                "minMonthlyHours": 144,
+                "maxMonthlyHours": 160
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 5,
+                "maxNightShiftsPerMonth": 5,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        },
+        {
+            "id": "W050",
+            "firstName": "Rebecca",
+            "lastName": "Colombo",
+            "fullName": "Rebecca Colombo",
+            "color": "#ea580c",
+            "role": "Senior",
+            "skills": [
+                "sicurezza",
+                "produzione",
+                "notte"
+            ],
+            "enabled": true,
+            "contract": {
+                "weeklyHours": 30,
+                "monthlyHours": 120,
+                "partTime": true,
+                "minMonthlyHours": 100,
+                "maxMonthlyHours": 120
+            },
+            "rules": {
+                "canWorkMorning": true,
+                "canWorkAfternoon": true,
+                "canWorkNight": true,
+                "maxConsecutiveDays": 3,
+                "maxNightShiftsPerMonth": 3,
+                "restAfterNight": true,
+                "maxConsecutiveMorningShifts": 5,
+                "maxConsecutiveAfternoonShifts": 3,
+                "maxConsecutiveNightShifts": 1,
+                "requireAtLeastOneFreeWeekendPerMonth": true,
+                "maxNightShiftsPerWeek": 2
+            }
+        }
+    ]
+}

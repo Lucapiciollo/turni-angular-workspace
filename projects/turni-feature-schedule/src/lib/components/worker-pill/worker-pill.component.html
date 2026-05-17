@@ -1,0 +1,31 @@
+<div
+    class="person-pill"
+    [class.forced]="isForced"
+    [class.manual]="isManual"
+    [matTooltip]="tooltip"
+    matTooltipPosition="above"
+>
+    <span
+        class="avatar"
+        [style.background]="color"
+    >
+        {{ assignment.workerName.charAt(0) }}
+    </span>
+
+    <span class="person-text">
+        <strong>
+            {{ assignment.workerName }}
+        </strong>
+
+        <small>
+            {{ role }}
+        </small>
+    </span>
+
+    <span
+        class="source-badge"
+        *ngIf="assignment.source !== 'AUTO'"
+    >
+        {{ assignment.source === 'FORCED' ? 'FORZATO' : 'MANUALE' }}
+    </span>
+</div>

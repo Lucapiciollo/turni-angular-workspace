@@ -1,0 +1,14 @@
+{
+    "name": "@turni/feature-schedule",
+    "version": "0.1.0",
+    "peerDependencies": {
+        "@angular/common": "^18.2.0",
+        "@angular/core": "^18.2.0",
+        "@angular/router": "^18.2.0",
+        "@turni/data-access": "0.1.0"
+    },
+    "dependencies": {
+        "tslib": "^2.6.3"
+    },
+    "sideEffects": false
+}

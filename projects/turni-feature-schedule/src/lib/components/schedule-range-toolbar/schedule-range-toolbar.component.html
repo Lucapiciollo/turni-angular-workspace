@@ -1,0 +1,55 @@
+<section class="toolbar-card">
+    <div class="mode-switch">
+        <button
+            type="button"
+            [class.active]="isCurrentMode('MONTH')"
+            (click)="modeChange.emit('MONTH')"
+        >
+            Mese
+        </button>
+
+        <button
+            type="button"
+            [class.active]="isCurrentMode('WEEK')"
+            (click)="modeChange.emit('WEEK')"
+        >
+            Settimana
+        </button>
+    </div>
+
+    <div class="range-navigation">
+        <button
+            type="button"
+            class="nav-button"
+            (click)="previousRange.emit()"
+        >
+            ‹
+        </button>
+
+        <div class="range-info">
+            <strong>
+                {{ range?.label }}
+            </strong>
+
+            <span>
+                {{ range?.startDate }} → {{ range?.endDate }}
+            </span>
+        </div>
+
+        <button
+            type="button"
+            class="nav-button"
+            (click)="nextRange.emit()"
+        >
+            ›
+        </button>
+
+        <button
+            type="button"
+            class="refresh-button"
+            (click)="refreshRange.emit()"
+        >
+            Rigenera
+        </button>
+    </div>
+</section>
