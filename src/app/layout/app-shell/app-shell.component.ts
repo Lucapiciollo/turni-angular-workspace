@@ -29,5 +29,11 @@ export class AppShellComponent {
             icon: 'manage_accounts',
             route: '/piano-turni/operatori',
         },
+        {
+            label: 'Regole turni',
+            description: 'Operatori richiesti per turno',
+            icon: 'tune',
+            route: '/piano-turni/regole-turni',
+        },
     ];
 }

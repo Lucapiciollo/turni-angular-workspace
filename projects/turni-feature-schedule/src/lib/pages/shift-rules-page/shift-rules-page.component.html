@@ -1,0 +1,148 @@
+<div class="page">
+    <section class="hero-card">
+        <div>
+            <span class="eyebrow">
+                <mat-icon>tune</mat-icon>
+                Regole turni
+            </span>
+
+            <h1>Configurazione turni</h1>
+
+            <p>
+                Imposta quanti operatori servono per ogni turno e definisci orari/ore usati dalla generazione.
+            </p>
+        </div>
+
+        <div class="hero-actions">
+            <div class="summary-pill">
+                <mat-icon>groups</mat-icon>
+                {{ getTotalRequiredWorkers() }} operatori/giorno
+            </div>
+
+            <button
+                mat-stroked-button
+                type="button"
+                routerLink="/piano-turni"
+            >
+                <mat-icon>calendar_month</mat-icon>
+                Piano turni
+            </button>
+        </div>
+    </section>
+
+    <form
+        class="rules-form"
+        [formGroup]="form"
+        (ngSubmit)="save()"
+    >
+        <section
+            class="shift-grid"
+            formArrayName="shifts"
+        >
+            <mat-card
+                class="shift-card"
+                *ngFor="let shiftControl of shiftsForm.controls; let i = index; trackBy: trackByIndex"
+                [formGroupName]="i"
+            >
+                <div class="shift-card-header">
+                    <div
+                        class="shift-avatar"
+                        [class.morning]="shiftControl.get('type')?.value === 'MATTINA'"
+                        [class.afternoon]="shiftControl.get('type')?.value === 'POMERIGGIO'"
+                        [class.night]="shiftControl.get('type')?.value === 'NOTTE'"
+                    >
+                        <mat-icon>
+                            {{ getShiftIcon(shiftControl.get('type')?.value) }}
+                        </mat-icon>
+                    </div>
+
+                    <div class="shift-heading">
+                        <h2>{{ shiftControl.get('label')?.value }}</h2>
+                        <p>{{ shiftControl.get('start')?.value }} - {{ shiftControl.get('end')?.value }}</p>
+                        <span class="type-chip">
+                            {{ shiftControl.get('type')?.value | turniShiftLabel }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Etichetta</mat-label>
+                        <input
+                            matInput
+                            formControlName="label"
+                        />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Inizio</mat-label>
+                        <input
+                            matInput
+                            type="time"
+                            formControlName="start"
+                        />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Fine</mat-label>
+                        <input
+                            matInput
+                            type="time"
+                            formControlName="end"
+                        />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Operatori richiesti</mat-label>
+                        <input
+                            matInput
+                            type="number"
+                            min="0"
+                            formControlName="requiredWorkers"
+                        />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Ore turno</mat-label>
+                        <input
+                            matInput
+                            type="number"
+                            min="1"
+                            formControlName="hours"
+                        />
+                    </mat-form-field>
+                </div>
+            </mat-card>
+        </section>
+
+        <section class="save-card">
+            <div>
+                <strong>Salvataggio locale</strong>
+                <span>
+                    Le modifiche vengono salvate nello storage e usate dalla prossima generazione del piano.
+                </span>
+            </div>
+
+            <div class="save-actions">
+                <button
+                    mat-stroked-button
+                    type="button"
+                    (click)="resetDefault()"
+                >
+                    <mat-icon>restart_alt</mat-icon>
+                    Default
+                </button>
+
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="submit"
+                >
+                    <mat-icon>save</mat-icon>
+                    Salva regole
+                </button>
+            </div>
+        </section>
+    </form>
+</div>

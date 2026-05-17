@@ -225,6 +225,40 @@ export class TurniEffects {
         })
     ));
 
+
+    readonly saveShiftRules$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.saveShiftRules),
+        withLatestFrom(
+            this.store.select(selectWorkers),
+            this.store.select(selectAbsences)
+        ),
+        switchMap(([{ shifts }, workers, absences]) => {
+            try {
+                const normalizedShifts = shifts.map((shift) => {
+                    return {
+                        ...shift,
+                        requiredWorkers: Number(shift.requiredWorkers),
+                        hours: Number(shift.hours),
+                    };
+                });
+
+                this.storageService.save({
+                    workers,
+                    shifts: normalizedShifts,
+                    absences,
+                });
+
+                return of(TurniActions.saveShiftRulesSuccess({
+                    shifts: normalizedShifts,
+                }));
+            } catch (error) {
+                return of(TurniActions.saveShiftRulesFailure({
+                    error: error instanceof Error ? error.message : 'Errore salvataggio regole turni',
+                }));
+            }
+        })
+    ));
+
     readonly openRange$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.openRange),
         withLatestFrom(this.store.select(selectGenerationSeed), this.store.select(selectIsPastRange), this.store.select(selectWorkers), this.store.select(selectShifts), this.store.select(selectAbsences)),

@@ -6,6 +6,7 @@ import {
     DaySchedule,
     RangeMode,
     ShiftType,
+    ShiftDefinition,
     StatsFilterType,
     WarningFilterType,
     Worker,
@@ -242,5 +243,11 @@ export class TurniFacade {
 
     resetWorkersStorage(): void {
         this.store.dispatch(TurniActions.resetWorkersStorage());
+    }
+
+    saveShiftRules(shifts: ShiftDefinition[]): void {
+        this.store.dispatch(TurniActions.saveShiftRules({
+            shifts,
+        }));
     }
 }

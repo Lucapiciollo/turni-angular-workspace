@@ -183,6 +183,32 @@ export const turniReducer = createReducer(
         };
     }),
 
+    on(TurniActions.saveShiftRules, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.saveShiftRulesSuccess, (state, { shifts }) => {
+        return {
+            ...state,
+            shifts,
+            generationSeed: state.generationSeed + 1,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.saveShiftRulesFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
     on(TurniActions.setAbsences, (state, { absences }) => {
         return {
             ...state,

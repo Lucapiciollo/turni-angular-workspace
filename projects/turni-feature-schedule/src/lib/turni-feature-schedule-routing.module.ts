@@ -3,6 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
+        path: 'regole-turni',
+        loadChildren: () => {
+            return import('./pages/shift-rules-page/shift-rules-page.module')
+                .then((module) => module.ShiftRulesPageModule);
+        },
+    },
+    {
         path: 'operatori',
         loadChildren: () => {
             return import('./pages/operators-page/operators-page.module')
