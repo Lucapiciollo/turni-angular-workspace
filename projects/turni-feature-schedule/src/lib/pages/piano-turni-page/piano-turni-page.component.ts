@@ -16,7 +16,7 @@ export class PianoTurniPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.turniFacade.init();
+        this.turniFacade.ensureInitialized();
     }
 
     openLongShiftDialog(event: { day: DaySchedule; assignment: AssignedShift }): void {

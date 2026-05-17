@@ -17,6 +17,7 @@ import {
 export const TurniActions = createActionGroup({
     source: 'Turni',
     events: {
+        'Noop': emptyProps(),
         'Init': emptyProps(),
         'Load Initial Data': emptyProps(),
         'Load Initial Data Success': props<{ workers: Worker[]; shifts: ShiftDefinition[]; absences: WorkerAbsence[] }>(),

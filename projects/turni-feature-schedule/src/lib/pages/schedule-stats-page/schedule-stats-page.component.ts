@@ -72,7 +72,7 @@ export class ScheduleStatsPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.turniFacade.init();
+        this.turniFacade.ensureInitialized();
 
         const navigationExtras = this.getNavigationExtras();
 

@@ -49,7 +49,7 @@ export class ShiftRulesPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.turniFacade.init();
+        this.turniFacade.ensureInitialized();
         this.patchFromStore();
     }
 

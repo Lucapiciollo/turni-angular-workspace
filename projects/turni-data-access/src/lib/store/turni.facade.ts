@@ -120,6 +120,18 @@ export class TurniFacade {
         this.store.dispatch(TurniActions.init());
     }
 
+    ensureInitialized(): void {
+        const hasData = this.workers().length > 0
+            && this.shifts().length > 0
+            && !!this.plan();
+
+        if (hasData) {
+            return;
+        }
+
+        this.init();
+    }
+
     setMode(mode: RangeMode): void {
         this.store.dispatch(TurniActions.setMode({ mode }));
     }

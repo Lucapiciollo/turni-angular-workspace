@@ -61,7 +61,21 @@ export class TurniEffects {
         })
     ));
 
-    readonly init$ = createEffect(() => this.actions$.pipe(ofType(TurniActions.init), map(() => TurniActions.loadInitialData())));
+    readonly init$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.init),
+        withLatestFrom(
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts),
+            this.store.select(selectPlan)
+        ),
+        map(([, workers, shifts, plan]) => {
+            if (workers.length > 0 && shifts.length > 0 && plan) {
+                return TurniActions.noop();
+            }
+
+            return TurniActions.loadInitialData();
+        })
+    ));
 
     readonly openCurrentRangeAfterLoad$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.loadInitialDataSuccess),

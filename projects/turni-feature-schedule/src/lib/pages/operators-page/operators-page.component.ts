@@ -65,7 +65,7 @@ export class OperatorsPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.turniFacade.init();
+        this.turniFacade.ensureInitialized();
         this.createNew();
     }
 

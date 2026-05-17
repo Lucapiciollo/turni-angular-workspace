@@ -45,7 +45,7 @@ export class ScheduleWarningsPageComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.turniFacade.init();
+        this.turniFacade.ensureInitialized();
 
         const navigationExtras = this.getNavigationExtras();
 

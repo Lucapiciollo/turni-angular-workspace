@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 import { AppShellComponent } from './layout/app-shell/app-shell.component';
 
@@ -33,6 +33,7 @@ const routes: Routes = [
         RouterModule.forRoot(routes, {
             scrollPositionRestoration: 'enabled',
             anchorScrolling: 'enabled',
+            preloadingStrategy: PreloadAllModules,
         }),
     ],
     exports: [
