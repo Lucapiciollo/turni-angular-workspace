@@ -313,6 +313,58 @@ export const turniReducer = createReducer(
         return { ...state, loading: false, error };
     }),
 
+    on(TurniActions.addManualAssignment, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.addManualAssignmentSuccess, (state, { plan }) => {
+        return {
+            ...state,
+            plan,
+            lastSource: plan.source,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.addManualAssignmentFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
+    on(TurniActions.changeShift, (state) => {
+        return {
+            ...state,
+            loading: true,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.changeShiftSuccess, (state, { plan }) => {
+        return {
+            ...state,
+            plan,
+            lastSource: plan.source,
+            loading: false,
+            error: null,
+        };
+    }),
+
+    on(TurniActions.changeShiftFailure, (state, { error }) => {
+        return {
+            ...state,
+            loading: false,
+            error,
+        };
+    }),
+
     on(TurniActions.generatePlanSuccess, (state, { plan }) => {
         return {
             ...state,

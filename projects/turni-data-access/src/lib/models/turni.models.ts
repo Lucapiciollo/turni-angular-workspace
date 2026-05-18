@@ -8,6 +8,11 @@ export type AssignmentSource =
     | 'MANUAL'
     | 'ABSENCE';
 
+export type ManualAssignmentReason =
+    | 'MANUAL_INSERT'
+    | 'SHIFT_CHANGE'
+    | 'SHIFT_SWAP';
+
 export type AbsenceType =
     | 'MALATTIA'
     | 'FERIE'
@@ -159,6 +164,13 @@ export interface AssignedShift {
 
     source: AssignmentSource;
 
+    manualReason?: ManualAssignmentReason;
+    changedFromDate?: string;
+    changedFromShift?: ShiftType;
+    changedFromWorkerId?: string;
+    changedWithWorkerId?: string;
+    changeNote?: string;
+
     forcedReason?: string;
     violatedRules: AssignmentRuleCode[];
     extraHours: number;
@@ -301,4 +313,21 @@ export interface PlanGenerationStep {
     currentDate?: string;
     days?: DaySchedule[];
     plan?: SchedulePlan;
+}
+
+
+export type ShiftChangeMode =
+    | 'MOVE_SAME_DAY'
+    | 'SWAP_SAME_DAY'
+    | 'MOVE_OTHER_DAY';
+
+export interface ShiftChangeParams {
+    mode: ShiftChangeMode;
+    sourceDate: string;
+    sourceShift: ShiftType;
+    sourceWorkerId: string;
+    targetDate?: string;
+    targetShift: ShiftType;
+    targetWorkerId?: string;
+    note?: string;
 }

@@ -4,8 +4,10 @@ import { TurniSharedModule } from '@turni/shared';
 
 import { CloseTooltipsOnScrollDirective } from '../directives/close-tooltips-on-scroll.directive';
 import { LongShiftDialogComponent } from './long-shift-dialog/long-shift-dialog.component';
+import { ManualAssignmentDialogComponent } from './manual-assignment-dialog/manual-assignment-dialog.component';
 import { OperatorStatsCardComponent } from './operator-stats-card/operator-stats-card.component';
 import { ScheduleRangeToolbarComponent } from './schedule-range-toolbar/schedule-range-toolbar.component';
+import { ShiftChangeDialogComponent } from './shift-change-dialog/shift-change-dialog.component';
 import { ScheduleTableComponent } from './schedule-table/schedule-table.component';
 import { WarningListComponent } from './warning-list/warning-list.component';
 import { WorkerPillComponent } from './worker-pill/worker-pill.component';
@@ -19,6 +21,10 @@ import { WorkerPillComponent } from './worker-pill/worker-pill.component';
         WorkerPillComponent,
         CloseTooltipsOnScrollDirective,
         LongShiftDialogComponent,
+        ManualAssignmentDialogComponent,
+        ShiftChangeDialogComponent,
+        ShiftChangeDialogComponent,
+        ManualAssignmentDialogComponent,
     ],
     imports: [
         RouterModule,

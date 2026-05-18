@@ -1,0 +1,140 @@
+/*
+ * Turni UI tokens
+ * Modifica questo file per cambiare dimensioni, colori, bordi, radius, ombre e compattezza dell'app.
+ */
+
+$turni-font-family: Roboto, Arial, Helvetica, sans-serif !default;
+
+$turni-bg: #f6f8fb !default;
+$turni-surface: #ffffff !default;
+$turni-surface-soft: #fbfcfe !default;
+$turni-text: #1f2937 !default;
+$turni-muted: #6b7280 !default;
+$turni-muted-light: #94a3b8 !default;
+
+$turni-primary: #4f7cff !default;
+$turni-primary-strong: #315fcc !default;
+$turni-primary-soft: #eef4ff !default;
+
+$turni-success: #047857 !default;
+$turni-success-soft: #edf9f2 !default;
+
+$turni-warning: #9a3412 !default;
+$turni-warning-soft: #fff7ed !default;
+
+$turni-danger: #b42342 !default;
+$turni-danger-soft: #fff1f2 !default;
+
+$turni-border: #edf1f6 !default;
+$turni-border-strong: #dbe3ee !default;
+
+$turni-page-padding: 16px !default;
+$turni-page-gap: 12px !default;
+
+$turni-card-padding: 14px !default;
+$turni-card-padding-sm: 10px !default;
+$turni-section-padding: 12px !default;
+
+$turni-radius-xs: 8px !default;
+$turni-radius-sm: 10px !default;
+$turni-radius-md: 14px !default;
+$turni-radius-lg: 18px !default;
+$turni-radius-xl: 22px !default;
+$turni-radius-pill: 999px !default;
+
+$turni-shadow-subtle: 0 3px 10px rgba(15, 23, 42, 0.03) !default;
+$turni-shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.045) !default;
+
+$turni-font-size-xs: 11px !default;
+$turni-font-size-sm: 12px !default;
+$turni-font-size-md: 13px !default;
+$turni-font-size-base: 14px !default;
+$turni-font-size-lg: 16px !default;
+$turni-font-size-xl: 20px !default;
+$turni-font-size-page-title: 24px !default;
+
+$turni-icon-size-sm: 17px !default;
+$turni-icon-size-md: 20px !default;
+$turni-icon-size-lg: 24px !default;
+
+$turni-control-height: 36px !default;
+$turni-control-height-sm: 32px !default;
+$turni-avatar-size: 34px !default;
+$turni-avatar-size-lg: 40px !default;
+
+$turni-operator-list-width: 320px !default;
+$turni-operator-list-row-height: 50px !default;
+$turni-operator-page-height: calc(100vh - 24px) !default;
+$turni-operator-list-scroll-height: calc(100vh - 255px) !default;
+$turni-operator-form-scroll-height: calc(100vh - 198px) !default;
+
+$turni-transition: 180ms ease !default;
+
+@mixin emit-turni-css-vars() {
+    --turni-font-family: #{$turni-font-family};
+
+    --turni-bg: #{$turni-bg};
+    --turni-surface: #{$turni-surface};
+    --turni-surface-soft: #{$turni-surface-soft};
+    --turni-text: #{$turni-text};
+    --turni-muted: #{$turni-muted};
+    --turni-muted-light: #{$turni-muted-light};
+
+    --turni-primary: #{$turni-primary};
+    --turni-primary-strong: #{$turni-primary-strong};
+    --turni-primary-soft: #{$turni-primary-soft};
+
+    --turni-success: #{$turni-success};
+    --turni-success-soft: #{$turni-success-soft};
+
+    --turni-warning: #{$turni-warning};
+    --turni-warning-soft: #{$turni-warning-soft};
+
+    --turni-danger: #{$turni-danger};
+    --turni-danger-soft: #{$turni-danger-soft};
+
+    --turni-border: #{$turni-border};
+    --turni-border-strong: #{$turni-border-strong};
+
+    --turni-page-padding: #{$turni-page-padding};
+    --turni-page-gap: #{$turni-page-gap};
+
+    --turni-card-padding: #{$turni-card-padding};
+    --turni-card-padding-sm: #{$turni-card-padding-sm};
+    --turni-section-padding: #{$turni-section-padding};
+
+    --turni-radius-xs: #{$turni-radius-xs};
+    --turni-radius-sm: #{$turni-radius-sm};
+    --turni-radius-md: #{$turni-radius-md};
+    --turni-radius-lg: #{$turni-radius-lg};
+    --turni-radius-xl: #{$turni-radius-xl};
+    --turni-radius-pill: #{$turni-radius-pill};
+
+    --turni-shadow-subtle: #{$turni-shadow-subtle};
+    --turni-shadow-soft: #{$turni-shadow-soft};
+
+    --turni-font-size-xs: #{$turni-font-size-xs};
+    --turni-font-size-sm: #{$turni-font-size-sm};
+    --turni-font-size-md: #{$turni-font-size-md};
+    --turni-font-size-base: #{$turni-font-size-base};
+    --turni-font-size-lg: #{$turni-font-size-lg};
+    --turni-font-size-xl: #{$turni-font-size-xl};
+    --turni-font-size-page-title: #{$turni-font-size-page-title};
+
+    --turni-icon-size-sm: #{$turni-icon-size-sm};
+    --turni-icon-size-md: #{$turni-icon-size-md};
+    --turni-icon-size-lg: #{$turni-icon-size-lg};
+
+    --turni-control-height: #{$turni-control-height};
+    --turni-control-height-sm: #{$turni-control-height-sm};
+    --turni-avatar-size: #{$turni-avatar-size};
+    --turni-avatar-size-lg: #{$turni-avatar-size-lg};
+
+    --turni-operator-list-width: #{$turni-operator-list-width};
+    --turni-operator-list-row-height: #{$turni-operator-list-row-height};
+    --turni-operator-page-height: #{$turni-operator-page-height};
+    --turni-operator-list-scroll-height: #{$turni-operator-list-scroll-height};
+    --turni-operator-form-scroll-height: #{$turni-operator-form-scroll-height};
+
+    --turni-transition: #{$turni-transition};
+}

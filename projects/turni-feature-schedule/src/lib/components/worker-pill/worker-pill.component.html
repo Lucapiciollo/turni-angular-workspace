@@ -20,11 +20,17 @@
         <small class="leave-label" *ngIf="assignment.hasEarlyLeave">
             Permesso dalle {{ assignment.leaveTime }}
         </small>
+        <small class="change-label" *ngIf="assignment.manualReason === 'SHIFT_CHANGE' && assignment.changedFromShift">
+            Cambio da {{ assignment.changedFromShift | turniShiftLabel }}
+        </small>
     </div>
     <mat-chip class="source-badge" *ngIf="assignment.source !== 'AUTO'">
         {{ assignment.source }}
     </mat-chip>
     <div class="pill-actions" *ngIf="showActions">
+        <button mat-icon-button type="button" class="change-action" (click)="emitRequestShiftChange($event)" matTooltip="Cambio turno" matTooltipPosition="above" aria-label="Cambio turno" *ngIf="assignment.isFigurative !== true">
+            <mat-icon>swap_horiz</mat-icon>
+        </button>
         <button mat-icon-button type="button" class="long-action" (click)="emitRequestLongShift($event)" matTooltip="Permesso / uscita anticipata" matTooltipPosition="above" aria-label="Permesso / uscita anticipata" *ngIf="assignment.isFigurative !== true">
             <mat-icon>more_time</mat-icon>
         </button>

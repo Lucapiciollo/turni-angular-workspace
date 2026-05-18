@@ -158,8 +158,10 @@
             [getWorkerFn]="turniFacade.getWorkerFn"
             (markWorkerSick)="turniFacade.markWorkerSickOnShift($event)"
             (requestLongShift)="openLongShiftDialog($event)"
+            (requestShiftChange)="openShiftChangeDialog($event)"
             (openStatsDetail)="openWorkerStatsDetail($event)"
             (openWarningsDetail)="openWorkerWarningsDetail($event)"
+            (addManualAssignment)="openManualAssignmentDialog($event)"
         ></turni-schedule-table>
     </section>
 

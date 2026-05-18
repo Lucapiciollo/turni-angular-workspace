@@ -208,3 +208,57 @@
         }
     }
 }
+
+
+/* step-53 compact-ui */
+.page {
+    min-height: 100%;
+    padding: var(--turni-page-padding, 16px);
+    gap: var(--turni-page-gap, 12px);
+    font-family: var(--turni-font-family, Roboto, Arial, Helvetica, sans-serif);
+}
+
+.hero-card,
+.shift-card,
+.save-card {
+    border-radius: var(--turni-radius-lg, 18px);
+    box-shadow: var(--turni-shadow-subtle, 0 3px 10px rgba(15, 23, 42, 0.03));
+}
+
+.hero-card {
+    padding: var(--turni-card-padding, 14px);
+
+    h1 {
+        font-size: var(--turni-font-size-page-title, 24px);
+    }
+
+    p {
+        font-size: var(--turni-font-size-md, 13px);
+    }
+}
+
+.shift-grid {
+    gap: var(--turni-page-gap, 12px);
+}
+
+.shift-card {
+    padding: var(--turni-card-padding, 14px);
+}
+
+.shift-avatar {
+    width: var(--turni-avatar-size-lg, 40px);
+    height: var(--turni-avatar-size-lg, 40px);
+    border-radius: var(--turni-radius-md, 14px);
+}
+
+.shift-heading h2 {
+    font-size: var(--turni-font-size-lg, 16px);
+}
+
+.form-grid {
+    gap: 8px;
+}
+
+.save-card {
+    padding: var(--turni-card-padding, 14px);
+}

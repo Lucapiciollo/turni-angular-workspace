@@ -1,3 +1,9 @@
+@use '../projects/turni-shared/src/lib/styles/turni-ui-tokens' as turni;
+
+:root {
+    @include turni.emit-turni-css-vars();
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
@@ -106,4 +112,47 @@ button,
 input,
 select {
     font: inherit;
+}
+
+
+/* step-53 global compact material */
+html,
+body {
+    font-family: var(--turni-font-family, Roboto, Arial, Helvetica, sans-serif);
+}
+
+.turni-compact-density,
+body {
+    --mat-form-field-container-height: var(--turni-control-height, 36px);
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-stroked-button,
+.mat-mdc-flat-button {
+    min-height: var(--turni-control-height, 36px);
+    border-radius: var(--turni-radius-md, 14px) !important;
+}
+
+.mat-mdc-icon-button {
+    width: var(--turni-control-height, 36px) !important;
+    height: var(--turni-control-height, 36px) !important;
+    padding: 6px !important;
+}
+
+.mat-mdc-chip {
+    min-height: var(--turni-control-height-sm, 32px);
+    font-size: var(--turni-font-size-sm, 12px);
+}
+
+.mat-mdc-card {
+    border-radius: var(--turni-radius-lg, 18px) !important;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: var(--turni-radius-xl, 22px) !important;
+}
+
+.mat-mdc-form-field {
+    font-size: var(--turni-font-size-md, 13px);
 }

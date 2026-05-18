@@ -7,6 +7,7 @@ import {
     RangeMode,
     ShiftType,
     ShiftDefinition,
+    ShiftChangeParams,
     StatsFilterType,
     WarningFilterType,
     Worker,
@@ -207,6 +208,19 @@ export class TurniFacade {
         note?: string;
     }): void {
         this.store.dispatch(TurniActions.applyLongShift(params));
+    }
+
+    addManualAssignment(params: {
+        date: string;
+        shift: ShiftType;
+        workerId: string;
+        note?: string;
+    }): void {
+        this.store.dispatch(TurniActions.addManualAssignment(params));
+    }
+
+    changeShift(params: ShiftChangeParams): void {
+        this.store.dispatch(TurniActions.changeShift(params));
     }
 
     selectWorker(workerId: string | null): void {

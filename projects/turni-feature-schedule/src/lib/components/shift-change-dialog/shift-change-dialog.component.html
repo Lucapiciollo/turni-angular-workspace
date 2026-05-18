@@ -1,0 +1,154 @@
+<h2 mat-dialog-title>
+    <mat-icon>swap_horiz</mat-icon>
+    Cambio turno
+</h2>
+
+<mat-dialog-content>
+    <div class="dialog-intro">
+        <strong>{{ data.assignment.workerName }}</strong>
+        <span>
+            {{ data.date }} · da {{ data.assignment.shift | turniShiftLabel }}
+        </span>
+    </div>
+
+    <mat-button-toggle-group
+        class="mode-toggle three"
+        [formControl]="modeControl"
+        aria-label="Tipo cambio turno"
+    >
+        <mat-button-toggle value="MOVE_SAME_DAY">
+            Sposta
+        </mat-button-toggle>
+
+        <mat-button-toggle value="SWAP_SAME_DAY">
+            Scambia
+        </mat-button-toggle>
+
+        <mat-button-toggle value="MOVE_OTHER_DAY">
+            Altro giorno
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-form-field
+        appearance="outline"
+        class="full-width"
+        *ngIf="isOtherDayMode"
+    >
+        <mat-label>Giorno destinazione</mat-label>
+
+        <mat-select [formControl]="targetDateControl">
+            <mat-option
+                *ngFor="let day of targetDays"
+                [value]="day.date"
+            >
+                {{ day.label }} · {{ day.date }}
+            </mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="targetDateControl.invalid">
+            Seleziona il giorno destinazione.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+        appearance="outline"
+        class="full-width"
+        *ngIf="!isSwapMode"
+    >
+        <mat-label>Turno destinazione</mat-label>
+
+        <mat-select [formControl]="targetShiftControl">
+            <mat-option
+                *ngFor="let shift of visibleShifts"
+                [value]="shift.type"
+            >
+                {{ shift.label }} · {{ shift.start }} - {{ shift.end }}
+            </mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="targetShiftControl.invalid">
+            Seleziona il turno destinazione.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+        appearance="outline"
+        class="full-width"
+        *ngIf="isSwapMode"
+    >
+        <mat-label>Operatore con cui scambiare</mat-label>
+
+        <mat-select [formControl]="targetWorkerControl">
+            <mat-option
+                *ngFor="let candidate of swapCandidates"
+                [value]="candidate.assignment.workerId"
+            >
+                {{ candidate.label }}
+            </mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="targetWorkerControl.invalid">
+            Seleziona l'operatore con cui scambiare.
+        </mat-error>
+    </mat-form-field>
+
+    <div
+        class="swap-preview"
+        *ngIf="isSwapMode && targetWorkerControl.value"
+    >
+        <mat-icon>sync_alt</mat-icon>
+        <span>
+            Verranno invertiti i turni dei due operatori nello stesso giorno.
+        </span>
+    </div>
+
+    <div
+        class="swap-preview"
+        *ngIf="isOtherDayMode && targetDateControl.value && targetShiftControl.value"
+    >
+        <mat-icon>event_repeat</mat-icon>
+        <span>
+            L'operatore verrà spostato su un altro giorno. Il turno di partenza potrebbe restare scoperto.
+        </span>
+    </div>
+
+    <mat-form-field
+        appearance="outline"
+        class="full-width"
+    >
+        <mat-label>Nota facoltativa</mat-label>
+        <textarea
+            matInput
+            rows="3"
+            [formControl]="noteControl"
+            placeholder="Esempio: cambio richiesto dagli operatori"
+        ></textarea>
+    </mat-form-field>
+
+    <div class="info-box">
+        <mat-icon>info</mat-icon>
+        <span>
+            Puoi spostare l'operatore nello stesso giorno, scambiarlo con un altro operatore oppure spostarlo su un altro giorno del periodo.
+        </span>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button
+        mat-stroked-button
+        type="button"
+        (click)="cancel()"
+    >
+        Annulla
+    </button>
+
+    <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="confirm()"
+    >
+        <mat-icon>check</mat-icon>
+        Conferma cambio
+    </button>
+</mat-dialog-actions>

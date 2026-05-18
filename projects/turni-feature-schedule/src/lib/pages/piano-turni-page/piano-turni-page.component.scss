@@ -309,3 +309,50 @@
         }
     }
 }
+
+
+/* step-53 compact-ui */
+.page {
+    padding: var(--turni-page-padding, 16px);
+    gap: var(--turni-page-gap, 12px);
+    font-family: var(--turni-font-family, Roboto, Arial, Helvetica, sans-serif);
+}
+
+.header-card,
+.quick-actions-card,
+.details-accordion-card {
+    padding: var(--turni-card-padding, 14px);
+    border-radius: var(--turni-radius-lg, 18px);
+    box-shadow: var(--turni-shadow-subtle, 0 3px 10px rgba(15, 23, 42, 0.03));
+}
+
+.header-card {
+    h1 {
+        font-size: var(--turni-font-size-page-title, 24px);
+    }
+
+    p {
+        font-size: var(--turni-font-size-md, 13px);
+    }
+}
+
+.quick-actions-card {
+    gap: 8px;
+}
+
+.stats-preview {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: var(--turni-page-gap, 12px);
+}
+
+.inline-detail-banner,
+.empty-inline-card,
+.sick-replacement-proposal {
+    border-radius: var(--turni-radius-lg, 18px);
+}
+
+@media (max-width: 720px) {
+    .stats-preview {
+        grid-template-columns: 1fr;
+    }
+}

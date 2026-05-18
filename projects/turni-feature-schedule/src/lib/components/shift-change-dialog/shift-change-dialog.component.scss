@@ -1,0 +1,102 @@
+:host {
+    display: block;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+        color: #2563eb;
+    }
+}
+
+.dialog-intro {
+    margin-bottom: 14px;
+    padding: 12px;
+    border-radius: 16px;
+    background: var(--turni-primary-soft, #eef4ff);
+    border: 1px solid #dbe7ff;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    strong {
+        color: #315fcc;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    span {
+        color: var(--turni-muted, #6b7280);
+        font-size: 12.5px;
+    }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.info-box {
+    padding: 12px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid var(--turni-border, #edf1f6);
+    color: var(--turni-muted, #6b7280);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.35;
+
+    mat-icon {
+        color: #2563eb;
+        font-size: 19px;
+        width: 19px;
+        height: 19px;
+    }
+}
+
+
+.mode-toggle {
+    width: 100%;
+    margin-bottom: 14px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--turni-border, #edf1f6);
+}
+
+:host ::ng-deep .mode-toggle .mat-button-toggle {
+    flex: 1 1 50%;
+}
+
+:host ::ng-deep .mode-toggle .mat-button-toggle-label-content {
+    width: 100%;
+}
+
+.swap-preview {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #eef4ff;
+    border: 1px solid #dbe7ff;
+    color: #315fcc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+
+.mode-toggle.three {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}

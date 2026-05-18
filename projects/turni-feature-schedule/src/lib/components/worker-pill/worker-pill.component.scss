@@ -141,3 +141,18 @@
     transform: translateY(-1px);
     border-color: var(--turni-border-strong, #e3e8ef);
 }
+
+
+.change-action {
+    color: #2563eb !important;
+
+    mat-icon {
+        color: #2563eb;
+    }
+}
+
+.change-label {
+    color: #2563eb !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+}

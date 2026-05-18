@@ -15,6 +15,7 @@ export class WorkerPillComponent {
 
     @Output() markSick = new EventEmitter<AssignedShift>();
     @Output() requestLongShift = new EventEmitter<AssignedShift>();
+    @Output() requestShiftChange = new EventEmitter<AssignedShift>();
     @Output() openStatsDetail = new EventEmitter<AssignedShift>();
     @Output() openWarningsDetail = new EventEmitter<AssignedShift>();
 
@@ -67,6 +68,12 @@ export class WorkerPillComponent {
         event.stopPropagation();
         this.hideTooltips();
         this.requestLongShift.emit(this.assignment);
+    }
+
+    emitRequestShiftChange(event: MouseEvent): void {
+        event.stopPropagation();
+        this.hideTooltips();
+        this.requestShiftChange.emit(this.assignment);
     }
 
     emitMarkSick(event: MouseEvent): void {

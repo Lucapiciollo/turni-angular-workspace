@@ -6,7 +6,9 @@ import { catchError, from, map, of, switchMap, takeUntil, tap, withLatestFrom } 
 import { TURNI_FULL_MOCK } from '../data/turni-full-mock';
 import { DateRangeService } from '../services/date-range.service';
 import { LongShiftService } from '../services/long-shift.service';
+import { ManualAssignmentService } from '../services/manual-assignment.service';
 import { ScheduleCacheService } from '../services/schedule-cache.service';
+import { ShiftChangeService } from '../services/shift-change.service';
 import { ShiftReplacementService } from '../services/shift-replacement.service';
 import { TurniGeneratorService } from '../services/turni-generator.service';
 import { TurniStorageService } from '../services/turni-storage.service';
@@ -21,8 +23,10 @@ export class TurniEffects {
     private readonly dateRangeService: DateRangeService = inject(DateRangeService);
     private readonly cacheService: ScheduleCacheService = inject(ScheduleCacheService);
     private readonly generatorService: TurniGeneratorService = inject(TurniGeneratorService);
+    private readonly shiftChangeService: ShiftChangeService = inject(ShiftChangeService);
     private readonly replacementService: ShiftReplacementService = inject(ShiftReplacementService);
     private readonly longShiftService: LongShiftService = inject(LongShiftService);
+    private readonly manualAssignmentService: ManualAssignmentService = inject(ManualAssignmentService);
     private readonly storageService: TurniStorageService = inject(TurniStorageService);
 
     readonly loadInitialData$ = createEffect(() => this.actions$.pipe(
@@ -229,6 +233,92 @@ export class TurniEffects {
         })
     ));
 
+
+
+    readonly addManualAssignment$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.addManualAssignment),
+        withLatestFrom(
+            this.store.select(selectPlan),
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts)
+        ),
+        switchMap(([action, currentPlan, workers, shifts]) => {
+            try {
+                if (!currentPlan) {
+                    return of(TurniActions.addManualAssignmentFailure({
+                        error: 'Piano turni non presente.',
+                    }));
+                }
+
+                const plan = this.manualAssignmentService.addManualAssignment({
+                    plan: currentPlan,
+                    workers,
+                    shifts,
+                    date: action.date,
+                    shift: action.shift,
+                    workerId: action.workerId,
+                    note: action.note,
+                });
+
+                this.cacheService.set(plan);
+
+                return of(TurniActions.addManualAssignmentSuccess({
+                    plan,
+                }));
+            } catch (error) {
+                return of(TurniActions.addManualAssignmentFailure({
+                    error: error instanceof Error
+                        ? error.message
+                        : 'Errore inserimento manuale operatore',
+                }));
+            }
+        })
+    ));
+
+
+    readonly changeShift$ = createEffect(() => this.actions$.pipe(
+        ofType(TurniActions.changeShift),
+        withLatestFrom(
+            this.store.select(selectPlan),
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts)
+        ),
+        switchMap(([action, currentPlan, workers, shifts]) => {
+            try {
+                if (!currentPlan) {
+                    return of(TurniActions.changeShiftFailure({
+                        error: 'Piano turni non presente.',
+                    }));
+                }
+
+                const plan = this.shiftChangeService.changeShift({
+                    plan: currentPlan,
+                    workers,
+                    shifts,
+                    mode: action.mode,
+                    sourceDate: action.sourceDate,
+                    sourceShift: action.sourceShift,
+                    sourceWorkerId: action.sourceWorkerId,
+                    targetDate: action.targetDate,
+                    targetShift: action.targetShift,
+                    targetWorkerId: action.targetWorkerId,
+                    note: action.note,
+                });
+
+                this.cacheService.set(plan);
+
+                return of(TurniActions.changeShiftSuccess({
+                    plan,
+                }));
+            } catch (error) {
+                return of(TurniActions.changeShiftFailure({
+                    error: error instanceof Error
+                        ? error.message
+                        : 'Errore cambio turno',
+                }));
+            }
+        })
+    ));
 
     readonly upsertWorker$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.upsertWorker),

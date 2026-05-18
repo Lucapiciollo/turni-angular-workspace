@@ -1,13 +1,15 @@
 .page {
-    min-height: 100vh;
-    padding: 22px;
+    height: var(--turni-operator-page-height, calc(100vh - 24px));
+    min-height: 0;
+    padding: var(--turni-page-padding, 16px);
     background:
-        radial-gradient(circle at top left, rgba(79, 124, 255, 0.08), transparent 34%),
+        radial-gradient(circle at top left, rgba(79, 124, 255, 0.06), transparent 32%),
         var(--turni-bg, #f6f8fb);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    font-family: Roboto, Arial, Helvetica, sans-serif;
+    gap: var(--turni-page-gap, 12px);
+    overflow: hidden;
+    font-family: var(--turni-font-family, Roboto, Arial, Helvetica, sans-serif);
 }
 
 .hero-card,
@@ -15,51 +17,58 @@
 .form-card {
     background: rgba(255, 255, 255, 0.96);
     border: 1px solid var(--turni-border, #edf1f6);
-    border-radius: var(--turni-radius-lg, 22px);
-    box-shadow: var(--turni-shadow-subtle, 0 4px 14px rgba(15, 23, 42, 0.035));
+    border-radius: var(--turni-radius-lg, 18px);
+    box-shadow: var(--turni-shadow-subtle, 0 3px 10px rgba(15, 23, 42, 0.03));
 }
 
 .hero-card {
-    padding: 22px 24px;
+    flex: 0 0 auto;
+    padding: 14px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
+    gap: 12px;
 
     h1 {
-        margin: 8px 0 4px;
-        font-size: 28px;
+        margin: 5px 0 2px;
+        font-size: var(--turni-font-size-page-title, 24px);
         font-weight: 500;
-        letter-spacing: -0.025em;
+        letter-spacing: -0.02em;
     }
 
     p {
         margin: 0;
         color: var(--turni-muted, #6b7280);
-        font-size: 13.5px;
+        font-size: var(--turni-font-size-md, 13px);
     }
 }
 
 .eyebrow,
 .summary-pill {
     width: fit-content;
+    min-height: var(--turni-control-height-sm, 32px);
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
+    gap: 6px;
+    border-radius: var(--turni-radius-pill, 999px);
+    padding: 4px 9px;
+    font-size: var(--turni-font-size-sm, 12px);
     font-weight: 500;
+
+    mat-icon {
+        font-size: var(--turni-icon-size-sm, 17px);
+        width: var(--turni-icon-size-sm, 17px);
+        height: var(--turni-icon-size-sm, 17px);
+    }
 }
 
 .eyebrow {
-    color: #315fcc;
+    color: var(--turni-primary-strong, #315fcc);
     background: var(--turni-primary-soft, #eef4ff);
     border: 1px solid #dbe7ff;
 }
 
 .summary-pill {
-    min-height: 36px;
     color: var(--turni-muted, #6b7280);
     background: #f8fafc;
     border: 1px solid var(--turni-border, #edf1f6);
@@ -68,65 +77,83 @@
 .hero-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .content-grid {
+    flex: 1 1 auto;
+    min-height: 0;
     display: grid;
-    grid-template-columns: minmax(330px, 0.8fr) minmax(520px, 1.2fr);
-    gap: 16px;
-    align-items: start;
+    grid-template-columns: minmax(260px, var(--turni-operator-list-width, 320px)) minmax(0, 1fr);
+    gap: var(--turni-page-gap, 12px);
+    align-items: stretch;
+    overflow: hidden;
 }
 
 .list-card,
 .form-card {
-    padding: 16px;
+    min-height: 0;
+    padding: var(--turni-card-padding, 14px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.form-card {
+    overflow: hidden;
 }
 
 .card-header {
+    flex: 0 0 auto;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 10px;
 
     h2 {
         margin: 0;
-        font-size: 18px;
+        font-size: var(--turni-font-size-lg, 16px);
         font-weight: 500;
     }
 
     p {
-        margin: 4px 0 0;
+        margin: 2px 0 0;
         color: var(--turni-muted, #6b7280);
-        font-size: 12.5px;
+        font-size: var(--turni-font-size-sm, 12px);
     }
 }
 
 .search-field {
     width: 100%;
+    flex: 0 0 auto;
+    margin-bottom: 4px;
 }
 
 .worker-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    height: var(--turni-operator-list-scroll-height, calc(100vh - 255px));
+    overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-height: calc(100vh - 310px);
-    min-height: 320px;
-    overflow: auto;
+    gap: 6px;
     padding-right: 4px;
+    overscroll-behavior: contain;
 }
 
 .worker-row {
     width: 100%;
-    padding: 10px;
+    min-height: var(--turni-operator-list-row-height, 50px);
+    padding: 7px 8px;
     border: 1px solid var(--turni-border, #edf1f6);
-    border-radius: 16px;
-    background: #ffffff;
+    border-radius: var(--turni-radius-md, 14px);
+    background: var(--turni-surface, #ffffff);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-align: left;
     cursor: pointer;
     transition:
@@ -137,7 +164,7 @@
     &:hover {
         transform: translateY(-1px);
         background: #f8fafc;
-        border-color: var(--turni-border-strong, #e3e8ef);
+        border-color: var(--turni-border-strong, #dbe3ee);
     }
 
     &.selected {
@@ -148,18 +175,24 @@
     &.disabled {
         opacity: 0.55;
     }
+
+    > mat-icon {
+        font-size: var(--turni-icon-size-md, 20px);
+        width: var(--turni-icon-size-md, 20px);
+        height: var(--turni-icon-size-md, 20px);
+    }
 }
 
 .avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 14px;
+    width: var(--turni-avatar-size, 34px);
+    height: var(--turni-avatar-size, 34px);
+    border-radius: var(--turni-radius-md, 14px);
     color: #ffffff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: var(--turni-font-size-xs, 11px);
+    font-weight: 600;
     flex: 0 0 auto;
 }
 
@@ -167,12 +200,12 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     flex: 1;
 
     strong {
         color: var(--turni-text, #1f2937);
-        font-size: 14px;
+        font-size: var(--turni-font-size-md, 13px);
         font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
@@ -181,25 +214,31 @@
 
     small {
         color: var(--turni-muted, #6b7280);
-        font-size: 12px;
+        font-size: var(--turni-font-size-xs, 11px);
     }
 }
 
 .operator-form {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: var(--turni-operator-form-scroll-height, calc(100vh - 198px));
+    overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
+    padding-right: 4px;
+    overscroll-behavior: contain;
 }
 
 .form-section {
-    padding: 14px;
-    border-radius: 18px;
-    background: #fbfcfe;
+    padding: var(--turni-section-padding, 12px);
+    border-radius: var(--turni-radius-lg, 18px);
+    background: var(--turni-surface-soft, #fbfcfe);
     border: 1px solid var(--turni-border, #edf1f6);
 
     h3 {
-        margin: 0 0 12px;
-        font-size: 14px;
+        margin: 0 0 9px;
+        font-size: var(--turni-font-size-md, 13px);
         font-weight: 500;
         color: var(--turni-text, #1f2937);
     }
@@ -208,7 +247,7 @@
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 8px;
 
     .span-2 {
         grid-column: span 2;
@@ -217,30 +256,75 @@
 
 .checks {
     display: flex;
-    gap: 10px 16px;
+    gap: 6px 12px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .form-actions {
+    flex: 0 0 auto;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin: 4px -4px -4px;
+    padding: 10px 4px 4px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.72), #ffffff 38%);
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 8px;
+}
+
+:host ::ng-deep .mat-mdc-form-field {
+    font-size: var(--turni-font-size-md, 13px);
+}
+
+:host ::ng-deep .mat-mdc-text-field-wrapper {
+    min-height: 44px;
+}
+
+:host ::ng-deep .mat-mdc-form-field-infix {
+    min-height: 40px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+
+:host ::ng-deep .mat-mdc-checkbox,
+:host ::ng-deep .mat-mdc-slide-toggle {
+    font-size: var(--turni-font-size-md, 13px);
 }
 
 @media (max-width: 1050px) {
+    .page {
+        height: auto;
+        min-height: 100%;
+        overflow: visible;
+    }
+
     .content-grid {
         grid-template-columns: 1fr;
+        overflow: visible;
+    }
+
+    .list-card,
+    .form-card {
+        overflow: visible;
     }
 
     .worker-list {
-        max-height: 420px;
+        height: 340px;
+        max-height: 340px;
+    }
+
+    .operator-form {
+        height: auto;
+        max-height: none;
+        overflow: visible;
     }
 }
 
 @media (max-width: 640px) {
     .page {
-        padding: 14px;
+        padding: 12px;
     }
 
     .hero-card {

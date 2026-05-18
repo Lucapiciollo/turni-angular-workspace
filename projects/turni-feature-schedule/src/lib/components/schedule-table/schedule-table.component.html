@@ -136,6 +136,18 @@
                             </div>
                         </div>
 
+                        <button
+                            mat-icon-button
+                            type="button"
+                            class="add-manual-button"
+                            [disabled]="isPastRange"
+                            matTooltip="Aggiungi operatore manuale"
+                            matTooltipPosition="above"
+                            (click)="addManualAssignment.emit({ day: day, shift: shift })"
+                        >
+                            <mat-icon>add</mat-icon>
+                        </button>
+
                         <mat-chip
                             class="coverage-chip"
                             [class.ok]="isShiftCovered(getAssignmentsByShift(day, shift.type), shift)"
@@ -159,6 +171,7 @@
                             [worker]="getWorker(assignment.workerId)"
                             (markSick)="markWorkerSick.emit($event)"
                             (requestLongShift)="requestLongShift.emit({ day: day, assignment: $event })"
+                            (requestShiftChange)="requestShiftChange.emit({ day: day, assignment: $event })"
                             (openStatsDetail)="openStatsDetail.emit($event)"
                             (openWarningsDetail)="openWarningsDetail.emit($event)"
                         ></turni-worker-pill>
