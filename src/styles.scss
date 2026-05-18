@@ -157,8 +157,8 @@ body {
     font-size: var(--turni-font-size-md, 13px);
 }
 
-
 /* step-60 fluid scale */
+
 html,
 body {
     font-size: var(--turni-font-size-base, 14px);
@@ -166,34 +166,56 @@ body {
 }
 
 body {
-    --mdc-typography-button-font-size: var(--turni-font-size-sm, 12px);
+    --mdc-typography-button-font-size: var(--turni-button-font-size, 12px);
     --mdc-typography-body1-font-size: var(--turni-font-size-base, 14px);
     --mdc-typography-body2-font-size: var(--turni-font-size-sm, 12px);
+
+    --mat-select-trigger-text-size: var(--turni-font-size-md, 13px);
+    --mat-form-field-container-text-size: var(--turni-font-size-md, 13px);
+    --mat-form-field-outlined-label-text-size: var(--turni-font-size-sm, 12px);
 }
 
 .mat-mdc-button,
 .mat-mdc-raised-button,
 .mat-mdc-stroked-button,
-.mat-mdc-flat-button {
-    min-height: var(--turni-control-height, 34px) !important;
-    padding: 0 calc(12px * var(--turni-ui-scale, 1)) !important;
-    font-size: var(--turni-font-size-sm, 12px) !important;
+.mat-mdc-flat-button,
+.mat-mdc-unelevated-button {
+    min-height: var(--turni-button-height, 34px) !important;
+    height: var(--turni-button-height, 34px) !important;
+    padding: 0 var(--turni-button-padding-x, 12px) !important;
+    border-radius: var(--turni-radius-md, 12px) !important;
+    font-size: var(--turni-button-font-size, 12px) !important;
     line-height: 1 !important;
+    letter-spacing: 0 !important;
+}
+
+.mat-mdc-button .mdc-button__label,
+.mat-mdc-raised-button .mdc-button__label,
+.mat-mdc-stroked-button .mdc-button__label,
+.mat-mdc-flat-button .mdc-button__label,
+.mat-mdc-unelevated-button .mdc-button__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--turni-button-gap, 6px);
+    line-height: 1;
 }
 
 .mat-mdc-button .mat-icon,
 .mat-mdc-raised-button .mat-icon,
 .mat-mdc-stroked-button .mat-icon,
-.mat-mdc-flat-button .mat-icon {
-    font-size: var(--turni-icon-size-sm, 17px) !important;
-    width: var(--turni-icon-size-sm, 17px) !important;
-    height: var(--turni-icon-size-sm, 17px) !important;
+.mat-mdc-flat-button .mat-icon,
+.mat-mdc-unelevated-button .mat-icon {
+    margin: 0 !important;
+    font-size: var(--turni-button-icon-size, 17px) !important;
+    width: var(--turni-button-icon-size, 17px) !important;
+    height: var(--turni-button-icon-size, 17px) !important;
 }
 
 .mat-mdc-icon-button {
-    width: var(--turni-control-height, 34px) !important;
-    height: var(--turni-control-height, 34px) !important;
-    padding: calc(6px * var(--turni-ui-scale, 1)) !important;
+    width: var(--turni-icon-button-size, 34px) !important;
+    height: var(--turni-icon-button-size, 34px) !important;
+    padding: var(--turni-icon-button-padding, 6px) !important;
+    border-radius: var(--turni-radius-md, 12px) !important;
 }
 
 .mat-mdc-icon-button .mat-icon {
@@ -202,8 +224,11 @@ body {
     height: var(--turni-icon-size-md, 20px) !important;
 }
 
-.mat-mdc-chip {
-    min-height: var(--turni-control-height-sm, 30px) !important;
+.mat-mdc-chip,
+.mat-mdc-standard-chip {
+    min-height: var(--turni-chip-height, 30px) !important;
+    height: var(--turni-chip-height, 30px) !important;
+    border-radius: var(--turni-radius-pill, 999px) !important;
     font-size: var(--turni-font-size-sm, 12px) !important;
 }
 
@@ -218,10 +243,18 @@ body {
 .mat-mdc-dialog-title {
     font-size: var(--turni-font-size-lg, 16px) !important;
     line-height: var(--turni-line-height-tight, 1.12) !important;
+    padding: var(--turni-card-padding, 12px) var(--turni-card-padding, 12px) 0 !important;
 }
 
 .mat-mdc-dialog-content {
     font-size: var(--turni-font-size-md, 13px) !important;
+    padding: var(--turni-card-padding, 12px) !important;
+}
+
+.mat-mdc-dialog-actions {
+    min-height: var(--turni-control-height, 34px) !important;
+    padding: 0 var(--turni-card-padding, 12px) var(--turni-card-padding, 12px) !important;
+    gap: var(--turni-button-gap, 6px) !important;
 }
 
 .mat-mdc-form-field {
@@ -229,31 +262,70 @@ body {
 }
 
 .mat-mdc-text-field-wrapper {
-    min-height: var(--turni-control-height, 34px) !important;
+    min-height: var(--turni-form-field-height, 34px) !important;
+    border-radius: var(--turni-radius-md, 12px) !important;
 }
 
 .mat-mdc-form-field-infix {
-    min-height: var(--turni-control-height, 34px) !important;
-    padding-top: calc(8px * var(--turni-ui-scale, 1)) !important;
-    padding-bottom: calc(6px * var(--turni-ui-scale, 1)) !important;
+    min-height: var(--turni-form-field-height, 34px) !important;
+    padding-top: var(--turni-form-field-padding-y, 7px) !important;
+    padding-bottom: var(--turni-form-field-padding-y, 7px) !important;
+}
+
+.mat-mdc-form-field-icon-prefix,
+.mat-mdc-form-field-icon-suffix {
+    padding: 0 var(--turni-form-field-padding-x, 10px) !important;
 }
 
 .mat-mdc-select-value,
-.mat-mdc-input-element {
+.mat-mdc-input-element,
+.mat-mdc-floating-label,
+.mat-mdc-form-field-error,
+.mat-mdc-form-field-hint {
     font-size: var(--turni-font-size-md, 13px) !important;
 }
 
 .mat-mdc-menu-item {
-    min-height: var(--turni-control-height, 34px) !important;
+    min-height: var(--turni-menu-item-height, 34px) !important;
     font-size: var(--turni-font-size-sm, 12px) !important;
 }
 
 .mat-mdc-option {
-    min-height: var(--turni-control-height, 34px) !important;
+    min-height: var(--turni-option-height, 34px) !important;
     font-size: var(--turni-font-size-sm, 12px) !important;
+}
+
+.mat-button-toggle {
+    height: var(--turni-control-height-sm, 30px) !important;
 }
 
 .mat-button-toggle-label-content {
     line-height: var(--turni-control-height-sm, 30px) !important;
     font-size: var(--turni-font-size-sm, 12px) !important;
+    padding: 0 var(--turni-button-padding-x-sm, 9px) !important;
+}
+
+.mat-mdc-tab,
+.mdc-tab {
+    min-height: var(--turni-control-height, 34px) !important;
+    height: var(--turni-control-height, 34px) !important;
+}
+
+.mat-mdc-tab .mdc-tab__text-label {
+    font-size: var(--turni-font-size-sm, 12px) !important;
+}
+
+.mat-expansion-panel-header {
+    min-height: calc(var(--turni-control-height, 34px) + var(--turni-page-gap, 10px)) !important;
+    height: calc(var(--turni-control-height, 34px) + var(--turni-page-gap, 10px)) !important;
+    padding: 0 var(--turni-card-padding, 12px) !important;
+}
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+    font-size: var(--turni-font-size-md, 13px) !important;
+}
+
+.mat-mdc-tooltip {
+    font-size: var(--turni-font-size-xs, 11px) !important;
 }

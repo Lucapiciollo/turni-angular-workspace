@@ -156,3 +156,31 @@
     font-size: 10px !important;
     font-weight: 500 !important;
 }
+
+
+/* step-61 scale worker-pill */
+:host {
+    font-size: var(--turni-font-size-sm, 12px);
+}
+
+.worker-pill {
+    min-height: var(--turni-control-height, 34px);
+    padding: calc(4px * var(--turni-ui-scale, 1)) calc(6px * var(--turni-ui-scale, 1));
+    border-radius: var(--turni-radius-md, 12px);
+    gap: var(--turni-button-gap, 6px);
+}
+
+.worker-name {
+    font-size: var(--turni-font-size-sm, 12px);
+}
+
+.worker-meta,
+.change-label,
+.leave-label {
+    font-size: var(--turni-font-size-xs, 11px);
+}
+
+.worker-actions button {
+    width: var(--turni-control-height-sm, 30px);
+    height: var(--turni-control-height-sm, 30px);
+}

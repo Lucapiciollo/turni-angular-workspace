@@ -292,3 +292,28 @@ td {
         max-width: 150px;
     }
 }
+
+
+/* step-61 scale grid */
+.schedule-grid-table {
+    font-size: var(--turni-font-size-sm, 12px);
+}
+
+td {
+    width: var(--turni-table-cell-width, 28px);
+    min-width: var(--turni-table-cell-width, 28px);
+    height: var(--turni-table-cell-height, 30px);
+    font-size: var(--turni-font-size-sm, 12px);
+}
+
+.worker-head,
+.worker-cell {
+    min-width: var(--turni-table-worker-width, 185px);
+    max-width: var(--turni-table-worker-width, 185px);
+}
+
+.avatar {
+    width: calc(26px * var(--turni-ui-scale, 1));
+    height: calc(26px * var(--turni-ui-scale, 1));
+    font-size: var(--turni-font-size-xs, 11px);
+}

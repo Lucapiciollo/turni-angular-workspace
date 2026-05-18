@@ -267,3 +267,34 @@
         font-weight: 400;
     }
 }
+
+
+/* step-61 scale toolbar */
+:host {
+    font-size: var(--turni-font-size-md, 13px);
+}
+
+.toolbar-card,
+.range-toolbar,
+.progress-card {
+    gap: var(--turni-page-gap, 10px);
+    padding: var(--turni-card-padding, 12px);
+    border-radius: var(--turni-radius-lg, 16px);
+}
+
+.actions,
+.primary-actions,
+.secondary-actions,
+.mode-toggle {
+    gap: var(--turni-button-gap, 6px);
+}
+
+.period-title {
+    font-size: var(--turni-font-size-lg, 16px);
+}
+
+.period-subtitle,
+.cache-label,
+.source-label {
+    font-size: var(--turni-font-size-xs, 11px);
+}

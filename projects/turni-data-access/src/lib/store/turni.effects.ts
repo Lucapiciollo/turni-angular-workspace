@@ -490,23 +490,42 @@ export class TurniEffects {
 
     readonly openRange$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.openRange),
-        withLatestFrom(this.store.select(selectGenerationSeed), this.store.select(selectIsPastRange), this.store.select(selectWorkers), this.store.select(selectShifts), this.store.select(selectAbsences)),
-        switchMap(([{ range, useCache }, generationSeed, isPastRange, workers, shifts, absences]) => {
+        withLatestFrom(
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts)
+        ),
+        switchMap(([{ range, useCache }, workers, shifts]) => {
             try {
-                if (workers.length === 0 || shifts.length === 0) return of(TurniActions.loadInitialData());
+                if (workers.length === 0 || shifts.length === 0) {
+                    return of(TurniActions.loadInitialData());
+                }
+
                 if (useCache) {
                     const cachedPlan = this.cacheService.get(range);
-                    if (cachedPlan) return of(TurniActions.generatePlanSuccess({ plan: cachedPlan }));
+
+                    if (cachedPlan) {
+                        return of(TurniActions.generatePlanSuccess({
+                            plan: cachedPlan,
+                        }));
+                    }
                 }
-                if (isPastRange) return of(TurniActions.generatePlanSuccess({ plan: this.createEmptyPlan(range) }));
-                const plan = this.generatorService.generatePlan(range, [...workers], [...shifts], useCache ? generationSeed : generationSeed + 1, useCache ? 'GENERATED' : 'REGENERATED', [...absences]);
-                this.cacheService.set(plan);
-                return of(TurniActions.generatePlanSuccess({ plan }));
+
+                return of(TurniActions.generatePlanSuccess({
+                    plan: this.createEmptyPlan(range),
+                }));
             } catch (error) {
-                return of(TurniActions.generatePlanFailure({ error: error instanceof Error ? error.message : 'Errore generazione piano turni' }));
+                return of(TurniActions.generatePlanFailure({
+                    error: error instanceof Error
+                        ? error.message
+                        : 'Errore caricamento periodo turni',
+                }));
             }
         }),
-        catchError((error) => of(TurniActions.generatePlanFailure({ error: error instanceof Error ? error.message : 'Errore inatteso NgRx Turni' })))
+        catchError((error) => of(TurniActions.generatePlanFailure({
+            error: error instanceof Error
+                ? error.message
+                : 'Errore inatteso NgRx Turni',
+        })))
     ));
 
 

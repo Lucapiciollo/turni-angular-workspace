@@ -13,7 +13,7 @@
  * Tutte le principali dimensioni vengono moltiplicate per questo rapporto.
  */
 
-$turni-ui-scale: 0.7 !default;
+$turni-ui-scale: 0.88 !default;
 
 $turni-font-family: Roboto, Arial, Helvetica, sans-serif !default;
 
@@ -116,6 +116,23 @@ $turni-transition: 180ms ease !default;
     --turni-control-height: #{scaled(34px)};
     --turni-control-height-sm: #{scaled(30px)};
     --turni-control-height-xs: #{scaled(26px)};
+
+    --turni-button-height: #{scaled(34px)};
+    --turni-button-height-sm: #{scaled(30px)};
+    --turni-button-padding-x: #{scaled(12px)};
+    --turni-button-padding-x-sm: #{scaled(9px)};
+    --turni-button-gap: #{scaled(6px)};
+    --turni-button-font-size: #{scaled(12px)};
+    --turni-button-icon-size: #{scaled(17px)};
+    --turni-icon-button-size: #{scaled(34px)};
+    --turni-icon-button-padding: #{scaled(6px)};
+
+    --turni-form-field-height: #{scaled(34px)};
+    --turni-form-field-padding-y: #{scaled(7px)};
+    --turni-form-field-padding-x: #{scaled(10px)};
+    --turni-option-height: #{scaled(34px)};
+    --turni-menu-item-height: #{scaled(34px)};
+    --turni-chip-height: #{scaled(30px)};
 
     --turni-avatar-size: #{scaled(32px)};
     --turni-avatar-size-lg: #{scaled(38px)};
