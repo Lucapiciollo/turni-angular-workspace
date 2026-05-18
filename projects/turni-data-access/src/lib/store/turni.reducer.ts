@@ -376,6 +376,8 @@ export const turniReducer = createReducer(
             generationCurrentDate: null,
             generating: false,
             lastSource: plan.source,
+            generationLogs: plan.generationLogs ?? [],
+            generationSettings: plan.generationSettings ?? state.generationSettings,
             loading: false,
             error: null,
         };
@@ -425,5 +427,16 @@ export const turniReducer = createReducer(
             selectedWorkerId: null,
             selectedWarningFilter: 'ALL' as const,
         };
-    })
+    }),
+
+    on(TurniActions.setGenerationSettings, (state, { settings }) => {
+        return {
+            ...state,
+            generationSettings: {
+                ...state.generationSettings,
+                ...settings,
+            },
+        };
+    }),
+
 );

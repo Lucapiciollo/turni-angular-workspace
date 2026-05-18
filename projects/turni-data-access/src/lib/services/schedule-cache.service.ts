@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { DateRange, SchedulePlan } from '../models/turni.models';
+import {
+    DateRange,
+    DaySchedule,
+    SchedulePlan,
+} from '../models/turni.models';
 import { DateRangeService } from './date-range.service';
 
 @Injectable({
@@ -52,12 +56,64 @@ export class ScheduleCacheService {
         this.cache.clear();
     }
 
+    getPreviousContextDays(
+        range: DateRange,
+        lookBackDays: number
+    ): DaySchedule[] {
+        if (lookBackDays <= 0) {
+            return [];
+        }
+
+        const startDate = new Date(`${range.startDate}T00:00:00`);
+        const fromDate = new Date(startDate);
+        fromDate.setDate(fromDate.getDate() - lookBackDays);
+
+        const toDate = new Date(startDate);
+        toDate.setDate(toDate.getDate() - 1);
+
+        const from = this.formatDate(fromDate);
+        const to = this.formatDate(toDate);
+
+        return Array.from(this.cache.values())
+            .flatMap((plan) => plan.days)
+            .filter((day) => {
+                return day.date >= from
+                    && day.date <= to;
+            })
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .map((day) => {
+                return {
+                    ...day,
+                    assignments: day.assignments.map((assignment) => {
+                        return {
+                            ...assignment,
+                            violatedRules: [
+                                ...assignment.violatedRules,
+                            ],
+                        };
+                    }),
+                    warnings: day.warnings.map((warning) => {
+                        return {
+                            ...warning,
+                        };
+                    }),
+                    indicators: {
+                        ...day.indicators,
+                    },
+                };
+            });
+    }
+
     getCachedKeys(): string[] {
         return Array.from(this.cache.keys());
     }
 
     private getKey(range: DateRange): string {
         return this.dateRangeService.createRangeKey(range);
+    }
+
+    private formatDate(date: Date): string {
+        return date.toISOString().slice(0, 10);
     }
 
     private clonePlan(plan: SchedulePlan): SchedulePlan {
@@ -72,6 +128,9 @@ export class ScheduleCacheService {
                     assignments: day.assignments.map((assignment) => {
                         return {
                             ...assignment,
+                            violatedRules: [
+                                ...assignment.violatedRules,
+                            ],
                         };
                     }),
                     warnings: day.warnings.map((warning) => {
@@ -94,6 +153,24 @@ export class ScheduleCacheService {
                     ...stat,
                 };
             }),
+            generationLogs: plan.generationLogs?.map((log) => {
+                return {
+                    ...log,
+                    rules: log.rules
+                        ? [
+                            ...log.rules,
+                        ]
+                        : undefined,
+                    messages: [
+                        ...log.messages,
+                    ],
+                };
+            }),
+            generationSettings: plan.generationSettings
+                ? {
+                    ...plan.generationSettings,
+                }
+                : undefined,
         };
     }
 }

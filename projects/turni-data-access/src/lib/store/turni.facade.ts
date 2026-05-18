@@ -4,10 +4,11 @@ import { Store } from '@ngrx/store';
 import {
     AssignedShift,
     DaySchedule,
+    GenerationSettings,
     RangeMode,
-    ShiftType,
-    ShiftDefinition,
     ShiftChangeParams,
+    ShiftDefinition,
+    ShiftType,
     StatsFilterType,
     WarningFilterType,
     Worker,
@@ -18,24 +19,25 @@ import { TurniActions } from './turni.actions';
 import {
     selectAbsences,
     selectCurrentRangeCacheKey,
-    selectDays,
     selectError,
     selectFilteredStats,
     selectFilteredWarnings,
     selectGeneratedAtLabel,
-    selectVisibleDays,
     selectGenerationCurrentDate,
+    selectGenerationLogCount,
+    selectGenerationLogs,
     selectGenerationProgress,
-    selectGenerating,
     selectGenerationSeed,
+    selectGenerationSettings,
+    selectGenerating,
     selectIsPastRange,
     selectLastSource,
     selectLoading,
     selectMode,
+    selectPendingSickReplacement,
     selectPeriodStats,
     selectPeriodWarningCount,
     selectPeriodWarnings,
-    selectPendingSickReplacement,
     selectPlan,
     selectRange,
     selectSelectedStatsFilter,
@@ -47,6 +49,7 @@ import {
     selectSortedWorkers,
     selectStats,
     selectStatsFilterCounts,
+    selectVisibleDays,
     selectWarningCount,
     selectWarningFilterCounts,
     selectWarnings,
@@ -72,7 +75,15 @@ export class TurniFacade {
     readonly periodWarnings = this.store.selectSignal(selectPeriodWarnings);
     readonly warningCount = this.store.selectSignal(selectWarningCount);
     readonly periodWarningCount = this.store.selectSignal(selectPeriodWarningCount);
+
     readonly generationSeed = this.store.selectSignal(selectGenerationSeed);
+    readonly generationSettings = this.store.selectSignal(selectGenerationSettings);
+    readonly generationLogs = this.store.selectSignal(selectGenerationLogs);
+    readonly generationLogCount = this.store.selectSignal(selectGenerationLogCount);
+    readonly generating = this.store.selectSignal(selectGenerating);
+    readonly generationProgressValue = this.store.selectSignal(selectGenerationProgress);
+    readonly generationCurrentDate = this.store.selectSignal(selectGenerationCurrentDate);
+
     readonly isPastRange = this.store.selectSignal(selectIsPastRange);
     readonly lastSource = this.store.selectSignal(selectLastSource);
     readonly generatedAtLabel = this.store.selectSignal(selectGeneratedAtLabel);
@@ -85,9 +96,6 @@ export class TurniFacade {
     readonly statsFilterCounts = this.store.selectSignal(selectStatsFilterCounts);
     readonly warningFilterCounts = this.store.selectSignal(selectWarningFilterCounts);
     readonly loading = this.store.selectSignal(selectLoading);
-    readonly generating = this.store.selectSignal(selectGenerating);
-    readonly generationProgressValue = this.store.selectSignal(selectGenerationProgress);
-    readonly generationCurrentDate = this.store.selectSignal(selectGenerationCurrentDate);
     readonly error = this.store.selectSignal(selectError);
 
     readonly workers = this.store.selectSignal(selectWorkers);
@@ -241,6 +249,10 @@ export class TurniFacade {
 
     resetWarningFilters(): void {
         this.store.dispatch(TurniActions.resetWarningFilters());
+    }
+
+    setGenerationSettings(settings: Partial<GenerationSettings>): void {
+        this.store.dispatch(TurniActions.setGenerationSettings({ settings }));
     }
 
     getStatsFilterCount(filter: StatsFilterType): number {

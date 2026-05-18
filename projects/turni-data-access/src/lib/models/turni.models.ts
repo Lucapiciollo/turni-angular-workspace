@@ -72,6 +72,41 @@ export interface RuleCheckResult {
 }
 
 
+export type GenerationDecisionType =
+    | 'CANDIDATE_ALLOWED'
+    | 'CANDIDATE_REJECTED'
+    | 'CANDIDATE_FORCED_ALLOWED'
+    | 'CANDIDATE_FORCED_REJECTED'
+    | 'ASSIGNED_AUTO'
+    | 'ASSIGNED_FORCED'
+    | 'SLOT_UNCOVERED'
+    | 'CONTEXT_LOADED';
+
+export interface GenerationDecisionLog {
+    id: string;
+    date: string;
+    shift?: ShiftType;
+    workerId?: string;
+    workerName?: string;
+    decision: GenerationDecisionType;
+    allowed?: boolean;
+    hardBlocked?: boolean;
+    score?: number;
+    finalScore?: number;
+    slotIndex?: number;
+    source?: AssignmentSource;
+    rules?: AssignmentRuleCode[];
+    messages: string[];
+    contextPreviousDaysCount?: number;
+    createdAt: string;
+}
+
+export interface GenerationSettings {
+    previousContextDays: number;
+    enableDecisionLogs: boolean;
+}
+
+
 export interface ScheduleNavigationExtras {
     workerId?: string;
     statsFilter?: StatsFilterType;
@@ -270,6 +305,8 @@ export interface SchedulePlan {
     stats: WorkerStats[];
     source: SchedulePlanSource;
     generatedAt: string;
+    generationLogs?: GenerationDecisionLog[];
+    generationSettings?: GenerationSettings;
 }
 
 export interface ShiftReplacementResult {

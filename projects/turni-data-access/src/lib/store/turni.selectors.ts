@@ -389,3 +389,19 @@ export const selectPendingSickReplacement = createSelector(
     selectTurniState,
     (state) => state.pendingSickReplacement
 );
+
+
+export const selectGenerationSettings = createSelector(
+    selectTurniState,
+    (state) => state.generationSettings
+);
+
+export const selectGenerationLogs = createSelector(
+    selectTurniState,
+    (state) => state.generationLogs
+);
+
+export const selectGenerationLogCount = createSelector(
+    selectGenerationLogs,
+    (logs) => logs.length
+);

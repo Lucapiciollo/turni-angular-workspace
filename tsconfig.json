@@ -1,42 +1,45 @@
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-        "outDir": "./dist/out-tsc",
-        "strict": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "sourceMap": true,
-        "declaration": false,
-        "downlevelIteration": true,
-        "experimentalDecorators": true,
-        "moduleResolution": "node",
-        "importHelpers": true,
-        "target": "ES2022",
-        "module": "ES2022",
-        "useDefineForClassFields": false,
-        "baseUrl": ".",
-        "paths": {
-            "@turni/data-access": [
-                "projects/turni-data-access/src/public-api.ts"
-            ],
-            "@turni/feature-schedule": [
-                "projects/turni-feature-schedule/src/public-api.ts"
-            ],
-            "@turni/shared": [
-                "projects/turni-shared/src/public-api.ts"
-            ]
-        },
-        "lib": [
-            "ES2022",
-            "dom"
-        ]
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "baseUrl": ".",
+    "paths": {
+      "@turni/data-access": [
+        "projects/turni-data-access/src/public-api.ts"
+      ],
+      "@turni/feature-schedule": [
+        "projects/turni-feature-schedule/src/public-api.ts"
+      ],
+      "@turni/shared": [
+        "projects/turni-shared/src/public-api.ts"
+      ],
+      "@turni/logging": [
+        "projects/turni-logging/src/public-api.ts"
+      ]
     },
-    "angularCompilerOptions": {
-        "enableI18nLegacyMessageIdFormat": false,
-        "strictInjectionParameters": true,
-        "strictInputAccessModifiers": true,
-        "strictTemplates": true
-    }
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

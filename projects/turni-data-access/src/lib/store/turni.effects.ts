@@ -14,7 +14,7 @@ import { TurniGeneratorService } from '../services/turni-generator.service';
 import { TurniStorageService } from '../services/turni-storage.service';
 import { TurniActions } from './turni.actions';
 import { Worker, WorkerEditorDraft } from '../models/turni.models';
-import { selectAbsences, selectGenerationSeed, selectIsPastRange, selectMode, selectPendingSickReplacement, selectPlan, selectRange, selectShifts, selectWorkers } from './turni.selectors';
+import { selectAbsences, selectGenerationSeed, selectGenerationSettings, selectIsPastRange, selectMode, selectPendingSickReplacement, selectPlan, selectRange, selectShifts, selectWorkers } from './turni.selectors';
 
 @Injectable()
 export class TurniEffects {
@@ -435,11 +435,17 @@ export class TurniEffects {
         ofType(TurniActions.generatePlanProgressive),
         withLatestFrom(
             this.store.select(selectGenerationSeed),
+            this.store.select(selectGenerationSettings),
             this.store.select(selectWorkers),
             this.store.select(selectShifts),
             this.store.select(selectAbsences)
         ),
-        switchMap(([{ range, source }, generationSeed, workers, shifts, absences]) => {
+        switchMap(([{ range, source }, generationSeed, generationSettings, workers, shifts, absences]) => {
+            const previousContextDays = this.cacheService.getPreviousContextDays(
+                range,
+                generationSettings.previousContextDays
+            );
+
             return from(this.generatorService.generatePlanSteps({
                 range,
                 workers: [...workers],
@@ -447,6 +453,8 @@ export class TurniEffects {
                 generationSeed: generationSeed + 1,
                 source,
                 absences: [...absences],
+                previousContextDays,
+                generationSettings,
             })).pipe(
                 map((step) => {
                     if (step.type === 'COMPLETED' && step.plan) {

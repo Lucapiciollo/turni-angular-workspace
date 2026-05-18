@@ -1,0 +1,10 @@
+{
+  "name": "@turni/logging",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "rxjs": "~7.8.0"
+  },
+  "sideEffects": false
+}

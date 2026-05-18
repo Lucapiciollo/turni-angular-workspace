@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
+import { TurniLoggerService } from '@turni/logging';
 
 import { ABSENCES } from '../data/absences.mock';
 import {
     AssignedShift,
+    AssignmentRuleCode,
     DateRange,
     DaySchedule,
     DayScheduleIndicators,
+    GenerationDecisionLog,
+    GenerationSettings,
+    PlanGenerationStep,
     RuleCheckResult,
     SchedulePlan,
     ScheduleWarning,
-    PlanGenerationStep,
     ShiftDefinition,
     Worker,
     WorkerAbsence,
@@ -29,7 +33,8 @@ export class TurniGeneratorService {
         private shiftRulesService: ShiftRulesService,
         private workerStatsService: WorkerStatsService,
         private warningService: ScheduleWarningService,
-        private workerAbsenceService: WorkerAbsenceService
+        private workerAbsenceService: WorkerAbsenceService,
+        private logger: TurniLoggerService
     ) {}
 
     generatePlan(
@@ -38,7 +43,12 @@ export class TurniGeneratorService {
         shifts: ShiftDefinition[],
         generationSeed = 0,
         source: SchedulePlan['source'] = 'GENERATED',
-        absences: WorkerAbsence[] = ABSENCES
+        absences: WorkerAbsence[] = ABSENCES,
+        previousContextDays: DaySchedule[] = [],
+        generationSettings: GenerationSettings = {
+            previousContextDays: 14,
+            enableDecisionLogs: true,
+        }
     ): SchedulePlan {
         const dates = this.dateRangeService.getDatesBetween(
             range.startDate,
@@ -47,6 +57,20 @@ export class TurniGeneratorService {
 
         const days: DaySchedule[] = [];
         const warnings: ScheduleWarning[] = [];
+        const generationLogs: GenerationDecisionLog[] = [];
+
+        this.pushGenerationLog(
+            generationLogs,
+            generationSettings,
+            {
+                date: range.startDate,
+                decision: 'CONTEXT_LOADED',
+                messages: [
+                    `Caricati ${previousContextDays.length} giorni precedenti come contesto di generazione.`,
+                ],
+                contextPreviousDaysCount: previousContextDays.length,
+            }
+        );
 
         dates.forEach((date, dayIndex) => {
             const day = this.generateDaySchedule({
@@ -54,9 +78,14 @@ export class TurniGeneratorService {
                 dayIndex,
                 workers,
                 shifts,
-                previousDays: days,
+                previousDays: [
+                    ...previousContextDays,
+                    ...days,
+                ],
                 generationSeed,
                 absences,
+                generationLogs,
+                generationSettings,
             });
 
             warnings.push(...day.warnings);
@@ -84,9 +113,10 @@ export class TurniGeneratorService {
             stats,
             source,
             generatedAt: this.dateRangeService.nowIso(),
+            generationLogs,
+            generationSettings,
         };
     }
-
 
     async *generatePlanSteps(params: {
         range: DateRange;
@@ -95,11 +125,18 @@ export class TurniGeneratorService {
         generationSeed?: number;
         source?: SchedulePlan['source'];
         absences?: WorkerAbsence[];
+        previousContextDays?: DaySchedule[];
+        generationSettings?: GenerationSettings;
         signal?: AbortSignal;
     }): AsyncGenerator<PlanGenerationStep> {
         const generationSeed = params.generationSeed ?? 0;
         const source = params.source ?? 'GENERATED';
         const absences = params.absences ?? ABSENCES;
+        const previousContextDays = params.previousContextDays ?? [];
+        const generationSettings = params.generationSettings ?? {
+            previousContextDays: 14,
+            enableDecisionLogs: true,
+        };
 
         const dates = this.dateRangeService.getDatesBetween(
             params.range.startDate,
@@ -108,6 +145,20 @@ export class TurniGeneratorService {
 
         const days: DaySchedule[] = [];
         const warnings: ScheduleWarning[] = [];
+        const generationLogs: GenerationDecisionLog[] = [];
+
+        this.pushGenerationLog(
+            generationLogs,
+            generationSettings,
+            {
+                date: params.range.startDate,
+                decision: 'CONTEXT_LOADED',
+                messages: [
+                    `Caricati ${previousContextDays.length} giorni precedenti come contesto di generazione.`,
+                ],
+                contextPreviousDaysCount: previousContextDays.length,
+            }
+        );
 
         yield {
             type: 'STARTED',
@@ -124,7 +175,9 @@ export class TurniGeneratorService {
                     type: 'CANCELLED',
                     progress: this.calculateProgress(dayIndex, dates.length),
                     currentDate: dates[dayIndex],
-                    days: [...days],
+                    days: [
+                        ...days,
+                    ],
                 };
 
                 return;
@@ -137,9 +190,14 @@ export class TurniGeneratorService {
                 dayIndex,
                 workers: params.workers,
                 shifts: params.shifts,
-                previousDays: days,
+                previousDays: [
+                    ...previousContextDays,
+                    ...days,
+                ],
                 generationSeed,
                 absences,
+                generationLogs,
+                generationSettings,
             });
 
             warnings.push(...day.warnings);
@@ -149,7 +207,9 @@ export class TurniGeneratorService {
                 type: 'DAY_GENERATED',
                 progress: this.calculateProgress(dayIndex + 1, dates.length),
                 currentDate: date,
-                days: [...days],
+                days: [
+                    ...days,
+                ],
             };
 
             await this.waitFrame();
@@ -176,40 +236,19 @@ export class TurniGeneratorService {
             stats,
             source,
             generatedAt: this.dateRangeService.nowIso(),
+            generationLogs,
+            generationSettings,
         };
 
         yield {
             type: 'COMPLETED',
             progress: 100,
             currentDate: dates[dates.length - 1],
-            days: [...days],
+            days: [
+                ...days,
+            ],
             plan,
         };
-    }
-
-    private calculateProgress(
-        current: number,
-        total: number
-    ): number {
-        if (total <= 0) {
-            return 100;
-        }
-
-        return Math.min(
-            100,
-            Math.round((current / total) * 100)
-        );
-    }
-
-    private waitFrame(): Promise<void> {
-        return new Promise((resolve) => {
-            if (typeof requestAnimationFrame === 'function') {
-                requestAnimationFrame(() => resolve());
-                return;
-            }
-
-            setTimeout(() => resolve(), 0);
-        });
     }
 
     private generateDaySchedule(params: {
@@ -220,6 +259,8 @@ export class TurniGeneratorService {
         previousDays: DaySchedule[];
         generationSeed: number;
         absences: WorkerAbsence[];
+        generationLogs: GenerationDecisionLog[];
+        generationSettings: GenerationSettings;
     }): DaySchedule {
         const assignments: AssignedShift[] = [];
         const warnings: ScheduleWarning[] = [];
@@ -285,6 +326,8 @@ export class TurniGeneratorService {
         generationSeed: number;
         absences: WorkerAbsence[];
         shift: ShiftDefinition;
+        generationLogs: GenerationDecisionLog[];
+        generationSettings: GenerationSettings;
     }): AssignedShift[] {
         const assignments: AssignedShift[] = [];
 
@@ -328,6 +371,20 @@ export class TurniGeneratorService {
             });
 
             if (!forcedCandidate) {
+                this.pushGenerationLog(
+                    params.generationLogs,
+                    params.generationSettings,
+                    {
+                        date: params.date,
+                        shift: params.shift.type,
+                        decision: 'SLOT_UNCOVERED',
+                        slotIndex: index,
+                        messages: [
+                            `Nessun operatore disponibile per coprire lo slot ${index + 1} del turno ${params.shift.label}.`,
+                        ],
+                        contextPreviousDaysCount: params.previousDays.length,
+                    }
+                );
                 break;
             }
 
@@ -356,16 +413,54 @@ export class TurniGeneratorService {
         absences: WorkerAbsence[];
         shift: ShiftDefinition;
         slotIndex: number;
+        generationLogs: GenerationDecisionLog[];
+        generationSettings: GenerationSettings;
     }): Worker | null {
-        const candidates = params.workers.filter((worker) => {
-            return this.shiftRulesService.checkWorkerAssignment({
+        const checkedCandidates = params.workers.map((worker) => {
+            const ruleCheck = this.shiftRulesService.checkWorkerAssignment({
                 worker,
                 date: params.date,
                 shift: params.shift,
                 previousDays: params.previousDays,
                 currentDayAssignments: params.currentDayAssignments,
                 absences: params.absences,
-            }).allowed;
+            });
+
+            this.pushGenerationLog(
+                params.generationLogs,
+                params.generationSettings,
+                {
+                    date: params.date,
+                    shift: params.shift.type,
+                    workerId: worker.id,
+                    workerName: worker.fullName || worker.name,
+                    decision: ruleCheck.allowed
+                        ? 'CANDIDATE_ALLOWED'
+                        : 'CANDIDATE_REJECTED',
+                    allowed: ruleCheck.allowed,
+                    hardBlocked: ruleCheck.hardBlocked,
+                    score: ruleCheck.score,
+                    slotIndex: params.slotIndex,
+                    rules: ruleCheck.violatedRules,
+                    messages: ruleCheck.messages.length > 0
+                        ? ruleCheck.messages
+                        : [
+                            ruleCheck.allowed
+                                ? 'rispetta le regole principali per questo turno'
+                                : 'non rispetta una o più regole del turno',
+                        ],
+                    contextPreviousDaysCount: params.previousDays.length,
+                }
+            );
+
+            return {
+                worker,
+                ruleCheck,
+            };
+        });
+
+        const candidates = checkedCandidates.filter((candidate) => {
+            return candidate.ruleCheck.allowed;
         });
 
         if (candidates.length === 0) {
@@ -377,12 +472,12 @@ export class TurniGeneratorService {
             + params.generationSeed
             + params.slotIndex;
 
-        return candidates
-            .map((worker, index) => {
+        const winner = candidates
+            .map((candidate, index) => {
                 return {
-                    worker,
+                    worker: candidate.worker,
                     score: this.calculateWorkerScore(
-                        worker,
+                        candidate.worker,
                         params.previousDays,
                         dateSeed + index
                     ),
@@ -390,7 +485,30 @@ export class TurniGeneratorService {
             })
             .sort((a, b) => {
                 return a.score - b.score;
-            })[0].worker;
+            })[0];
+
+        this.pushGenerationLog(
+            params.generationLogs,
+            params.generationSettings,
+            {
+                date: params.date,
+                shift: params.shift.type,
+                workerId: winner.worker.id,
+                workerName: winner.worker.fullName || winner.worker.name,
+                decision: 'ASSIGNED_AUTO',
+                allowed: true,
+                hardBlocked: false,
+                finalScore: winner.score,
+                slotIndex: params.slotIndex,
+                source: 'AUTO',
+                messages: [
+                    `Assegnato automaticamente al turno ${params.shift.label} con punteggio ${winner.score}.`,
+                ],
+                contextPreviousDaysCount: params.previousDays.length,
+            }
+        );
+
+        return winner.worker;
     }
 
     private findBestForcedWorker(params: {
@@ -403,6 +521,8 @@ export class TurniGeneratorService {
         absences: WorkerAbsence[];
         shift: ShiftDefinition;
         slotIndex: number;
+        generationLogs: GenerationDecisionLog[];
+        generationSettings: GenerationSettings;
     }): {
         worker: Worker;
         ruleCheck: RuleCheckResult;
@@ -418,16 +538,46 @@ export class TurniGeneratorService {
                     absences: params.absences,
                 });
 
+                const score =
+                    ruleCheck.score +
+                    this.calculateWorkerScore(
+                        worker,
+                        params.previousDays,
+                        index + params.generationSeed
+                    );
+
+                this.pushGenerationLog(
+                    params.generationLogs,
+                    params.generationSettings,
+                    {
+                        date: params.date,
+                        shift: params.shift.type,
+                        workerId: worker.id,
+                        workerName: worker.fullName || worker.name,
+                        decision: ruleCheck.hardBlocked
+                            ? 'CANDIDATE_FORCED_REJECTED'
+                            : 'CANDIDATE_FORCED_ALLOWED',
+                        allowed: !ruleCheck.hardBlocked,
+                        hardBlocked: ruleCheck.hardBlocked,
+                        score: ruleCheck.score,
+                        finalScore: score,
+                        slotIndex: params.slotIndex,
+                        rules: ruleCheck.violatedRules,
+                        messages: ruleCheck.messages.length > 0
+                            ? ruleCheck.messages
+                            : [
+                                ruleCheck.hardBlocked
+                                    ? 'ha vincoli bloccanti e non può essere usato nemmeno come forzatura'
+                                    : 'non è il candidato ideale ma non ha vincoli bloccanti',
+                            ],
+                        contextPreviousDaysCount: params.previousDays.length,
+                    }
+                );
+
                 return {
                     worker,
                     ruleCheck,
-                    score:
-                        ruleCheck.score +
-                        this.calculateWorkerScore(
-                            worker,
-                            params.previousDays,
-                            index + params.generationSeed
-                        ),
+                    score,
                 };
             })
             .filter((candidate) => {
@@ -437,7 +587,41 @@ export class TurniGeneratorService {
                 return a.score - b.score;
             });
 
-        return candidates[0] ?? null;
+        const winner = candidates[0] ?? null;
+
+        if (!winner) {
+            return null;
+        }
+
+        this.pushGenerationLog(
+            params.generationLogs,
+            params.generationSettings,
+            {
+                date: params.date,
+                shift: params.shift.type,
+                workerId: winner.worker.id,
+                workerName: winner.worker.fullName || winner.worker.name,
+                decision: 'ASSIGNED_FORCED',
+                allowed: true,
+                hardBlocked: false,
+                score: winner.ruleCheck.score,
+                finalScore: winner.score,
+                slotIndex: params.slotIndex,
+                source: 'FORCED',
+                rules: winner.ruleCheck.violatedRules,
+                messages: winner.ruleCheck.messages.length > 0
+                    ? winner.ruleCheck.messages
+                    : [
+                        `Assegnato forzatamente al turno ${params.shift.label}.`,
+                    ],
+                contextPreviousDaysCount: params.previousDays.length,
+            }
+        );
+
+        return {
+            worker: winner.worker,
+            ruleCheck: winner.ruleCheck,
+        };
     }
 
     private createAssignment(params: {
@@ -448,31 +632,23 @@ export class TurniGeneratorService {
         source: AssignedShift['source'];
         ruleCheck: RuleCheckResult;
     }): AssignedShift {
-        const maxHours = params.worker.contract?.maxMonthlyHours
-            ?? params.worker.contract?.monthlyHours
-            ?? 0;
-
-        const forcedBecauseExtraHours =
-            params.ruleCheck.violatedRules.includes('MAX_MONTHLY_HOURS');
+        const extraHours = params.source === 'FORCED'
+            ? params.shift.hours
+            : 0;
 
         return {
-            id:
-                `${params.date}_${params.shift.type}_${params.worker.id}_` +
-                `${params.source}_${params.generationSeed}`,
+            id: `${params.date}_${params.shift.type}_${params.worker.id}_${params.generationSeed}`,
             date: params.date,
             shift: params.shift.type,
             workerId: params.worker.id,
             workerName: params.worker.name,
             hours: params.shift.hours,
             source: params.source,
-            forcedReason: params.ruleCheck.messages.join(' '),
-            violatedRules: params.ruleCheck.violatedRules,
-            extraHours: params.source === 'FORCED' && forcedBecauseExtraHours
-                ? params.shift.hours
-                : params.source === 'FORCED' && maxHours === 0
-                    ? params.shift.hours
-                    : 0,
-            isFigurative: false,
+            forcedReason: params.ruleCheck.messages.join(' | ') || undefined,
+            violatedRules: [
+                ...params.ruleCheck.violatedRules,
+            ],
+            extraHours,
         };
     }
 
@@ -481,19 +657,16 @@ export class TurniGeneratorService {
         workers: Worker[];
         absences: WorkerAbsence[];
     }): AssignedShift[] {
-        const absencesForDate = this.workerAbsenceService.getAbsencesForDate({
-            date: params.date,
-            absences: params.absences,
-        });
-
         const assignments: AssignedShift[] = [];
 
-        for (const absence of absencesForDate) {
-            const worker = params.workers.find((item) => {
-                return item.id === absence.workerId;
+        for (const worker of params.workers) {
+            const absence = this.workerAbsenceService.getAbsenceForDate({
+                workerId: worker.id,
+                date: params.date,
+                absences: params.absences,
             });
 
-            if (!worker) {
+            if (!absence) {
                 continue;
             }
 
@@ -590,6 +763,196 @@ export class TurniGeneratorService {
         return hours * 10
             + nights * 15
             + rotationNoise;
+    }
+
+    private pushGenerationLog(
+        logs: GenerationDecisionLog[],
+        settings: GenerationSettings,
+        log: Omit<GenerationDecisionLog, 'id' | 'createdAt' | 'messages'> & {
+            messages?: string[];
+            rules?: AssignmentRuleCode[];
+        }
+    ): void {
+        if (!settings.enableDecisionLogs) {
+            return;
+        }
+
+        const entry: GenerationDecisionLog = {
+            id: `${log.date}_${log.shift ?? 'NO_SHIFT'}_${log.workerId ?? 'NO_WORKER'}_${log.decision}_${logs.length}`,
+            createdAt: this.dateRangeService.nowIso(),
+            messages: log.messages ?? [],
+            ...log,
+        };
+
+        logs.push(entry);
+        this.writeDecisionLog(entry);
+    }
+
+    private writeDecisionLog(log: GenerationDecisionLog): void {
+        const readableMessage = this.createReadableDecisionMessage(log);
+        const isWarning =
+            log.decision === 'CANDIDATE_REJECTED'
+            || log.decision === 'CANDIDATE_FORCED_REJECTED'
+            || log.decision === 'SLOT_UNCOVERED';
+
+        this.logger.log({
+            level: isWarning
+                ? 'WARN'
+                : 'INFO',
+            category: this.mapDecisionToLogCategory(log),
+            message: readableMessage,
+            date: log.date,
+            shift: log.shift,
+            workerId: log.workerId,
+            workerName: log.workerName,
+            rules: log.rules,
+            payload: {
+                decision: log.decision,
+                slotIndex: log.slotIndex,
+                allowed: log.allowed,
+                hardBlocked: log.hardBlocked,
+                score: log.score,
+                finalScore: log.finalScore,
+                messages: log.messages,
+                contextPreviousDaysCount: log.contextPreviousDaysCount,
+            },
+        });
+    }
+
+    private mapDecisionToLogCategory(log: GenerationDecisionLog) {
+        if (log.decision === 'CONTEXT_LOADED') {
+            return 'PERIOD_CONTEXT' as const;
+        }
+
+        if (
+            log.decision === 'CANDIDATE_ALLOWED'
+            || log.decision === 'CANDIDATE_REJECTED'
+            || log.decision === 'CANDIDATE_FORCED_ALLOWED'
+            || log.decision === 'CANDIDATE_FORCED_REJECTED'
+        ) {
+            return log.decision === 'CANDIDATE_REJECTED'
+                || log.decision === 'CANDIDATE_FORCED_REJECTED'
+                ? 'REJECTION' as const
+                : 'RULE_CHECK' as const;
+        }
+
+        if (log.decision === 'ASSIGNED_AUTO') {
+            return 'ASSIGNMENT' as const;
+        }
+
+        if (log.decision === 'ASSIGNED_FORCED') {
+            return 'FORCED_ASSIGNMENT' as const;
+        }
+
+        return 'GENERATION' as const;
+    }
+
+    private createReadableDecisionMessage(log: GenerationDecisionLog): string {
+        const dayPart = `Per il giorno ${log.date}`;
+        const shiftPart = log.shift
+            ? `, turno ${log.shift}`
+            : '';
+        const workerPart = log.workerName || log.workerId
+            ? `, l'operatore ${log.workerName ?? log.workerId}`
+            : '';
+
+        const reasons = this.formatDecisionReasons(log);
+
+        switch (log.decision) {
+            case 'CONTEXT_LOADED':
+                return `${dayPart}: caricati ${log.contextPreviousDaysCount ?? 0} giorni precedenti come contesto per evitare errori su consecutivi, notti e riposi.`;
+
+            case 'CANDIDATE_ALLOWED':
+                return `${dayPart}${shiftPart}${workerPart} è candidabile. ${reasons}`;
+
+            case 'CANDIDATE_REJECTED':
+                return `${dayPart}${shiftPart}${workerPart} è stato scartato perché ${reasons}`;
+
+            case 'CANDIDATE_FORCED_ALLOWED':
+                return `${dayPart}${shiftPart}${workerPart} non è ideale, ma può essere usato come forzatura. ${reasons}`;
+
+            case 'CANDIDATE_FORCED_REJECTED':
+                return `${dayPart}${shiftPart}${workerPart} è stato scartato anche come forzatura perché ${reasons}`;
+
+            case 'ASSIGNED_AUTO':
+                return `${dayPart}${shiftPart}${workerPart} è stato assegnato automaticamente perché risulta il candidato migliore${this.formatScore(log)}.`;
+
+            case 'ASSIGNED_FORCED':
+                return `${dayPart}${shiftPart}${workerPart} è stato assegnato forzatamente perché non c'erano candidati pienamente validi. ${reasons}`;
+
+            case 'SLOT_UNCOVERED':
+                return `${dayPart}${shiftPart}: lo slot ${this.formatSlot(log)} è rimasto scoperto perché nessun operatore disponibile rispettava le regole. ${reasons}`;
+
+            default:
+                return `${dayPart}${shiftPart}${workerPart}: decisione ${log.decision}. ${reasons}`;
+        }
+    }
+
+    private formatDecisionReasons(log: GenerationDecisionLog): string {
+        const messages = log.messages.filter((message) => {
+            return !!message?.trim();
+        });
+
+        if (messages.length === 0) {
+            return 'non sono presenti dettagli aggiuntivi.';
+        }
+
+        if (messages.length === 1) {
+            return messages[0].endsWith('.')
+                ? messages[0]
+                : `${messages[0]}.`;
+        }
+
+        return messages
+            .map((message, index) => {
+                const normalized = message.endsWith('.')
+                    ? message
+                    : `${message}.`;
+
+                return `${index + 1}) ${normalized}`;
+            })
+            .join(' ');
+    }
+
+    private formatScore(log: GenerationDecisionLog): string {
+        if (log.finalScore === undefined && log.score === undefined) {
+            return '';
+        }
+
+        return ` con punteggio ${log.finalScore ?? log.score}`;
+    }
+
+    private formatSlot(log: GenerationDecisionLog): string {
+        if (log.slotIndex === undefined) {
+            return 'richiesto';
+        }
+
+        return `${log.slotIndex + 1}`;
+    }
+
+    private calculateProgress(
+        current: number,
+        total: number
+    ): number {
+        if (total <= 0) {
+            return 100;
+        }
+
+        return Math.min(
+            100,
+            Math.round((current / total) * 100)
+        );
+    }
+
+    private waitFrame(): Promise<void> {
+        return new Promise((resolve) => {
+            if (typeof requestAnimationFrame === 'function') {
+                requestAnimationFrame(() => resolve());
+                return;
+            }
+
+            setTimeout(() => resolve(), 0);
+        });
     }
 
     private createWorkerSeed(workerId: string): number {

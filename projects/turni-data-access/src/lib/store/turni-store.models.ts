@@ -1,6 +1,8 @@
 import {
     DateRange,
     DaySchedule,
+    GenerationDecisionLog,
+    GenerationSettings,
     RangeMode,
     SchedulePlan,
     PendingSickReplacement,
@@ -24,6 +26,8 @@ export interface TurniState {
     absences: WorkerAbsence[];
 
     generationSeed: number;
+    generationSettings: GenerationSettings;
+    generationLogs: GenerationDecisionLog[];
     lastSource: SchedulePlanSource;
     loading: boolean;
     generating: boolean;
@@ -48,6 +52,11 @@ export const initialTurniState: TurniState = {
     absences: [],
 
     generationSeed: 0,
+    generationSettings: {
+        previousContextDays: 14,
+        enableDecisionLogs: true,
+    },
+    generationLogs: [],
     lastSource: 'GENERATED',
     loading: false,
     generating: false,

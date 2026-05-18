@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppShellComponent } from './layout/app-shell/app-shell.component';
 import { AppRoutingModule } from './app-routing.module';
+import { TURNI_LOGGER_INIT_PROVIDER } from './core/turni-logger-init.provider';
 
 registerLocaleData(localeIt);
 
@@ -33,6 +34,7 @@ registerLocaleData(localeIt);
         AppRoutingModule,
     ],
     providers: [
+        TURNI_LOGGER_INIT_PROVIDER,
         {
             provide: LOCALE_ID,
             useValue: 'it-IT',

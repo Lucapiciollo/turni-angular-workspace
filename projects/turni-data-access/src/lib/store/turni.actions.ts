@@ -2,6 +2,7 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 import {
     DateRange,
+    GenerationSettings,
     RangeMode,
     SchedulePlan,
     PendingSickReplacement,
@@ -79,5 +80,6 @@ export const TurniActions = createActionGroup({
         'Set Warning Filter': props<{ filter: WarningFilterType }>(),
         'Reset Stats Filters': emptyProps(),
         'Reset Warning Filters': emptyProps(),
+        'Set Generation Settings': props<{ settings: Partial<GenerationSettings> }>(),
     },
 });

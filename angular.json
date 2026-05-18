@@ -85,6 +85,20 @@
           }
         }
       }
+    },
+    "turni-logging": {
+      "projectType": "library",
+      "root": "projects/turni-logging",
+      "sourceRoot": "projects/turni-logging/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-logging/ng-package.json"
+          }
+        }
+      }
     }
   },
   "cli": {

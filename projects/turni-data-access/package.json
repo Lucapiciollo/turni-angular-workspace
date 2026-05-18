@@ -1,13 +1,14 @@
 {
-    "name": "@turni/data-access",
-    "version": "0.1.0",
-    "peerDependencies": {
-        "@angular/common": "^18.2.0",
-        "@angular/core": "^18.2.0",
-        "moment": "^2.30.1"
-    },
-    "dependencies": {
-        "tslib": "^2.6.3"
-    },
-    "sideEffects": false
+  "name": "@turni/data-access",
+  "version": "0.1.0",
+  "peerDependencies": {
+    "@angular/common": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "moment": "^2.30.1",
+    "@turni/logging": "0.0.1"
+  },
+  "dependencies": {
+    "tslib": "^2.6.3"
+  },
+  "sideEffects": false
 }
