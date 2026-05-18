@@ -30,6 +30,10 @@ export interface ShiftChangeDialogResult {
     note?: string;
 }
 
+type UiShiftChangeMode =
+    | 'SWAP_SAME_DAY'
+    | 'MOVE_OTHER_DAY';
+
 @Component({
     standalone: false,
     selector: 'turni-shift-change-dialog',
@@ -37,7 +41,7 @@ export interface ShiftChangeDialogResult {
     styleUrls: ['./shift-change-dialog.component.scss'],
 })
 export class ShiftChangeDialogComponent {
-    readonly modeControl = new FormControl<ShiftChangeMode>('MOVE_SAME_DAY', {
+    readonly modeControl = new FormControl<UiShiftChangeMode>('SWAP_SAME_DAY', {
         nonNullable: true,
         validators: [
             Validators.required,
@@ -56,72 +60,80 @@ export class ShiftChangeDialogComponent {
 
     readonly targetWorkerControl = new FormControl<string>('', {
         nonNullable: true,
+        validators: [
+            Validators.required,
+        ],
     });
 
     readonly noteControl = new FormControl<string>('', {
         nonNullable: true,
     });
 
-    readonly targetShifts = this.data.shifts.filter((shift) => {
-        return shift.type !== this.data.assignment.shift;
-    });
+    readonly targetShifts: ShiftDefinition[];
+    readonly allShifts: ShiftDefinition[];
+    readonly targetDays: DaySchedule[];
 
-    readonly allShifts = this.data.shifts;
-
-    readonly targetDays = this.data.days.filter((day) => {
-        return day.date !== this.data.date;
-    });
-
-    readonly swapCandidates: ShiftSwapCandidate[] = this.data.dayAssignments
-        .filter((assignment) => {
-            return assignment.isFigurative !== true
-                && assignment.workerId !== this.data.assignment.workerId;
-        })
-        .map((assignment) => {
-            const shift = this.data.shifts.find((item) => item.type === assignment.shift);
-
-            return {
-                assignment,
-                label: `${assignment.workerName} · ${shift?.label ?? assignment.shift}`,
-            };
-        });
+    visibleShifts: ShiftDefinition[] = [];
+    filteredSwapCandidates: ShiftSwapCandidate[] = [];
 
     constructor(
         private readonly dialogRef: MatDialogRef<ShiftChangeDialogComponent, ShiftChangeDialogResult>,
         @Inject(MAT_DIALOG_DATA) public data: ShiftChangeDialogData
     ) {
-        this.targetWorkerControl.valueChanges.subscribe((workerId) => {
-            if (this.modeControl.value !== 'SWAP_SAME_DAY') {
-                return;
-            }
+        this.targetShifts = this.data.shifts.filter((shift) => {
+            return shift.type !== this.data.assignment.shift;
+        });
 
-            const candidate = this.swapCandidates.find((item) => {
-                return item.assignment.workerId === workerId;
+        this.allShifts = [
+            ...this.data.shifts,
+        ];
+
+        this.targetDays = this.data.days.filter((day) => {
+            return day.date !== this.data.date;
+        });
+
+        this.visibleShifts = this.targetShifts;
+
+        this.targetShiftControl.valueChanges.subscribe((targetShift) => {
+            this.targetWorkerControl.reset('', {
+                emitEvent: false,
             });
 
-            if (candidate) {
-                this.targetShiftControl.setValue(candidate.assignment.shift);
-            }
+            this.updateFilteredSwapCandidates(targetShift);
         });
 
         this.modeControl.valueChanges.subscribe((mode) => {
-            this.targetShiftControl.reset();
-            this.targetWorkerControl.reset('');
-            this.targetDateControl.reset('');
+            this.targetShiftControl.reset(null, {
+                emitEvent: false,
+            });
+
+            this.targetWorkerControl.reset('', {
+                emitEvent: false,
+            });
+
+            this.targetDateControl.reset('', {
+                emitEvent: false,
+            });
+
+            this.filteredSwapCandidates = [];
 
             if (mode === 'SWAP_SAME_DAY') {
+                this.visibleShifts = this.targetShifts;
                 this.targetWorkerControl.addValidators(Validators.required);
                 this.targetDateControl.clearValidators();
-            } else if (mode === 'MOVE_OTHER_DAY') {
-                this.targetDateControl.addValidators(Validators.required);
-                this.targetWorkerControl.clearValidators();
             } else {
+                this.visibleShifts = this.allShifts;
                 this.targetWorkerControl.clearValidators();
-                this.targetDateControl.clearValidators();
+                this.targetDateControl.addValidators(Validators.required);
             }
 
-            this.targetWorkerControl.updateValueAndValidity();
-            this.targetDateControl.updateValueAndValidity();
+            this.targetWorkerControl.updateValueAndValidity({
+                emitEvent: false,
+            });
+
+            this.targetDateControl.updateValueAndValidity({
+                emitEvent: false,
+            });
         });
     }
 
@@ -131,12 +143,6 @@ export class ShiftChangeDialogComponent {
 
     get isOtherDayMode(): boolean {
         return this.modeControl.value === 'MOVE_OTHER_DAY';
-    }
-
-    get visibleShifts(): ShiftDefinition[] {
-        return this.isOtherDayMode
-            ? this.allShifts
-            : this.targetShifts;
     }
 
     confirm(): void {
@@ -155,8 +161,22 @@ export class ShiftChangeDialogComponent {
             return;
         }
 
+        const targetDate = this.isOtherDayMode
+            ? this.targetDateControl.value
+            : this.data.date;
+
+        if (this.isInvalidSameDateSameShift(targetDate, this.targetShiftControl.value)) {
+            this.targetShiftControl.setErrors({
+                sameShiftSameDay: true,
+            });
+            this.targetShiftControl.markAsTouched();
+            return;
+        }
+
         this.dialogRef.close({
-            mode: this.modeControl.value,
+            mode: this.isSwapMode
+                ? 'SWAP_SAME_DAY'
+                : 'MOVE_OTHER_DAY',
             targetDate: this.isOtherDayMode
                 ? this.targetDateControl.value
                 : undefined,
@@ -170,5 +190,58 @@ export class ShiftChangeDialogComponent {
 
     cancel(): void {
         this.dialogRef.close();
+    }
+
+    trackShift(
+        _index: number,
+        shift: ShiftDefinition
+    ): ShiftType {
+        return shift.type;
+    }
+
+    trackCandidate(
+        _index: number,
+        candidate: ShiftSwapCandidate
+    ): string {
+        return candidate.assignment.id;
+    }
+
+    trackDay(
+        _index: number,
+        day: DaySchedule
+    ): string {
+        return day.date;
+    }
+
+    private updateFilteredSwapCandidates(targetShift: ShiftType | null): void {
+        if (!targetShift || !this.isSwapMode) {
+            this.filteredSwapCandidates = [];
+            return;
+        }
+
+        this.filteredSwapCandidates = this.data.dayAssignments
+            .filter((assignment) => {
+                return assignment.isFigurative !== true
+                    && assignment.workerId !== this.data.assignment.workerId
+                    && assignment.shift === targetShift;
+            })
+            .map((assignment) => {
+                const shift = this.data.shifts.find((item) => {
+                    return item.type === assignment.shift;
+                });
+
+                return {
+                    assignment,
+                    label: `${assignment.workerName} · ${shift?.label ?? assignment.shift}`,
+                };
+            });
+    }
+
+    private isInvalidSameDateSameShift(
+        targetDate: string,
+        targetShift: ShiftType
+    ): boolean {
+        return targetDate === this.data.date
+            && targetShift === this.data.assignment.shift;
     }
 }

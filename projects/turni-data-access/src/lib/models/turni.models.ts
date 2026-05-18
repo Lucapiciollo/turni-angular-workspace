@@ -316,6 +316,7 @@ export interface PlanGenerationStep {
 }
 
 
+/* MOVE_SAME_DAY resta nel type per retrocompatibilità interna, ma la UI usa SWAP_SAME_DAY per il cambio nello stesso giorno. */
 export type ShiftChangeMode =
     | 'MOVE_SAME_DAY'
     | 'SWAP_SAME_DAY'

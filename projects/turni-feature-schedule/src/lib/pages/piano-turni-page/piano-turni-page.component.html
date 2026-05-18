@@ -73,6 +73,7 @@
         [source]="turniFacade.lastSource()"
         (clearCurrentPeriodCache)="turniFacade.clearCurrentPeriodCache()"
         (exportPdf)="turniFacade.exportCurrentPlanPdf()"
+        (viewGrid)="toggleGridView()"
         [isPastRange]="turniFacade.isPastRange()"
         [cacheKey]="turniFacade.currentRangeCacheKey()"
         [generating]="turniFacade.generating()"
@@ -142,6 +143,18 @@
                 Conferma
             </button>
         </div>
+    </section>
+
+    <section
+        id="section-tabella"
+        class="grid-view-section"
+        *ngIf="showGridView"
+    >
+        <turni-schedule-grid-view
+            [days]="turniFacade.days()"
+            [shifts]="turniFacade.shifts()"
+            [workers]="turniFacade.workers()"
+        ></turni-schedule-grid-view>
     </section>
 
     <section

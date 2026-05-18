@@ -1,0 +1,99 @@
+<mat-card class="grid-card">
+    <div class="grid-header">
+        <div>
+            <span class="eyebrow">
+                <mat-icon>table_view</mat-icon>
+                Vista tabellare
+            </span>
+
+            <h2>Situazione turni</h2>
+
+            <p>
+                Rappresentazione simile alla stampa PDF: operatori sulle righe, giorni e turni sulle colonne.
+            </p>
+        </div>
+
+        <div class="legend">
+            <span><b class="worked">X</b> Turno</span>
+            <span><b class="holiday">F</b> Ferie</span>
+            <span><b class="sick">M</b> Malattia</span>
+            <span><b class="permit">P</b> Permesso</span>
+            <span><b class="rest">R</b> Riposo</span>
+            <span><b class="manual">C/S/+</b> Manuale</span>
+        </div>
+    </div>
+
+    <div
+        class="empty-state"
+        *ngIf="!hasData"
+    >
+        <mat-icon>table_rows</mat-icon>
+        <span>Nessun dato disponibile per la vista tabellare.</span>
+    </div>
+
+    <div
+        class="table-scroll"
+        *ngIf="hasData"
+    >
+        <table class="schedule-grid-table">
+            <thead>
+                <tr class="day-row">
+                    <th
+                        class="worker-head"
+                        rowspan="2"
+                    >
+                        Operatore
+                    </th>
+
+                    <th
+                        class="day-head"
+                        *ngFor="let day of days; trackBy: trackDay"
+                        [attr.colspan]="shifts.length"
+                    >
+                        <span>{{ day.label }}</span>
+                        <small>{{ day.date }}</small>
+                    </th>
+                </tr>
+
+                <tr class="shift-row">
+                    <ng-container *ngFor="let day of days; trackBy: trackDay">
+                        <th
+                            class="shift-head"
+                            *ngFor="let shift of shifts; trackBy: trackShift"
+                        >
+                            {{ getShiftShortLabel(shift) }}
+                        </th>
+                    </ng-container>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let row of rows; trackBy: trackRow">
+                    <th class="worker-cell">
+                        <span class="worker-cell-content">
+                            <span
+                                class="avatar"
+                                [style.background]="row.worker.color || '#4f7cff'"
+                            >
+                                {{ row.initials }}
+                            </span>
+
+                            <span class="worker-name">
+                                {{ row.compactName }}
+                            </span>
+                        </span>
+                    </th>
+
+                    <td
+                        *ngFor="let cell of row.cells; trackBy: trackCell"
+                        [class]="cell.cssClass"
+                        [matTooltip]="cell.tooltip"
+                        matTooltipPosition="above"
+                    >
+                        {{ cell.value }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</mat-card>

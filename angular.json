@@ -1,105 +1,104 @@
 {
-    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-    "version": 1,
-    "newProjectRoot": "projects",
-    "projects": {
-        "workforce-app": {
-            "projectType": "application",
-            "root": "",
-            "sourceRoot": "src",
-            "prefix": "app",
-            "architect": {
-                "build": {
-                    "builder": "@angular-devkit/build-angular:application",
-                    "options": {
-                        "outputPath": "dist/workforce-app",
-                        "index": "src/index.html",
-                        "browser": "src/main.ts",
-                        "polyfills": [
-                            "zone.js"
-                        ],
-                        "tsConfig": "tsconfig.app.json",
-                        "inlineStyleLanguage": "scss",
-                        "assets": [
-                            {
-                                "glob": "**/*",
-                                "input": "src/assets",
-                                "output": "assets"
-                            }
-                        ],
-                        "styles": [
-                            "src/styles.scss"
-                        ],
-                        "scripts": []
-                    },
-                    "configurations": {
-                        "development": {
-                            "optimization": false,
-                            "extractLicenses": false,
-                            "sourceMap": true
-                        },
-                        "production": {
-                            "outputHashing": "all"
-                        }
-                    },
-                    "defaultConfiguration": "development"
-                },
-                "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
-                    "configurations": {
-                        "development": {
-                            "buildTarget": "workforce-app:build:development"
-                        },
-                        "production": {
-                            "buildTarget": "workforce-app:build:production"
-                        }
-                    },
-                    "defaultConfiguration": "development"
-                }
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "workforce-app": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/workforce-app",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            },
+            "production": {
+              "outputHashing": "all"
             }
+          },
+          "defaultConfiguration": "development"
         },
-        "turni-data-access": {
-            "projectType": "library",
-            "root": "projects/turni-data-access",
-            "sourceRoot": "projects/turni-data-access/src",
-            "prefix": "turni",
-            "architect": {
-                "build": {
-                    "builder": "@angular-devkit/build-angular:ng-packagr",
-                    "options": {
-                        "project": "projects/turni-data-access/ng-package.json"
-                    }
-                }
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "development": {
+              "buildTarget": "workforce-app:build:development"
+            },
+            "production": {
+              "buildTarget": "workforce-app:build:production"
             }
-        },
-        "turni-feature-schedule": {
-            "projectType": "library",
-            "root": "projects/turni-feature-schedule",
-            "sourceRoot": "projects/turni-feature-schedule/src",
-            "prefix": "turni",
-            "architect": {
-                "build": {
-                    "builder": "@angular-devkit/build-angular:ng-packagr",
-                    "options": {
-                        "project": "projects/turni-feature-schedule/ng-package.json"
-                    }
-                }
-            }
+          },
+          "defaultConfiguration": "development"
         }
+      }
     },
-    "defaultProject": "workforce-app",
-    "cli": {
-        "analytics": false
-    },
-    "schematics": {
-        "@schematics/angular:component": {
-            "standalone": false
-        },
-        "@schematics/angular:directive": {
-            "standalone": false
-        },
-        "@schematics/angular:pipe": {
-            "standalone": false
+    "turni-data-access": {
+      "projectType": "library",
+      "root": "projects/turni-data-access",
+      "sourceRoot": "projects/turni-data-access/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-data-access/ng-package.json"
+          }
         }
+      }
+    },
+    "turni-feature-schedule": {
+      "projectType": "library",
+      "root": "projects/turni-feature-schedule",
+      "sourceRoot": "projects/turni-feature-schedule/src",
+      "prefix": "turni",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/turni-feature-schedule/ng-package.json"
+          }
+        }
+      }
     }
+  },
+  "cli": {
+    "analytics": false
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "standalone": false
+    },
+    "@schematics/angular:directive": {
+      "standalone": false
+    },
+    "@schematics/angular:pipe": {
+      "standalone": false
+    }
+  }
 }

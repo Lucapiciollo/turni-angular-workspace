@@ -1,7 +1,19 @@
 /*
  * Turni UI tokens
- * Modifica questo file per cambiare dimensioni, colori, bordi, radius, ombre e compattezza dell'app.
+ *
+ * Variabile principale:
+ * $turni-ui-scale
+ *
+ * Esempi:
+ * 0.82 = più compatto
+ * 0.90 = compatto equilibrato
+ * 1.00 = dimensione normale
+ * 1.12 = più grande
+ *
+ * Tutte le principali dimensioni vengono moltiplicate per questo rapporto.
  */
+
+$turni-ui-scale: 0.7 !default;
 
 $turni-font-family: Roboto, Arial, Helvetica, sans-serif !default;
 
@@ -28,49 +40,20 @@ $turni-danger-soft: #fff1f2 !default;
 $turni-border: #edf1f6 !default;
 $turni-border-strong: #dbe3ee !default;
 
-$turni-page-padding: 16px !default;
-$turni-page-gap: 12px !default;
-
-$turni-card-padding: 14px !default;
-$turni-card-padding-sm: 10px !default;
-$turni-section-padding: 12px !default;
-
-$turni-radius-xs: 8px !default;
-$turni-radius-sm: 10px !default;
-$turni-radius-md: 14px !default;
-$turni-radius-lg: 18px !default;
-$turni-radius-xl: 22px !default;
 $turni-radius-pill: 999px !default;
 
 $turni-shadow-subtle: 0 3px 10px rgba(15, 23, 42, 0.03) !default;
 $turni-shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.045) !default;
 
-$turni-font-size-xs: 11px !default;
-$turni-font-size-sm: 12px !default;
-$turni-font-size-md: 13px !default;
-$turni-font-size-base: 14px !default;
-$turni-font-size-lg: 16px !default;
-$turni-font-size-xl: 20px !default;
-$turni-font-size-page-title: 24px !default;
-
-$turni-icon-size-sm: 17px !default;
-$turni-icon-size-md: 20px !default;
-$turni-icon-size-lg: 24px !default;
-
-$turni-control-height: 36px !default;
-$turni-control-height-sm: 32px !default;
-$turni-avatar-size: 34px !default;
-$turni-avatar-size-lg: 40px !default;
-
-$turni-operator-list-width: 320px !default;
-$turni-operator-list-row-height: 50px !default;
-$turni-operator-page-height: calc(100vh - 24px) !default;
-$turni-operator-list-scroll-height: calc(100vh - 255px) !default;
-$turni-operator-form-scroll-height: calc(100vh - 198px) !default;
-
 $turni-transition: 180ms ease !default;
 
+@function scaled($value) {
+    @return calc(#{$value} * var(--turni-ui-scale));
+}
+
 @mixin emit-turni-css-vars() {
+    --turni-ui-scale: #{$turni-ui-scale};
+
     --turni-font-family: #{$turni-font-family};
 
     --turni-bg: #{$turni-bg};
@@ -96,45 +79,67 @@ $turni-transition: 180ms ease !default;
     --turni-border: #{$turni-border};
     --turni-border-strong: #{$turni-border-strong};
 
-    --turni-page-padding: #{$turni-page-padding};
-    --turni-page-gap: #{$turni-page-gap};
+    --turni-page-padding: #{scaled(14px)};
+    --turni-page-gap: #{scaled(10px)};
 
-    --turni-card-padding: #{$turni-card-padding};
-    --turni-card-padding-sm: #{$turni-card-padding-sm};
-    --turni-section-padding: #{$turni-section-padding};
+    --turni-card-padding: #{scaled(12px)};
+    --turni-card-padding-sm: #{scaled(8px)};
+    --turni-section-padding: #{scaled(10px)};
 
-    --turni-radius-xs: #{$turni-radius-xs};
-    --turni-radius-sm: #{$turni-radius-sm};
-    --turni-radius-md: #{$turni-radius-md};
-    --turni-radius-lg: #{$turni-radius-lg};
-    --turni-radius-xl: #{$turni-radius-xl};
+    --turni-radius-xs: #{scaled(8px)};
+    --turni-radius-sm: #{scaled(10px)};
+    --turni-radius-md: #{scaled(12px)};
+    --turni-radius-lg: #{scaled(16px)};
+    --turni-radius-xl: #{scaled(20px)};
     --turni-radius-pill: #{$turni-radius-pill};
 
     --turni-shadow-subtle: #{$turni-shadow-subtle};
     --turni-shadow-soft: #{$turni-shadow-soft};
 
-    --turni-font-size-xs: #{$turni-font-size-xs};
-    --turni-font-size-sm: #{$turni-font-size-sm};
-    --turni-font-size-md: #{$turni-font-size-md};
-    --turni-font-size-base: #{$turni-font-size-base};
-    --turni-font-size-lg: #{$turni-font-size-lg};
-    --turni-font-size-xl: #{$turni-font-size-xl};
-    --turni-font-size-page-title: #{$turni-font-size-page-title};
+    --turni-font-size-xs: #{scaled(11px)};
+    --turni-font-size-sm: #{scaled(12px)};
+    --turni-font-size-md: #{scaled(13px)};
+    --turni-font-size-base: #{scaled(14px)};
+    --turni-font-size-lg: #{scaled(16px)};
+    --turni-font-size-xl: #{scaled(20px)};
+    --turni-font-size-page-title: #{scaled(24px)};
 
-    --turni-icon-size-sm: #{$turni-icon-size-sm};
-    --turni-icon-size-md: #{$turni-icon-size-md};
-    --turni-icon-size-lg: #{$turni-icon-size-lg};
+    --turni-line-height-tight: 1.12;
+    --turni-line-height-normal: 1.32;
+    --turni-line-height-relaxed: 1.45;
 
-    --turni-control-height: #{$turni-control-height};
-    --turni-control-height-sm: #{$turni-control-height-sm};
-    --turni-avatar-size: #{$turni-avatar-size};
-    --turni-avatar-size-lg: #{$turni-avatar-size-lg};
+    --turni-icon-size-xs: #{scaled(15px)};
+    --turni-icon-size-sm: #{scaled(17px)};
+    --turni-icon-size-md: #{scaled(20px)};
+    --turni-icon-size-lg: #{scaled(24px)};
 
-    --turni-operator-list-width: #{$turni-operator-list-width};
-    --turni-operator-list-row-height: #{$turni-operator-list-row-height};
-    --turni-operator-page-height: #{$turni-operator-page-height};
-    --turni-operator-list-scroll-height: #{$turni-operator-list-scroll-height};
-    --turni-operator-form-scroll-height: #{$turni-operator-form-scroll-height};
+    --turni-control-height: #{scaled(34px)};
+    --turni-control-height-sm: #{scaled(30px)};
+    --turni-control-height-xs: #{scaled(26px)};
+
+    --turni-avatar-size: #{scaled(32px)};
+    --turni-avatar-size-lg: #{scaled(38px)};
+
+    --turni-operator-list-width: #{scaled(300px)};
+    --turni-operator-list-row-height: #{scaled(46px)};
+    --turni-operator-page-height: calc(100vh - #{scaled(24px)});
+    --turni-operator-list-scroll-height: calc(100vh - #{scaled(255px)});
+    --turni-operator-form-scroll-height: calc(100vh - #{scaled(198px)});
+
+    --turni-shell-menu-width: #{scaled(232px)};
+    --turni-shell-menu-collapsed-width: #{scaled(70px)};
+    --turni-shell-menu-padding: #{scaled(10px)};
+    --turni-shell-menu-gap: #{scaled(8px)};
+    --turni-shell-topbar-height: #{scaled(54px)};
+    --turni-shell-topbar-padding-y: #{scaled(8px)};
+    --turni-shell-topbar-padding-x: #{scaled(16px)};
+    --turni-shell-menu-item-height: #{scaled(44px)};
+    --turni-shell-menu-icon-size: #{scaled(30px)};
+    --turni-shell-brand-logo-size: #{scaled(36px)};
+
+    --turni-table-cell-width: #{scaled(28px)};
+    --turni-table-cell-height: #{scaled(30px)};
+    --turni-table-worker-width: #{scaled(185px)};
 
     --turni-transition: #{$turni-transition};
 }

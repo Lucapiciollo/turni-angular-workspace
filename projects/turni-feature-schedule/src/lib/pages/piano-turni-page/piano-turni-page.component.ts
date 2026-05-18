@@ -18,6 +18,8 @@ import {
     styleUrls: ['./piano-turni-page.component.scss'],
 })
 export class PianoTurniPageComponent implements OnInit {
+    showGridView = false;
+
     constructor(
         public turniFacade: TurniFacade,
         private dialog: MatDialog
@@ -25,6 +27,14 @@ export class PianoTurniPageComponent implements OnInit {
 
     ngOnInit(): void {
         this.turniFacade.ensureInitialized();
+    }
+
+    toggleGridView(): void {
+        this.showGridView = !this.showGridView;
+
+        if (this.showGridView) {
+            setTimeout(() => this.scrollToSection('section-tabella'), 0);
+        }
     }
 
     openLongShiftDialog(event: { day: DaySchedule; assignment: AssignedShift }): void {

@@ -31,9 +31,7 @@ export class ShiftChangeService {
         workers: Worker[];
         shifts: ShiftDefinition[];
     }): SchedulePlan {
-        if (params.sourceShift === params.targetShift && params.mode === 'MOVE_SAME_DAY') {
-            throw new Error('Il turno destinazione deve essere diverso dal turno attuale.');
-        }
+        this.validateShiftChangeTarget(params);
 
         const plan = this.clonePlan(params.plan);
         const sourceDay = plan.days.find((item) => item.date === params.sourceDate);
@@ -246,6 +244,28 @@ export class ShiftChangeService {
             workers: params.workers,
             shifts: params.shifts,
         });
+    }
+
+    private validateShiftChangeTarget(params: ShiftChangeParams): void {
+        const targetDate = params.targetDate ?? params.sourceDate;
+        const isSameDate = targetDate === params.sourceDate;
+        const isSameShift = params.targetShift === params.sourceShift;
+
+        if (isSameDate && isSameShift) {
+            throw new Error('Cambio turno non valido: devi scegliere un giorno diverso oppure un turno diverso.');
+        }
+
+        if (params.mode === 'MOVE_SAME_DAY' && !isSameDate) {
+            throw new Error('La modalità sposta nello stesso giorno non può usare un giorno diverso.');
+        }
+
+        if (params.mode === 'MOVE_OTHER_DAY' && isSameDate) {
+            throw new Error('La modalità altro giorno richiede un giorno destinazione diverso.');
+        }
+
+        if (params.mode === 'SWAP_SAME_DAY' && !isSameDate) {
+            throw new Error('Lo scambio è consentito solo nello stesso giorno.');
+        }
     }
 
     private getShiftDefinition(

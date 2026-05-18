@@ -7,18 +7,22 @@
 
             <div class="brand-text">
                 <h1>Turni</h1>
-                <span>Gestione pianificazione</span>
+                <span>Pianificazione</span>
             </div>
         </div>
 
-        <nav class="menu-list">
+        <nav class="menu-list" aria-label="Menu principale">
             <a
                 class="menu-item"
                 *ngFor="let item of menuItems"
                 [routerLink]="item.route"
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: item.exact === true }"
+                [matTooltip]="item.label"
+                matTooltipPosition="right"
             >
+                <span class="active-marker"></span>
+
                 <span class="menu-icon">
                     <mat-icon>{{ item.icon }}</mat-icon>
                 </span>
@@ -31,26 +35,47 @@
         </nav>
 
         <div class="menu-footer">
-            <mat-icon>layers</mat-icon>
-            <span>NgModule · NgRx</span>
+            <span class="footer-dot"></span>
+            <span>Locale · NgRx</span>
         </div>
     </aside>
 
     <section class="app-page">
         <header class="page-topbar">
-            <div>
-                <h2>Dashboard Turni</h2>
-                <p>Organizza periodo, operatori, statistiche e anomalie.</p>
+            <div class="topbar-title">
+                <span class="topbar-kicker">Dashboard</span>
+                <h2>Gestione turni</h2>
             </div>
 
-            <button
-                mat-stroked-button
-                type="button"
-                routerLink="/piano-turni"
-            >
-                <mat-icon>calendar_today</mat-icon>
-                Piano turni
-            </button>
+            <div class="topbar-actions">
+                <button
+                    mat-icon-button
+                    type="button"
+                    routerLink="/piano-turni/operatori"
+                    matTooltip="Operatori"
+                >
+                    <mat-icon>manage_accounts</mat-icon>
+                </button>
+
+                <button
+                    mat-icon-button
+                    type="button"
+                    routerLink="/piano-turni/regole-turni"
+                    matTooltip="Regole turni"
+                >
+                    <mat-icon>tune</mat-icon>
+                </button>
+
+                <button
+                    mat-flat-button
+                    color="primary"
+                    type="button"
+                    routerLink="/piano-turni"
+                >
+                    <mat-icon>calendar_today</mat-icon>
+                    Piano
+                </button>
+            </div>
         </header>
 
         <main class="page-scroll">

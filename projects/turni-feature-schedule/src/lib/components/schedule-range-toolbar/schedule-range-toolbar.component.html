@@ -84,6 +84,15 @@
             <button
                 mat-stroked-button
                 type="button"
+                (click)="viewGrid.emit()"
+            >
+                <mat-icon>table_view</mat-icon>
+                Vista tabella
+            </button>
+
+            <button
+                mat-stroked-button
+                type="button"
                 (click)="exportPdf.emit()"
             >
                 <mat-icon>picture_as_pdf</mat-icon>
