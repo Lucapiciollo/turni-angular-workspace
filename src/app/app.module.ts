@@ -12,15 +12,17 @@ import { AppComponent } from './app.component';
 import { AppShellComponent } from './layout/app-shell/app-shell.component';
 import { AppRoutingModule } from './app-routing.module';
 import { TURNI_LOGGER_INIT_PROVIDER } from './core/turni-logger-init.provider';
+import { PlCoreUtilsModule } from './core/pl-core-utils-module';
 
 registerLocaleData(localeIt);
 
 @NgModule({
     declarations: [
         AppComponent,
-            AppShellComponent,
+        AppShellComponent,
     ],
     imports: [
+        PlCoreUtilsModule,
         TurniSharedModule,
         StoreModule.forRoot({}),
         EffectsModule.forRoot([]),
@@ -44,4 +46,4 @@ registerLocaleData(localeIt);
         AppComponent,
     ],
 })
-export class AppModule {}
+export class AppModule { }
