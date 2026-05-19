@@ -11,6 +11,7 @@ import { ScheduleCacheService } from '../services/schedule-cache.service';
 import { ShiftChangeService } from '../services/shift-change.service';
 import { ShiftReplacementService } from '../services/shift-replacement.service';
 import { TurniGeneratorService } from '../services/turni-generator.service';
+import { TurniApiService } from '../services/turni-api.service';
 import { TurniStorageService } from '../services/turni-storage.service';
 import { TurniActions } from './turni.actions';
 import { Worker, WorkerEditorDraft } from '../models/turni.models';
@@ -28,10 +29,15 @@ export class TurniEffects {
     private readonly longShiftService: LongShiftService = inject(LongShiftService);
     private readonly manualAssignmentService: ManualAssignmentService = inject(ManualAssignmentService);
     private readonly storageService: TurniStorageService = inject(TurniStorageService);
+    private readonly apiService: TurniApiService = inject(TurniApiService);
 
     readonly loadInitialData$ = createEffect(() => this.actions$.pipe(
         ofType(TurniActions.loadInitialData),
-        withLatestFrom(this.store.select(selectWorkers), this.store.select(selectShifts), this.store.select(selectAbsences)),
+        withLatestFrom(
+            this.store.select(selectWorkers),
+            this.store.select(selectShifts),
+            this.store.select(selectAbsences)
+        ),
         switchMap(([, currentWorkers, currentShifts, currentAbsences]) => {
             const hasStoreData = currentWorkers.length > 0 && currentShifts.length > 0;
 
@@ -43,25 +49,39 @@ export class TurniEffects {
                 }));
             }
 
-            const storedData = this.storageService.load();
+            return this.apiService.loadBootstrap().pipe(
+                tap((apiData) => {
+                    this.storageService.save(apiData);
+                }),
+                map((apiData: any) => {
+                    return TurniActions.loadInitialDataSuccess({
+                        workers: apiData.workers,
+                        shifts: apiData.shifts,
+                        absences: apiData.absences ?? [],
+                    });
+                }),
+                catchError(() => {
+                    const storedData = this.storageService.load();
 
-            if (storedData?.workers?.length && storedData?.shifts?.length) {
-                return of(TurniActions.loadInitialDataSuccess({
-                    workers: storedData.workers,
-                    shifts: storedData.shifts,
-                    absences: storedData.absences ?? [],
-                }));
-            }
+                    if (storedData?.workers?.length && storedData?.shifts?.length) {
+                        return of(TurniActions.loadInitialDataSuccess({
+                            workers: storedData.workers,
+                            shifts: storedData.shifts,
+                            absences: storedData.absences ?? [],
+                        }));
+                    }
 
-            const initialData = {
-                workers: [...TURNI_FULL_MOCK.workers],
-                shifts: [...TURNI_FULL_MOCK.shifts],
-                absences: [...TURNI_FULL_MOCK.absences],
-            };
+                    const initialData = {
+                        workers: [...TURNI_FULL_MOCK.workers],
+                        shifts: [...TURNI_FULL_MOCK.shifts],
+                        absences: [...TURNI_FULL_MOCK.absences],
+                    };
 
-            this.storageService.save(initialData);
+                    this.storageService.save(initialData);
 
-            return of(TurniActions.loadInitialDataSuccess(initialData));
+                    return of(TurniActions.loadInitialDataSuccess(initialData));
+                })
+            );
         })
     ));
 

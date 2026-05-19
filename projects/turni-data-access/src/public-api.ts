@@ -26,3 +26,4 @@ export * from './lib/data/turni-full-mock';
 export * from './lib/services/turni-storage.service';
 export * from './lib/services/manual-assignment.service';
 export * from './lib/services/shift-change.service';
+export * from './lib/services/turni-api.service';

@@ -1,0 +1,675 @@
+{
+  "shifts": [
+    {
+      "type": "MATTINA",
+      "label": "Mattina",
+      "shortLabel": "M",
+      "startTime": "06:00",
+      "endTime": "14:00",
+      "hours": 8,
+      "requiredWorkers": 6,
+      "start": "06:00",
+      "end": "14:00"
+    },
+    {
+      "type": "POMERIGGIO",
+      "label": "Pomeriggio",
+      "shortLabel": "P",
+      "startTime": "14:00",
+      "endTime": "22:00",
+      "hours": 8,
+      "requiredWorkers": 6,
+      "start": "14:00",
+      "end": "22:00"
+    },
+    {
+      "type": "NOTTE",
+      "label": "Notte",
+      "shortLabel": "N",
+      "startTime": "22:00",
+      "endTime": "06:00",
+      "hours": 8,
+      "requiredWorkers": 3,
+      "start": "22:00",
+      "end": "06:00"
+    }
+  ],
+  "workers": [
+    {
+      "id": "op-001",
+      "name": "Luca Bianchi",
+      "fullName": "Luca Bianchi",
+      "role": "OSS",
+      "color": "#4f7cff",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-002",
+      "name": "Anna Rossi",
+      "fullName": "Anna Rossi",
+      "role": "OSS",
+      "color": "#2f9e6d",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-003",
+      "name": "Marco Verdi",
+      "fullName": "Marco Verdi",
+      "role": "OSS",
+      "color": "#d9892b",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-004",
+      "name": "Sara Neri",
+      "fullName": "Sara Neri",
+      "role": "OSS",
+      "color": "#d95f5f",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-005",
+      "name": "Paolo Romano",
+      "fullName": "Paolo Romano",
+      "role": "OSS",
+      "color": "#7c3aed",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-006",
+      "name": "Giulia Esposito",
+      "fullName": "Giulia Esposito",
+      "role": "OSS",
+      "color": "#0ea5e9",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-007",
+      "name": "Matteo Conti",
+      "fullName": "Matteo Conti",
+      "role": "OSS",
+      "color": "#14b8a6",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-008",
+      "name": "Elena Ricci",
+      "fullName": "Elena Ricci",
+      "role": "OSS",
+      "color": "#f97316",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-009",
+      "name": "Davide Marino",
+      "fullName": "Davide Marino",
+      "role": "OSS",
+      "color": "#64748b",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-010",
+      "name": "Chiara Greco",
+      "fullName": "Chiara Greco",
+      "role": "OSS",
+      "color": "#ec4899",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-011",
+      "name": "Andrea Ferri",
+      "fullName": "Andrea Ferri",
+      "role": "OSS",
+      "color": "#22c55e",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-012",
+      "name": "Francesca Gallo",
+      "fullName": "Francesca Gallo",
+      "role": "OSS",
+      "color": "#3b82f6",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-013",
+      "name": "Simone Costa",
+      "fullName": "Simone Costa",
+      "role": "OSS",
+      "color": "#a855f7",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-014",
+      "name": "Valentina Riva",
+      "fullName": "Valentina Riva",
+      "role": "OSS",
+      "color": "#06b6d4",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 152
+      }
+    },
+    {
+      "id": "op-015",
+      "name": "Federico Lombardi",
+      "fullName": "Federico Lombardi",
+      "role": "OSS",
+      "color": "#84cc16",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-016",
+      "name": "Martina De Luca",
+      "fullName": "Martina De Luca",
+      "role": "OSS",
+      "color": "#ef4444",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-017",
+      "name": "Giorgio Barbieri",
+      "fullName": "Giorgio Barbieri",
+      "role": "OSS",
+      "color": "#0891b2",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-018",
+      "name": "Alessia Fontana",
+      "fullName": "Alessia Fontana",
+      "role": "OSS",
+      "color": "#9333ea",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-019",
+      "name": "Nicola Moretti",
+      "fullName": "Nicola Moretti",
+      "role": "OSS",
+      "color": "#f59e0b",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-020",
+      "name": "Silvia Rinaldi",
+      "fullName": "Silvia Rinaldi",
+      "role": "OSS",
+      "color": "#10b981",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-021",
+      "name": "Roberto Serra",
+      "fullName": "Roberto Serra",
+      "role": "OSS",
+      "color": "#6366f1",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-022",
+      "name": "Marta Pellegrini",
+      "fullName": "Marta Pellegrini",
+      "role": "OSS",
+      "color": "#e11d48",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 152
+      }
+    },
+    {
+      "id": "op-023",
+      "name": "Daniele Villa",
+      "fullName": "Daniele Villa",
+      "role": "OSS",
+      "color": "#0284c7",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-024",
+      "name": "Ilaria Mancini",
+      "fullName": "Ilaria Mancini",
+      "role": "OSS",
+      "color": "#65a30d",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-025",
+      "name": "Stefano Caruso",
+      "fullName": "Stefano Caruso",
+      "role": "OSS",
+      "color": "#db2777",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-026",
+      "name": "Laura Farina",
+      "fullName": "Laura Farina",
+      "role": "OSS",
+      "color": "#2563eb",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 160
+      }
+    },
+    {
+      "id": "op-027",
+      "name": "Emanuele Grassi",
+      "fullName": "Emanuele Grassi",
+      "role": "OSS",
+      "color": "#0f766e",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-028",
+      "name": "Serena Bianco",
+      "fullName": "Serena Bianco",
+      "role": "OSS",
+      "color": "#ea580c",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-029",
+      "name": "Massimo Leone",
+      "fullName": "Massimo Leone",
+      "role": "OSS",
+      "color": "#475569",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 5,
+        "maxConsecutiveAfternoon": 5,
+        "maxNightPerWeek": 2,
+        "maxHoursPerMonth": 168
+      }
+    },
+    {
+      "id": "op-030",
+      "name": "Claudia Testa",
+      "fullName": "Claudia Testa",
+      "role": "OSS",
+      "color": "#be123c",
+      "active": true,
+      "rules": {
+        "maxConsecutiveMorning": 4,
+        "maxConsecutiveAfternoon": 4,
+        "maxNightPerWeek": 1,
+        "maxHoursPerMonth": 152
+      }
+    }
+  ],
+  "absences": [
+    {
+      "id": "abs-001",
+      "workerId": "op-002",
+      "type": "FERIE",
+      "startDate": "2026-05-03",
+      "endDate": "2026-05-08",
+      "note": "Ferie programmate"
+    },
+    {
+      "id": "abs-002",
+      "workerId": "op-004",
+      "type": "MALATTIA",
+      "startDate": "2026-05-05",
+      "endDate": "2026-05-06",
+      "note": "Malattia breve"
+    },
+    {
+      "id": "abs-003",
+      "workerId": "op-006",
+      "type": "PERMESSO",
+      "startDate": "2026-05-07",
+      "endDate": "2026-05-07",
+      "startTime": "14:00",
+      "endTime": "18:00",
+      "note": "Permesso pomeridiano"
+    },
+    {
+      "id": "abs-004",
+      "workerId": "op-008",
+      "type": "RIPOSO",
+      "startDate": "2026-05-09",
+      "endDate": "2026-05-09",
+      "note": "Riposo programmato"
+    },
+    {
+      "id": "abs-005",
+      "workerId": "op-010",
+      "type": "FERIE",
+      "startDate": "2026-05-10",
+      "endDate": "2026-05-15",
+      "note": "Ferie settimana centrale"
+    },
+    {
+      "id": "abs-006",
+      "workerId": "op-012",
+      "type": "MALATTIA",
+      "startDate": "2026-05-12",
+      "endDate": "2026-05-14",
+      "note": "Malattia"
+    },
+    {
+      "id": "abs-007",
+      "workerId": "op-014",
+      "type": "PERMESSO",
+      "startDate": "2026-05-16",
+      "endDate": "2026-05-16",
+      "startTime": "08:00",
+      "endTime": "12:00",
+      "note": "Permesso mattutino"
+    },
+    {
+      "id": "abs-008",
+      "workerId": "op-016",
+      "type": "RIPOSO",
+      "startDate": "2026-05-17",
+      "endDate": "2026-05-17",
+      "note": "Riposo"
+    },
+    {
+      "id": "abs-009",
+      "workerId": "op-018",
+      "type": "FERIE",
+      "startDate": "2026-05-18",
+      "endDate": "2026-05-22",
+      "note": "Ferie seconda metà mese"
+    },
+    {
+      "id": "abs-010",
+      "workerId": "op-020",
+      "type": "MALATTIA",
+      "startDate": "2026-05-20",
+      "endDate": "2026-05-20",
+      "note": "Malattia giornaliera"
+    },
+    {
+      "id": "abs-011",
+      "workerId": "op-022",
+      "type": "PERMESSO",
+      "startDate": "2026-05-21",
+      "endDate": "2026-05-21",
+      "startTime": "16:00",
+      "endTime": "22:00",
+      "note": "Uscita anticipata"
+    },
+    {
+      "id": "abs-012",
+      "workerId": "op-024",
+      "type": "RIPOSO",
+      "startDate": "2026-05-23",
+      "endDate": "2026-05-23",
+      "note": "Riposo turno"
+    },
+    {
+      "id": "abs-013",
+      "workerId": "op-026",
+      "type": "FERIE",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-31",
+      "note": "Ferie fine mese"
+    },
+    {
+      "id": "abs-014",
+      "workerId": "op-028",
+      "type": "MALATTIA",
+      "startDate": "2026-05-27",
+      "endDate": "2026-05-29",
+      "note": "Malattia fine mese"
+    },
+    {
+      "id": "abs-015",
+      "workerId": "op-030",
+      "type": "PERMESSO",
+      "startDate": "2026-05-30",
+      "endDate": "2026-05-30",
+      "startTime": "20:00",
+      "endTime": "22:00",
+      "note": "Permesso serale"
+    },
+    {
+      "id": "abs-016",
+      "workerId": "op-001",
+      "type": "RIPOSO",
+      "startDate": "2026-05-04",
+      "endDate": "2026-05-04",
+      "note": "Riposo dopo notte"
+    },
+    {
+      "id": "abs-017",
+      "workerId": "op-005",
+      "type": "PERMESSO",
+      "startDate": "2026-05-11",
+      "endDate": "2026-05-11",
+      "startTime": "10:00",
+      "endTime": "13:00",
+      "note": "Permesso orario"
+    },
+    {
+      "id": "abs-018",
+      "workerId": "op-009",
+      "type": "MALATTIA",
+      "startDate": "2026-05-24",
+      "endDate": "2026-05-24",
+      "note": "Malattia singola"
+    },
+    {
+      "id": "abs-019",
+      "workerId": "op-011",
+      "type": "FERIE",
+      "startDate": "2026-05-28",
+      "endDate": "2026-05-31",
+      "note": "Ferie ponte"
+    },
+    {
+      "id": "abs-020",
+      "workerId": "op-013",
+      "type": "PERMESSO",
+      "startDate": "2026-05-19",
+      "endDate": "2026-05-19",
+      "startTime": "06:00",
+      "endTime": "10:00",
+      "note": "Permesso inizio mattina"
+    },
+    {
+      "id": "abs-021",
+      "workerId": "op-017",
+      "type": "RIPOSO",
+      "startDate": "2026-05-26",
+      "endDate": "2026-05-26",
+      "note": "Riposo compensativo"
+    },
+    {
+      "id": "abs-022",
+      "workerId": "op-019",
+      "type": "FERIE",
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-02",
+      "note": "Ferie inizio mese"
+    },
+    {
+      "id": "abs-023",
+      "workerId": "op-021",
+      "type": "MALATTIA",
+      "startDate": "2026-05-13",
+      "endDate": "2026-05-13",
+      "note": "Malattia improvvisa"
+    },
+    {
+      "id": "abs-024",
+      "workerId": "op-023",
+      "type": "PERMESSO",
+      "startDate": "2026-05-15",
+      "endDate": "2026-05-15",
+      "startTime": "18:00",
+      "endTime": "22:00",
+      "note": "Permesso serale"
+    },
+    {
+      "id": "abs-025",
+      "workerId": "op-025",
+      "type": "RIPOSO",
+      "startDate": "2026-05-18",
+      "endDate": "2026-05-18",
+      "note": "Riposo programmato"
+    }
+  ]
+}

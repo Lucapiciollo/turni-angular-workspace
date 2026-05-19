@@ -27,6 +27,6 @@ export class TurniConsoleLogWriterService implements TurniLogWriter {
             return;
         }
 
-        // console.info(message, entry.payload ?? entry);
+        console.info(message, entry.payload ?? entry);
     }
 }

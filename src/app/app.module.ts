@@ -7,11 +7,12 @@ import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AppShellComponent } from './layout/app-shell/app-shell.component';
 import { AppRoutingModule } from './app-routing.module';
-import { TURNI_LOGGER_INIT_PROVIDER } from './core/turni-logger-init.provider';
+import { TURNI_LOGGER_INIT_PROVIDER } from './core/logger/turni-logger-init.provider';
 import { PlCoreUtilsModule } from './core/pl-core-utils-module';
 
 registerLocaleData(localeIt);
@@ -19,7 +20,7 @@ registerLocaleData(localeIt);
 @NgModule({
     declarations: [
         AppComponent,
-        AppShellComponent,
+            AppShellComponent,
     ],
     imports: [
         PlCoreUtilsModule,
@@ -33,6 +34,7 @@ registerLocaleData(localeIt);
         }),
         BrowserModule,
         BrowserAnimationsModule,
+        HttpClientModule,
         AppRoutingModule,
     ],
     providers: [
@@ -46,4 +48,4 @@ registerLocaleData(localeIt);
         AppComponent,
     ],
 })
-export class AppModule { }
+export class AppModule {}
